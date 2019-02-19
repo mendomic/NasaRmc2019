@@ -1,6 +1,6 @@
-# NasaRmc2018
+# NasaRmc2019
 
-This is the primary codebase for all of the TrickFire Robotics Nasa RMC 2018 competition entry.
+This is the primary codebase for all of the TrickFire Robotics Nasa RMC 2019 competition entry.
 
 # Installation
 ```bash
