@@ -25,7 +25,7 @@ before_install:
   - sudo cmake .
   - sudo make
   - sudo mv libg* /usr/lib/
-  - cd
+  - cd $TRAVIS_BUILD_DIR
   - sudo apt install -y python-catkin-pkg python-rosdep python-wstool ros-$ROS_DISTRO-ros-base
   - sudo rosdep init
   - rosdep update
