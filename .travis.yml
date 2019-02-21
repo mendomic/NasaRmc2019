@@ -32,4 +32,4 @@ before_install:
   - source /opt/ros/$ROS_DISTRO/setup.bash
   
 install:
-  - bash build_all
+  - bash ./build_all
