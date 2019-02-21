@@ -21,6 +21,11 @@ before_install:
   - sudo apt update -qq
   - sudo apt install ros-kinetic-desktop-full
   - bash apt_install_dependencies.sh
+  - cd /usr/src/gtest
+  - sudo cmake .
+  - sudo make
+  - sudo mv libg* /usr/lib/
+  - cd
   - sudo apt install -y python-catkin-pkg python-rosdep python-wstool ros-$ROS_DISTRO-ros-base
   - sudo rosdep init
   - rosdep update
