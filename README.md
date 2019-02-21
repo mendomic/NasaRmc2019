@@ -4,7 +4,7 @@ This is the primary codebase for all of the TrickFire Robotics Nasa RMC 2019 com
 
 # Installation
 ```bash
-./NasaRmc2018_dependencies.sh
+./apt_install_dependencies.sh
 ```
 
 # Arduino Libraries
