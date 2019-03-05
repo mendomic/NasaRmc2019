@@ -51,6 +51,17 @@ target_link_libraries(control
   ${catkin_LIBRARIES}
 )
 
+# rp_control
+add_executable(rp_control
+  src/rp_control.cpp
+)
+add_dependencies(rp_control tfr_msgs_gencpp)
+target_link_libraries(rp_control
+  ${catkin_LIBRARIES}
+  wiringPi
+)
+
+
 # drivebase
 add_executable(drivebase
   src/drivebase.cpp

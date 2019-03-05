@@ -1,0 +1,4 @@
+<launch>
+    <node pkg="tfr_control" type="rp_control" name="rp_control" output="screen">
+    </node>
+</launch>
