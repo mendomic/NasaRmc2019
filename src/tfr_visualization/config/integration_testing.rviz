@@ -102,15 +102,15 @@ Visualization Manager:
           Value: true
         hole:
           Value: false
-        kinect_depth_frame:
+        camera_depth_frame:
           Value: false
-        kinect_depth_optical_frame:
+        camera_depth_optical_frame:
           Value: false
-        kinect_link:
+        camera_link:
           Value: true
-        kinect_rgb_frame:
+        camera_color_frame:
           Value: false
-        kinect_rgb_optical_frame:
+        camera_color_optical_frame:
           Value: false
         lower_arm:
           Value: false
@@ -164,12 +164,12 @@ Visualization Manager:
                   {}
               front_cam_link:
                 {}
-              kinect_link:
-                kinect_depth_frame:
-                  kinect_depth_optical_frame:
+              camera_link:
+                camera_depth_frame:
+                  camera_depth_optical_frame:
                     {}
-                kinect_rgb_frame:
-                  kinect_rgb_optical_frame:
+                camera_color_frame:
+                  camera_color_optical_frame:
                     {}
               rear_cam_link:
                 {}
@@ -532,14 +532,14 @@ Visualization Manager:
       Size (Pixels): 3
       Size (m): 0.00999999978
       Style: Flat Squares
-      Topic: /sensors/kinect/depth/points
+      Topic: /camera/depth_registered/points
       Unreliable: false
       Use Fixed Frame: true
       Use rainbow: true
       Value: false
     - Class: rviz/Image
       Enabled: false
-      Image Topic: /sensors/kinect/rgb/image_mono
+      Image Topic: /camera/color/image_raw
       Max Value: 1
       Median window: 5
       Min Value: 0
@@ -551,7 +551,7 @@ Visualization Manager:
       Value: false
     - Class: rviz/Image
       Enabled: false
-      Image Topic: /sensors/kinect/rgb/image_mono
+      Image Topic: /camera/color/image_raw
       Max Value: 1
       Median window: 5
       Min Value: 0
