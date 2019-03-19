@@ -16,6 +16,7 @@ fi
 if [ "$ARCH" == "armv7l" ]
 then
     export WIRINGPI_GPIOMEM=1
+    ./mouse_droid_dependencies.sh
 fi
 
 
