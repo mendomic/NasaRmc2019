@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>tfr_can</name>
+  <version>0.0.0</version>
+  <description>The tfr_can package</description>
+
+  <author email="daniel.mamaghani@gmail.com">Daniel Mamaghani</author>
+  <maintainer email="daniel.mamaghani@gmail.com">Daniel Mamaghani</maintainer>
+
+  <license>BSD</license>
+  
+  <buildtool_depend>catkin</buildtool_depend>
+  <build_depend>kacanopen</build_depend>
+  <build_export_depend>kacanopen</build_export_depend>
+  <exec_depend>kacanopen</exec_depend>
+
+</package>

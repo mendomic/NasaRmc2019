@@ -8,4 +8,5 @@
     <include file="$(find tfr_navigation)/launch/navigation.launch"/>
     <include file="$(find tfr_mining)/launch/mining.launch"/>
     <include file="$(find tfr_dumping)/launch/dumping.launch"/>
+    <include file="$(find tfr_can)/launch/can.launch"/>
 </launch>

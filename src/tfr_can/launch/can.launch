@@ -1,0 +1,5 @@
+<launch>
+    <node name="can_bus" type="create_ros_topics_for_can_nodes" pkg="tfr_can" output="screen" >
+        <param name="eds_files_path" value="$(find tfr_can)/eds_files/" type="str" />
+    </node>
+</launch>

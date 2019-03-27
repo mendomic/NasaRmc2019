@@ -1,0 +1,3 @@
+[submodule "src/kacanopen"]
+	path = src/kacanopen
+	url = https://github.com/dghani/kacanopen
