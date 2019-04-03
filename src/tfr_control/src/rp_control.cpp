@@ -32,10 +32,6 @@ void set_motors(const uint8_t right_motor_power, const uint8_t left_motor_power)
 void serialWriteCallback(const tfr_msgs::PwmCommand & command)
 {
     ROS_INFO("In callback");
-    if ( wiringpi::wiringPiSetup() == -1 )
-    {
-        ROS_ERROR("wiringPiSetup() failed.");
-    }   
 
     int fd = wiringpi::serialOpen(UART_DEVICE_NAME.c_str(),
                                   UART_BAUD_RATE);
@@ -86,6 +82,10 @@ int main (int argc, char** argv)
 {
     ROS_INFO("starting raspberry pi node");
     ros::init(argc, argv, "rp_control");
+    if ( wiringpi::wiringPiSetup() == -1 )
+    {
+        ROS_ERROR("wiringPiSetup() failed.");
+    }   
     ros::NodeHandle n;
     ros::Subscriber sub_obj = n.subscribe("/motor_output", 4, serialWriteCallback);
     ROS_INFO("about to spin raspberry pi node");
