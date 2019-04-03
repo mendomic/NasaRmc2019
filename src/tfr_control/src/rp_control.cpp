@@ -31,7 +31,7 @@ void set_motors(const uint8_t right_motor_power, const uint8_t left_motor_power)
 
 void serialWriteCallback(const tfr_msgs::PwmCommand & command)
 {
-    ROS_INFO("In callback");
+    //ROS_INFO("In callback");
 
     int fd = wiringpi::serialOpen(UART_DEVICE_NAME.c_str(),
                                   UART_BAUD_RATE);
@@ -53,7 +53,7 @@ void serialWriteCallback(const tfr_msgs::PwmCommand & command)
     if(command.enabled)
     {
     
-        ROS_INFO("writing power");
+        //ROS_INFO("writing power");
         	
 
         write(fd, motor_power, COMMAND_SIZE_BYTES);
@@ -88,11 +88,10 @@ int main (int argc, char** argv)
     }   
     ros::NodeHandle n;
     ros::Subscriber sub_obj = n.subscribe("/motor_output", 4, serialWriteCallback);
-    ROS_INFO("about to spin raspberry pi node");
+    ROS_INFO("About to spin raspberry pi node");
     ros::spin();
     ROS_INFO("Have returned from spin");
-    //wiringpi::serialPutchar(fd, 0);
-    //wiringpi::serialPutchar(fd, 0);
+
 
     return 0;
 }
