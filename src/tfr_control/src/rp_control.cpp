@@ -54,14 +54,20 @@ void serialWriteCallback(const tfr_msgs::PwmCommand & command)
     
     if(command.enabled)
     {
-    
-        //ROS_INFO("writing power");
         	
 
         write(fd, motor_power, COMMAND_SIZE_BYTES);
 
-        motor_power[MOTOR_RIGHT] = command.tread_right;
-        motor_power[MOTOR_LEFT] = command.tread_left;
+        
+
+        motor_power[MOTOR_RIGHT] = command.tread_right * right_power_scale;
+        motor_power[MOTOR_LEFT] = command.tread_left * left_power_scale;
+        
+        if (command.tread_right > 0 || command.tread_left > 0)
+        {
+        
+            ROS_INFO("writing power: %f, %f", motor_power[MOTOR_RIGHT], motor_power[MOTOR_LEFT]);
+        }
 
         write(fd, motor_power, COMMAND_SIZE_BYTES);	
 	
