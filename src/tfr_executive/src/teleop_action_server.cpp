@@ -65,7 +65,7 @@ class TeleopExecutive
                 double getAngular(){return angular;}
         };
 
-        TeleopExecutive(ros::NodeHandle &n , DriveVelocity &drive, double f) :
+        TeleopExecutive(ros::NodeHandle &n , DriveVelocity &drive, double f, bool u_d=true) :
             server{n, "teleop_action_server",
                 boost::bind(&TeleopExecutive::processCommand, this, _1),
                 false},
@@ -75,10 +75,18 @@ class TeleopExecutive
             digging_client{n, "dig"},
             arm_client{n, "move_arm"},
             drive_stats{drive},
-            frequency{f}
+            frequency{f},
+            use_digging{u_d}
         {
-            digging_client.waitForServer();
-            arm_client.waitForServer();
+            if (use_digging){
+                digging_client.waitForServer();
+                ROS_INFO("Teleop Action Server connected to digging");
+                arm_client.waitForServer();
+                ROS_INFO("Teleop Action Server connected to arm");
+            }
+            else {
+                ROS_INFO("Teleop Action Server not using digging");
+            }
             server.start();
             ROS_INFO("Teleop Action Server: Online %f", ros::Time::now().toSec());
         }
@@ -342,6 +350,7 @@ class TeleopExecutive
         DriveVelocity &drive_stats;
         //how often to check for preemption
         ros::Duration frequency;
+        bool use_digging;
 
 };
 
@@ -351,11 +360,13 @@ int main(int argc, char** argv)
     ros::init(argc, argv, "teleop_action_server");
     ros::NodeHandle n{};
     double linear_velocity, angular_velocity, rate;
+    bool use_digging; 
     ros::param::param<double>("~linear_velocity", linear_velocity, 0.25);
     ros::param::param<double>("~angular_velocity", angular_velocity, 0.3);
     ros::param::param<double>("~rate", rate, 10.0);
+    ros::param::param<bool>("~use_digging", use_digging, true);
     TeleopExecutive::DriveVelocity velocities{linear_velocity, angular_velocity};
-    TeleopExecutive teleop{n, velocities, 1.0/rate};
+    TeleopExecutive teleop{n, velocities, 1.0/rate, use_digging};
     ros::spin();
     return 0;
 }
