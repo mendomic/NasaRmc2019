@@ -19,6 +19,8 @@ namespace wiringpi
 
 const std::string UART_DEVICE_NAME = "/dev/ttyS0";
 const int UART_BAUD_RATE = 9600;
+const int right_power_scale = 70;
+const int left_power_scale = 75;
 
 /*
 void set_motors(const uint8_t right_motor_power, const uint8_t left_motor_power)
