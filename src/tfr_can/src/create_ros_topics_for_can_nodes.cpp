@@ -54,7 +54,9 @@ int main(int argc, char* argv[]) {
 
 		PRINT("Found device with node ID "<<device.get_node_id()<<": "<<device.get_entry("manufacturer_device_name"));
 
-		if (device.get_node_id() == 8) {
+		if (device.get_node_id() == 4)
+		{
+			// Roboteq SDC3260 in Closed Loop Count Position mode.
 			
 			ros::NodeHandle nh{"~"};
 			std::string eds_files_path;
@@ -72,23 +74,131 @@ int main(int argc, char* argv[]) {
 			device.load_dictionary_from_eds(eds_files_path + "roboteq_motor_controllers_v60.eds");
 			
 
-			auto iosub_1_1 = std::make_shared<kaco::EntrySubscriber>(device, "cmd_cango/cmd_cango_1");
-    		bridge.add_subscriber(iosub_1_1);
+			auto iosub_4_1_1 = std::make_shared<kaco::EntrySubscriber>(device, "cmd_cango/cmd_cango_1");
+    		bridge.add_subscriber(iosub_4_1_1);
 
-			auto iopub_1_1 = std::make_shared<kaco::EntryPublisher>(device, "qry_relcntr/channel_1");
-    		bridge.add_publisher(iopub_1_1,10);
+			auto iopub_4_1_2 = std::make_shared<kaco::EntryPublisher>(device, "qry_motamps/channel_1");
+    		bridge.add_publisher(iopub_4_1_2, loop_rate);
+			
+			auto iopub_4_1_3 = std::make_shared<kaco::EntryPublisher>(device, "qry_abcntr/channel_1");
+    		bridge.add_publisher(iopub_4_1_3, loop_rate);
+			
+			
+			auto iosub_4_2_1 = std::make_shared<kaco::EntrySubscriber>(device, "cmd_cango/cmd_cango_2");
+    		bridge.add_subscriber(iosub_4_2_1);
 
-			auto iopub_1_2 = std::make_shared<kaco::EntryPublisher>(device, "qry_batamps/channel_1");
-    		bridge.add_publisher(iopub_1_2,10);
+			auto iopub_4_2_2 = std::make_shared<kaco::EntryPublisher>(device, "qry_motamps/channel_2");
+    		bridge.add_publisher(iopub_4_2_2, loop_rate);
+			
+			auto iopub_4_2_3 = std::make_shared<kaco::EntryPublisher>(device, "qry_abcntr/channel_2");
+    		bridge.add_publisher(iopub_4_2_3, loop_rate);
+			
+			
+			auto iosub_4_3_1 = std::make_shared<kaco::EntrySubscriber>(device, "cmd_cango/cmd_cango_3");
+    		bridge.add_subscriber(iosub_4_3_1);
 
-			auto iosub_2_1 = std::make_shared<kaco::EntrySubscriber>(device, "cmd_cango/cmd_cango_2");
-    		bridge.add_subscriber(iosub_2_1);
+			auto iopub_4_3_2 = std::make_shared<kaco::EntryPublisher>(device, "qry_motamps/channel_3");
+    		bridge.add_publisher(iopub_4_3_2, loop_rate);
+			
+			auto iopub_4_3_3 = std::make_shared<kaco::EntryPublisher>(device, "qry_abcntr/channel_3");
+    		bridge.add_publisher(iopub_4_3_3, loop_rate);
+		}
+		
+		
+		if (device.get_node_id() == 8)
+		{
+			// Roboteq SBL2360 in Closed Loop Speed Position mode.
+			
+			ros::NodeHandle nh{"~"};
+			std::string eds_files_path;
+			if (nh.getParam("eds_files_path", eds_files_path))
+			{
+				PRINT("Great it worked.");
+				PRINT(eds_files_path);
+			}
+			else
+			{
+				ERROR("tfr_can could not find the private parameter 'eds_files_path'. Make sure this parameter is getting set in the launch file for tfr_can.");
+			}
+			
+			//const std::string eds_files_path = "/src/tfr_can/eds_files/";
+			device.load_dictionary_from_eds(eds_files_path + "roboteq_motor_controllers_v60.eds");
+			
 
-			auto iopub_2_1 = std::make_shared<kaco::EntryPublisher>(device, "qry_relcntr/channel_2");
-    		bridge.add_publisher(iopub_2_1,10);
+			auto iosub_8_1_1 = std::make_shared<kaco::EntrySubscriber>(device, "cmd_cango/cmd_cango_1");
+    		bridge.add_subscriber(iosub_8_1_1);
 
-			auto iopub_2_2 = std::make_shared<kaco::EntryPublisher>(device, "qry_batamps/channel_2");
-    		bridge.add_publisher(iopub_2_2,10);
+			auto iopub_8_1_1 = std::make_shared<kaco::EntryPublisher>(device, "qry_relcntr/channel_1");
+    		bridge.add_publisher(iopub_8_1_1, loop_rate);
+
+			auto iopub_8_1_2 = std::make_shared<kaco::EntryPublisher>(device, "qry_motamps/channel_1");
+    		bridge.add_publisher(iopub_8_1_2, loop_rate);
+			
+			auto iopub_8_1_3 = std::make_shared<kaco::EntryPublisher>(device, "qry_blrspeed/channel_1");
+    		bridge.add_publisher(iopub_8_1_3, loop_rate);
+			
+			
+			auto iosub_8_2_1 = std::make_shared<kaco::EntrySubscriber>(device, "cmd_cango/cmd_cango_2");
+    		bridge.add_subscriber(iosub_8_2_1);
+
+			auto iopub_8_2_1 = std::make_shared<kaco::EntryPublisher>(device, "qry_relcntr/channel_2");
+    		bridge.add_publisher(iopub_8_2_1, loop_rate);
+
+			auto iopub_8_2_2 = std::make_shared<kaco::EntryPublisher>(device, "qry_motamps/channel_2");
+    		bridge.add_publisher(iopub_8_2_2, loop_rate);
+			
+			auto iopub_8_2_3 = std::make_shared<kaco::EntryPublisher>(device, "qry_blrspeed/channel_2");
+    		bridge.add_publisher(iopub_8_2_3, loop_rate);
+		}
+		
+		if (device.get_node_id() == 12)
+		{
+			// Roboteq SDC3260 in Closed Loop Count Position mode.
+			
+			ros::NodeHandle nh{"~"};
+			std::string eds_files_path;
+			if (nh.getParam("eds_files_path", eds_files_path))
+			{
+				PRINT("Great it worked.");
+				PRINT(eds_files_path);
+			}
+			else
+			{
+				ERROR("tfr_can could not find the private parameter 'eds_files_path'. Make sure this parameter is getting set in the launch file for tfr_can.");
+			}
+			
+			//const std::string eds_files_path = "/src/tfr_can/eds_files/";
+			device.load_dictionary_from_eds(eds_files_path + "roboteq_motor_controllers_v60.eds");
+			
+
+			auto iosub_12_1_1 = std::make_shared<kaco::EntrySubscriber>(device, "cmd_cango/cmd_cango_1");
+    		bridge.add_subscriber(iosub_12_1_1);
+
+			auto iopub_12_1_2 = std::make_shared<kaco::EntryPublisher>(device, "qry_motamps/channel_1");
+    		bridge.add_publisher(iopub_12_1_2, loop_rate);
+			
+			auto iopub_12_1_3 = std::make_shared<kaco::EntryPublisher>(device, "qry_abcntr/channel_1");
+    		bridge.add_publisher(iopub_12_1_3, loop_rate);
+			
+			
+			auto iosub_12_2_1 = std::make_shared<kaco::EntrySubscriber>(device, "cmd_cango/cmd_cango_2");
+    		bridge.add_subscriber(iosub_12_2_1);
+
+			auto iopub_12_2_2 = std::make_shared<kaco::EntryPublisher>(device, "qry_motamps/channel_2");
+    		bridge.add_publisher(iopub_12_2_2, loop_rate);
+			
+			auto iopub_12_2_3 = std::make_shared<kaco::EntryPublisher>(device, "qry_abcntr/channel_2");
+    		bridge.add_publisher(iopub_12_2_3, loop_rate);
+			
+			
+			auto iosub_12_3_1 = std::make_shared<kaco::EntrySubscriber>(device, "cmd_cango/cmd_cango_3");
+    		bridge.add_subscriber(iosub_12_3_1);
+
+			auto iopub_12_3_2 = std::make_shared<kaco::EntryPublisher>(device, "qry_motamps/channel_3");
+    		bridge.add_publisher(iopub_12_3_2, loop_rate);
+			
+			auto iopub_12_3_3 = std::make_shared<kaco::EntryPublisher>(device, "qry_abcntr/channel_3");
+    		bridge.add_publisher(iopub_12_3_3, loop_rate);
 		}
 
 	}
