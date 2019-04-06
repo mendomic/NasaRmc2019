@@ -185,6 +185,6 @@ int main(int argc, char** argv)
 
     ArmActionServer aas(n);
 
-    while (ros::ok()) ;
+    ros::waitForShutdown();
     return 0;
 }
