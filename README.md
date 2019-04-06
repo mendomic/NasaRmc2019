@@ -2,6 +2,11 @@
 
 This is the primary codebase for all of the TrickFire Robotics Nasa RMC 2019 competition entry.
 
+# Clone the repo
+```bash
+git clone --recurse-submodules https://github.com/TrickfireRobotics/NasaRmc2019.git
+```
+
 # Installation
 ```bash
 ./apt_install_dependencies.sh
