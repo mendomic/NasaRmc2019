@@ -1,4 +1,6 @@
 <launch>
     <node pkg="tfr_control" type="rp_control" name="rp_control" output="screen">
+        <param name="right_power_scale"  value="70" type="int"/> 
+        <param name="left_power_scale"  value="70" type="int"/> 
     </node>
 </launch>
