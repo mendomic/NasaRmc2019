@@ -206,5 +206,7 @@ int main(int argc, char* argv[]) {
 	PRINT("About to call bridge.run()");
 	bridge.run();
 	
+    master.stop();
+    
 	return EXIT_SUCCESS;
 }
