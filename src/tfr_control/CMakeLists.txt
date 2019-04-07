@@ -69,7 +69,6 @@ endif()
 
 # drivebase
 add_executable(drivebase
-  src/drivebase.cpp
   src/drivebase_publisher.cpp
 )
 target_link_libraries(drivebase ${catkin_LIBRARIES})
