@@ -23,7 +23,7 @@ int main(int argc, char* argv[]) {
 	// "1M", "500K", "125K", "100K", "50K", "20K", "10K" and "5K".
 	const std::string baudrate = "1M";
 
-	const size_t num_devices_required = 2;
+	const size_t num_devices_required = 1;
 
 	const double loop_rate = 10; // [Hz]
 
@@ -200,7 +200,6 @@ int main(int argc, char* argv[]) {
 			auto iopub_12_3_3 = std::make_shared<kaco::EntryPublisher>(device, "qry_abcntr/channel_3");
     		bridge.add_publisher(iopub_12_3_3, loop_rate);
 		}
-
 	}
 
 	PRINT("About to call bridge.run()");

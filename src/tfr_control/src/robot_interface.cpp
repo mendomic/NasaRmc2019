@@ -33,11 +33,12 @@ namespace tfr_control
         // layer
         registerJoint("left_tread_joint", Joint::LEFT_TREAD);
         registerJoint("right_tread_joint", Joint::RIGHT_TREAD);
-        registerBinJoint("bin_joint", Joint::BIN); 
+        registerArmJoint("bin_joint", Joint::BIN); 
         registerArmJoint("turntable_joint", Joint::TURNTABLE);
         registerArmJoint("lower_arm_joint", Joint::LOWER_ARM);
         registerArmJoint("upper_arm_joint", Joint::UPPER_ARM);
         registerArmJoint("scoop_joint", Joint::SCOOP);
+		
         //register the interfaces with the controller layer
         registerInterface(&joint_state_interface);
         registerInterface(&joint_effort_interface);
@@ -50,7 +51,7 @@ namespace tfr_control
      *
      * Information that is not that are not expicity needed by our controllers 
      * are written to some safe sensible default (usually 0).
-     *
+     * 
      * A couple of our logical joints are controlled by two actuators and read
      * by multiple potentiometers. For the purpose of populating information for
      * control I take the average of the two positions.
@@ -64,17 +65,17 @@ namespace tfr_control
             reading_a = *latest_arduino_a;
         if (latest_arduino_b != nullptr)
             reading_b = *latest_arduino_b;
-
+		
         //LEFT_TREAD
         position_values[static_cast<int>(Joint::LEFT_TREAD)] = 0;
         velocity_values[static_cast<int>(Joint::LEFT_TREAD)] = -reading_a.tread_left_vel;
         effort_values[static_cast<int>(Joint::LEFT_TREAD)] = 0;
-
+		
         //RIGHT_TREAD
         position_values[static_cast<int>(Joint::RIGHT_TREAD)] = 0;
         velocity_values[static_cast<int>(Joint::RIGHT_TREAD)] = reading_b.tread_right_vel;
         effort_values[static_cast<int>(Joint::RIGHT_TREAD)] = 0;
-
+		
         if (!use_fake_values)
         {
             //TURNTABLE
@@ -82,29 +83,29 @@ namespace tfr_control
                 reading_a.arm_turntable_pos + turntable_offset;
             velocity_values[static_cast<int>(Joint::TURNTABLE)] = 0; 
             effort_values[static_cast<int>(Joint::TURNTABLE)] = 0;
-
+			
             //LOWER_ARM
             position_values[static_cast<int>(Joint::LOWER_ARM)] = reading_a.arm_lower_pos;
             velocity_values[static_cast<int>(Joint::LOWER_ARM)] = 0;
             effort_values[static_cast<int>(Joint::LOWER_ARM)] = 0;
-
+			
             //UPPER_ARM
             position_values[static_cast<int>(Joint::UPPER_ARM)] = reading_a.arm_upper_pos;
             velocity_values[static_cast<int>(Joint::UPPER_ARM)] = 0;
             effort_values[static_cast<int>(Joint::UPPER_ARM)] = 0;
-
+			
             //SCOOP
             position_values[static_cast<int>(Joint::SCOOP)] = reading_a.arm_scoop_pos;
             velocity_values[static_cast<int>(Joint::SCOOP)] = 0;
             effort_values[static_cast<int>(Joint::SCOOP)] = 0;
         }
- 
+		
         //BIN
         position_values[static_cast<int>(Joint::BIN)] = 
             (reading_a.bin_left_pos + reading_a.bin_right_pos)/2;
         velocity_values[static_cast<int>(Joint::BIN)] = 0;
         effort_values[static_cast<int>(Joint::BIN)] = 0;
-
+		
     }
 
     /*
@@ -144,8 +145,7 @@ namespace tfr_control
                         position_values[static_cast<int>(Joint::TURNTABLE)]);
             command.arm_turntable = signal;
 
-
-
+			
             //LOWER_ARM
             //NOTE we reverse these because actuator is mounted backwards
             signal = -angleToPWM(command_values[static_cast<int>(Joint::LOWER_ARM)],
@@ -279,23 +279,6 @@ namespace tfr_control
     /*
      * Register this joint with each neccessary hardware interface
      * */
-    void RobotInterface::registerBinJoint(std::string name, Joint joint) 
-    {
-        auto idx = static_cast<int>(joint);
-        //give the joint a state
-        JointStateHandle state_handle(name, &position_values[idx],
-            &velocity_values[idx], &effort_values[idx]);
-        joint_state_interface.registerHandle(state_handle);
-
-        //allow the joint to be commanded
-        JointHandle handle(state_handle, &command_values[idx]);
-        joint_position_interface.registerHandle(handle);
-    }
-
-
-    /*
-     * Register this joint with each neccessary hardware interface
-     * */
     void RobotInterface::registerArmJoint(std::string name, Joint joint) 
     {
         auto idx = static_cast<int>(joint);
@@ -338,10 +321,11 @@ namespace tfr_control
             const double &actual_left, const double &actual_right)
     {
         //we don't anticipate these changing very much keep at method level
-        double  total_angle_tolerance = 0.005,
-                individual_angle_tolerance = 0.01,
-                scaling_factor = .6, 
-                difference = desired - (actual_left + actual_right)/2;
+        double total_angle_tolerance = 0.005;
+		double individual_angle_tolerance = 0.01;
+		double scaling_factor = .6;
+		double difference = desired - (actual_left + actual_right)/2;
+		
         if (std::abs(difference) > total_angle_tolerance)
         {
             int direction = (difference < 0) ? 1 : -1;

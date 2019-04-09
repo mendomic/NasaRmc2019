@@ -4,6 +4,25 @@
 #
 # ------------------------------------------------------------
 
-absolute_position_encoder_limits:
-	
-
+encoder_limits:
+    bin_joint:
+        min: 0
+        max: 0
+    turntable_joint:
+        min: 0
+        max: 0
+    lower_arm_joint:
+        min: 0
+        max: 0
+    upper_arm_joint:
+        min: 0
+        max: 0
+    scoop_joint:
+        min: 0
+        max: 0
+    left_tread_joint:
+        min: 0
+        max: 0
+    right_tread_joint:
+        min: 0
+        max: 0

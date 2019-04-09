@@ -42,6 +42,18 @@ namespace tfr_control {
         UPPER_ARM, 
         SCOOP 
     };
+	// Please keep this map up to date with the Joint enum above.
+	// It is used to fetch the encoder limits from the parameter server.
+	const std::map<Joint, std::string> joint_to_param =
+	{
+		{Joint::LEFT_TREAD,  "left_tread_joint"},
+		{Joint::RIGHT_TREAD, "right_tread_joint"},
+		{Joint::BIN,         "bin_joint"},
+		{Joint::TURNTABLE,   "turntable_joint"},
+		{Joint::LOWER_ARM,   "lower_arm_joint"},
+		{Joint::UPPER_ARM,   "upper_arm_joint"},
+		{Joint::SCOOP,       "scoop_joint"}
+	};
 
     /**
      * Contains the lower level interface inbetween user commands coming
@@ -128,7 +140,6 @@ namespace tfr_control {
         
         void registerJoint(std::string name, Joint joint);
         void registerArmJoint(std::string name, Joint joint);
-        void registerBinJoint(std::string name, Joint joint);
 
 
         //callback for publisher
