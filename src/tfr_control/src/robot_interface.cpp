@@ -19,6 +19,13 @@ namespace tfr_control
                 &RobotInterface::readArduinoA, this)},
         arduino_b{n.subscribe("/sensors/arduino_b", 5,
                 &RobotInterface::readArduinoB, this)},
+	brushless_a_vel{n.subscribe("/device8/get_qry_relcntr/channel_1", 5,
+                &RobotInterface::accumulateBrushlessAVel, this)},
+	brushless_b_vel{n.subscribe("/device8/get_qry_relcntr/channel_2", 5,
+                &RobotInterface::accumulateBrushlessBVel, this)},
+		brushless_a_vel_publisher{n.advertise<std_msgs::Int32>("/device8/set_cmd_cango/cmd_cango_1", 1)},
+		brushless_b_vel_publisher{n.advertise<std_msgs::Int32>("/device8/set_cmd_cango/cmd_cango_2", 1)},
+		device4_3_publisher{n.advertise<std_msgs::Int32>("/device4/set_cmd_cango/cmd_cango_3", 1)},
         pwm_publisher{n.advertise<tfr_msgs::PwmCommand>("/motor_output", 15)},
         use_fake_values{fakes}, lower_limits{lower_lim},
         upper_limits{upper_lim}, drivebase_v0{std::make_pair(0,0)},
@@ -33,12 +40,11 @@ namespace tfr_control
         // layer
         registerJoint("left_tread_joint", Joint::LEFT_TREAD);
         registerJoint("right_tread_joint", Joint::RIGHT_TREAD);
-        registerArmJoint("bin_joint", Joint::BIN); 
+        registerBinJoint("bin_joint", Joint::BIN); 
         registerArmJoint("turntable_joint", Joint::TURNTABLE);
         registerArmJoint("lower_arm_joint", Joint::LOWER_ARM);
         registerArmJoint("upper_arm_joint", Joint::UPPER_ARM);
         registerArmJoint("scoop_joint", Joint::SCOOP);
-		
         //register the interfaces with the controller layer
         registerInterface(&joint_state_interface);
         registerInterface(&joint_effort_interface);
@@ -51,7 +57,7 @@ namespace tfr_control
      *
      * Information that is not that are not expicity needed by our controllers 
      * are written to some safe sensible default (usually 0).
-     * 
+     *
      * A couple of our logical joints are controlled by two actuators and read
      * by multiple potentiometers. For the purpose of populating information for
      * control I take the average of the two positions.
@@ -65,17 +71,17 @@ namespace tfr_control
             reading_a = *latest_arduino_a;
         if (latest_arduino_b != nullptr)
             reading_b = *latest_arduino_b;
-		
+
         //LEFT_TREAD
         position_values[static_cast<int>(Joint::LEFT_TREAD)] = 0;
-        velocity_values[static_cast<int>(Joint::LEFT_TREAD)] = -reading_a.tread_left_vel;
+        velocity_values[static_cast<int>(Joint::LEFT_TREAD)] = readBrushlessAVel();
         effort_values[static_cast<int>(Joint::LEFT_TREAD)] = 0;
-		
+
         //RIGHT_TREAD
         position_values[static_cast<int>(Joint::RIGHT_TREAD)] = 0;
-        velocity_values[static_cast<int>(Joint::RIGHT_TREAD)] = reading_b.tread_right_vel;
+        velocity_values[static_cast<int>(Joint::RIGHT_TREAD)] = readBrushlessBVel();
         effort_values[static_cast<int>(Joint::RIGHT_TREAD)] = 0;
-		
+
         if (!use_fake_values)
         {
             //TURNTABLE
@@ -83,29 +89,35 @@ namespace tfr_control
                 reading_a.arm_turntable_pos + turntable_offset;
             velocity_values[static_cast<int>(Joint::TURNTABLE)] = 0; 
             effort_values[static_cast<int>(Joint::TURNTABLE)] = 0;
-			
+
             //LOWER_ARM
-            position_values[static_cast<int>(Joint::LOWER_ARM)] = reading_a.arm_lower_pos;
+            //position_values[static_cast<int>(Joint::LOWER_ARM)] = reading_a.arm_lower_pos;
+            position_values[static_cast<int>(Joint::LOWER_ARM)] = position_values[static_cast<int>(Joint::LOWER_ARM)];
+
+			ROS_INFO_STREAM("arm_lower_position: read: ");
+			ROS_INFO_STREAM(position_values[static_cast<int>(Joint::LOWER_ARM)]);
+			ROS_INFO_STREAM(std::endl);
+			
             velocity_values[static_cast<int>(Joint::LOWER_ARM)] = 0;
             effort_values[static_cast<int>(Joint::LOWER_ARM)] = 0;
-			
+
             //UPPER_ARM
             position_values[static_cast<int>(Joint::UPPER_ARM)] = reading_a.arm_upper_pos;
             velocity_values[static_cast<int>(Joint::UPPER_ARM)] = 0;
             effort_values[static_cast<int>(Joint::UPPER_ARM)] = 0;
-			
+
             //SCOOP
             position_values[static_cast<int>(Joint::SCOOP)] = reading_a.arm_scoop_pos;
             velocity_values[static_cast<int>(Joint::SCOOP)] = 0;
             effort_values[static_cast<int>(Joint::SCOOP)] = 0;
         }
-		
+ 
         //BIN
         position_values[static_cast<int>(Joint::BIN)] = 
             (reading_a.bin_left_pos + reading_a.bin_right_pos)/2;
         velocity_values[static_cast<int>(Joint::BIN)] = 0;
         effort_values[static_cast<int>(Joint::BIN)] = 0;
-		
+
     }
 
     /*
@@ -145,12 +157,24 @@ namespace tfr_control
                         position_values[static_cast<int>(Joint::TURNTABLE)]);
             command.arm_turntable = signal;
 
-			
+
+
             //LOWER_ARM
             //NOTE we reverse these because actuator is mounted backwards
-            signal = -angleToPWM(command_values[static_cast<int>(Joint::LOWER_ARM)],
-                        position_values[static_cast<int>(Joint::LOWER_ARM)]);
-            command.arm_lower = signal;
+            //signal = -angleToPWM(command_values[static_cast<int>(Joint::LOWER_ARM)],
+            //          position_values[static_cast<int>(Joint::LOWER_ARM)]);
+            //command.arm_lower = signal;
+			
+			
+			int32_t arm_lower_position = position_values[static_cast<int>(Joint::LOWER_ARM)];
+			std_msgs::Int32 arm_lower_position_msg;
+			arm_lower_position_msg.data = arm_lower_position;
+			
+			ROS_INFO_STREAM("arm_lower_position: write: ");
+			ROS_INFO_STREAM(arm_lower_position_msg.data);
+			ROS_INFO_STREAM(std::endl);
+			
+			device4_3_publisher.publish(arm_lower_position_msg);
 
 
             //UPPER_ARM
@@ -167,14 +191,16 @@ namespace tfr_control
          }
 
         //LEFT_TREAD
-        signal = -drivebaseVelocityToPWM(command_values[static_cast<int>(Joint::LEFT_TREAD)], drivebase_v0.first);
-        command.tread_left = signal;
+        double left_tread_command = command_values[static_cast<int32_t>(Joint::LEFT_TREAD)];
+		std_msgs::Int32 left_tread_msg;
+		left_tread_msg.data = static_cast<int32_t>(left_tread_command);
+        brushless_a_vel_publisher.publish(left_tread_msg);
 
         //RIGHT_TREAD
-        signal = drivebaseVelocityToPWM(command_values[static_cast<int>(Joint::RIGHT_TREAD)],
-                    drivebase_v0.second);
-        command.tread_right = signal;
-
+        double right_tread_command = command_values[static_cast<int32_t>(Joint::RIGHT_TREAD)];
+		std_msgs::Int32 right_tread_msg;
+		right_tread_msg.data = static_cast<int32_t>(right_tread_command);
+        brushless_b_vel_publisher.publish(right_tread_msg);
 
         //BIN
         auto twin_signal = twinAngleToPWM(command_values[static_cast<int>(Joint::BIN)],
@@ -192,6 +218,46 @@ namespace tfr_control
         drivebase_v0.second = velocity_values[static_cast<int>(Joint::RIGHT_TREAD)];
     }
 
+	double RobotInterface::linear_interp_double(double x, double x1, double y1, double x2, double y2)
+	{
+		// line defined by two points: (x1, y1) and (x2, y2)
+        double y = ((y2 - y1)/(x2 - x1))*(x - x1) + y1;
+		return y;
+	}
+	
+	int32_t RobotInterface::linear_interp_int(int32_t x, int32_t x1, int32_t y1, int32_t x2, int32_t y2)
+	{
+		// line defined by two points: (x1, y1) and (x2, y2)
+        int32_t y = ((y2 - y1)/(x2 - x1))*(x - x1) + y1;
+		return y;
+	}
+	
+	// has hardcoded min joint position in header file
+	const int32_t RobotInterface::get_arm_lower_min_int()
+	{
+		double arm_lower_joint_min_mapped = linear_interp_double(arm_lower_joint_min * -10,
+				arm_lower_joint_min,
+				std::numeric_limits<int32_t>::min(),
+				arm_lower_joint_max, 
+				std::numeric_limits<int32_t>::max());
+		int32_t arm_lower_joint_min_mapped_int = static_cast<int32_t>(arm_lower_joint_min_mapped);
+		
+		return arm_lower_joint_min_mapped_int;
+	}
+		
+	// has hardcoded max joint position in header file
+	const int32_t RobotInterface::get_arm_lower_max_int()
+	{
+		double arm_lower_joint_max_mapped = linear_interp_double(arm_lower_joint_max * 10,
+				arm_lower_joint_min,
+				std::numeric_limits<int32_t>::min(),
+				arm_lower_joint_max, 
+				std::numeric_limits<int32_t>::max());
+		int32_t arm_lower_joint_max_mapped_int = static_cast<int32_t>(arm_lower_joint_max_mapped);
+		
+		return arm_lower_joint_max_mapped_int;
+	}
+	
     void RobotInterface::setEnabled(bool val)
     {
         enabled = val;
@@ -279,6 +345,23 @@ namespace tfr_control
     /*
      * Register this joint with each neccessary hardware interface
      * */
+    void RobotInterface::registerBinJoint(std::string name, Joint joint) 
+    {
+        auto idx = static_cast<int>(joint);
+        //give the joint a state
+        JointStateHandle state_handle(name, &position_values[idx],
+            &velocity_values[idx], &effort_values[idx]);
+        joint_state_interface.registerHandle(state_handle);
+
+        //allow the joint to be commanded
+        JointHandle handle(state_handle, &command_values[idx]);
+        joint_position_interface.registerHandle(handle);
+    }
+
+
+    /*
+     * Register this joint with each neccessary hardware interface
+     * */
     void RobotInterface::registerArmJoint(std::string name, Joint joint) 
     {
         auto idx = static_cast<int>(joint);
@@ -321,11 +404,10 @@ namespace tfr_control
             const double &actual_left, const double &actual_right)
     {
         //we don't anticipate these changing very much keep at method level
-        double total_angle_tolerance = 0.005;
-		double individual_angle_tolerance = 0.01;
-		double scaling_factor = .6;
-		double difference = desired - (actual_left + actual_right)/2;
-		
+        double  total_angle_tolerance = 0.005,
+                individual_angle_tolerance = 0.01,
+                scaling_factor = .6, 
+                difference = desired - (actual_left + actual_right)/2;
         if (std::abs(difference) > total_angle_tolerance)
         {
             int direction = (difference < 0) ? 1 : -1;
@@ -421,6 +503,58 @@ namespace tfr_control
         latest_arduino_b = msg;
     }
 
+	void RobotInterface::accumulateBrushlessAVel(const std_msgs::Int32 &msg)
+	{
+		brushless_a_mutex.lock();
+
+		accumulated_brushless_a_vel += msg.data;
+		accumulated_brushless_a_vel_num_updates++;
+
+		brushless_a_mutex.unlock();
+	}
+	
+	void RobotInterface::accumulateBrushlessBVel(const std_msgs::Int32 &msg)
+	{
+		brushless_b_mutex.lock();
+
+		accumulated_brushless_b_vel += msg.data;
+		accumulated_brushless_b_vel_num_updates++;
+
+		brushless_b_mutex.unlock();
+	}
+	
+	int32_t RobotInterface::readBrushlessAVel()
+	{
+		brushless_a_mutex.lock();
+
+		int32_t vel = accumulated_brushless_a_vel;
+		int32_t num_updates = accumulated_brushless_a_vel_num_updates;
+
+		accumulated_brushless_a_vel = 0;
+		accumulated_brushless_a_vel_num_updates = 0;
+
+		brushless_a_mutex.unlock();
+		
+		// TODO: Calculate the velocity to return.
+		return vel;
+	}
+	
+	int32_t RobotInterface::readBrushlessBVel()
+	{
+		brushless_b_mutex.lock();
+
+		int32_t vel = accumulated_brushless_b_vel;
+		int32_t num_updates = accumulated_brushless_b_vel_num_updates;
+
+		accumulated_brushless_b_vel = 0;
+		accumulated_brushless_b_vel_num_updates = 0;
+
+		brushless_b_mutex.unlock();
+		
+		// TODO: Calculate the velocity to return.
+		return vel;
+	}
+	
     void RobotInterface::zeroTurntable()
     {
         //Grab the neccessary data

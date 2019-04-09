@@ -16,6 +16,7 @@
 
 #include <ros/ros.h>
 #include <std_msgs/Float64.h>
+#include <std_msgs/Int32.h>
 #include <hardware_interface/joint_command_interface.h>
 #include <hardware_interface/joint_state_interface.h>
 #include <hardware_interface/robot_hw.h>
@@ -26,6 +27,8 @@
 #include <tfr_msgs/PwmCommand.h>
 #include <tfr_utilities/control_code.h>
 #include <vector>
+#include <mutex>
+#include <limits>
 
 namespace tfr_control {
 
@@ -42,18 +45,6 @@ namespace tfr_control {
         UPPER_ARM, 
         SCOOP 
     };
-	// Please keep this map up to date with the Joint enum above.
-	// It is used to fetch the encoder limits from the parameter server.
-	const std::map<Joint, std::string> joint_to_param =
-	{
-		{Joint::LEFT_TREAD,  "left_tread_joint"},
-		{Joint::RIGHT_TREAD, "right_tread_joint"},
-		{Joint::BIN,         "bin_joint"},
-		{Joint::TURNTABLE,   "turntable_joint"},
-		{Joint::LOWER_ARM,   "lower_arm_joint"},
-		{Joint::UPPER_ARM,   "upper_arm_joint"},
-		{Joint::SCOOP,       "scoop_joint"}
-	};
 
     /**
      * Contains the lower level interface inbetween user commands coming
@@ -70,39 +61,39 @@ namespace tfr_control {
 
         RobotInterface(ros::NodeHandle &n, bool fakes, const double lower_lim[JOINT_COUNT],
                 const double upper_lim[JOINT_COUNT]);
-
+	
         
         /*
          * Reads state from hardware (encoders/potentiometers) and writes it to
          * shared memory 
          * */
         void read();
-
+	
         /*
          * Takes commanded states from shared memory, enforces basic safety
          * contraints, and writes them to hardware
          * */
         void write();
-
-
+	
+	
         /*
          * retrieves the state of the bin
          * */
         double getBinState();
-
+	
         /*
          * retrieves the state of the arm
          * */
         void getArmState(std::vector<double>&);
-
+	
         /*
          * Clears all command values being sent and sets them to safe values
          * stops the treads and commands the arm to hold position.
          * */
         void clearCommands();
-
+	
         void setEnabled(bool val);
-
+	
         void zeroTurntable();
 
     private:
@@ -120,9 +111,39 @@ namespace tfr_control {
         bool enabled;
         tfr_msgs::ArduinoAReadingConstPtr latest_arduino_a;
         tfr_msgs::ArduinoBReadingConstPtr latest_arduino_b;
-
         double turntable_offset;
 
+	// Read the relative velocity counters from the brushless motor controller
+	ros::Subscriber brushless_a_vel;
+	ros::Subscriber brushless_b_vel;
+	
+	ros::Publisher brushless_a_vel_publisher;
+	ros::Publisher brushless_b_vel_publisher;
+	
+	ros::Publisher device4_3_publisher;
+	
+	std::mutex brushless_a_mutex;
+	int32_t accumulated_brushless_a_vel = 0;
+	int32_t accumulated_brushless_a_vel_num_updates = 0;
+	std::mutex brushless_b_mutex;
+	int32_t accumulated_brushless_b_vel = 0;
+	int32_t accumulated_brushless_b_vel_num_updates = 0;
+	void accumulateBrushlessAVel(const std_msgs::Int32 &msg);
+	void accumulateBrushlessBVel(const std_msgs::Int32 &msg);
+	int32_t readBrushlessAVel();
+	int32_t readBrushlessBVel();
+	
+	const int32_t arm_lower_encoder_min =  20;
+	const int32_t arm_lower_encoder_max = 960;
+	const double arm_lower_joint_min = 0.104;
+	const double arm_lower_joint_max = 1.55;
+	
+	const int32_t get_arm_lower_min_int();
+	const int32_t get_arm_lower_max_int();
+	
+	double  linear_interp_double(double x, double x1, double y1, double x2, double y2);
+	int32_t linear_interp_int(int32_t x, int32_t x1, int32_t y1, int32_t x2, int32_t y2);
+	//double linear_interp(double x, double x1, double y1, double x2, double y2);
 
         // Populated by controller layer for us to use
         double command_values[JOINT_COUNT]{};
@@ -140,13 +161,16 @@ namespace tfr_control {
         
         void registerJoint(std::string name, Joint joint);
         void registerArmJoint(std::string name, Joint joint);
+        void registerBinJoint(std::string name, Joint joint);
 
 
         //callback for publisher
         void readArduinoA(const tfr_msgs::ArduinoAReadingConstPtr &msg);
         //callback for publisher
         void readArduinoB(const tfr_msgs::ArduinoBReadingConstPtr &msg);
-
+	
+	
+	
         /**
          * Gets the PWM appropriate output for an angle joint at the current time
          * */
