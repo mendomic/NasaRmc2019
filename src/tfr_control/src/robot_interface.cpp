@@ -25,6 +25,8 @@ namespace tfr_control
                 &RobotInterface::accumulateBrushlessBVel, this)},
 		brushless_a_vel_publisher{n.advertise<std_msgs::Int32>("/device8/set_cmd_cango/cmd_cango_1", 1)},
 		brushless_b_vel_publisher{n.advertise<std_msgs::Int32>("/device8/set_cmd_cango/cmd_cango_2", 1)},
+		device4_3_subscriber_encoder{n.subscribe("/device4/qry_abcntr/channel_3", 5,
+                &RobotInterface::readDevice4Encoder, this)},
 		device4_3_publisher{n.advertise<std_msgs::Int32>("/device4/set_cmd_cango/cmd_cango_3", 1)},
         pwm_publisher{n.advertise<tfr_msgs::PwmCommand>("/motor_output", 15)},
         use_fake_values{fakes}, lower_limits{lower_lim},
@@ -92,7 +94,15 @@ namespace tfr_control
 
             //LOWER_ARM
             //position_values[static_cast<int>(Joint::LOWER_ARM)] = reading_a.arm_lower_pos;
-            position_values[static_cast<int>(Joint::LOWER_ARM)] = position_values[static_cast<int>(Joint::LOWER_ARM)];
+			double lower_arm_position_double = 
+				linear_interp_double(
+					static_cast<double>(device4_encoder),
+					static_cast<double>(arm_lower_encoder_min),
+					arm_lower_joint_min,
+					static_cast<double>(arm_lower_encoder_max),
+					arm_lower_joint_max
+					);
+            position_values[static_cast<int>(Joint::LOWER_ARM)] = lower_arm_position_double;
 
 			//ROS_INFO_STREAM("arm_lower_position: read: ");
 			//ROS_INFO_STREAM(position_values[static_cast<int>(Joint::LOWER_ARM)]);
@@ -170,11 +180,11 @@ namespace tfr_control
 			std_msgs::Int32 arm_lower_position_msg;
 			arm_lower_position_msg.data = arm_lower_position;
 			position_values[static_cast<int>(Joint::LOWER_ARM)] = position_values[static_cast<int>(Joint::LOWER_ARM)];
-			//ROS_INFO_STREAM("arm_lower_position: write: ");
-			//ROS_INFO_STREAM(arm_lower_position_msg.data);
+			ROS_INFO_STREAM("arm_lower_position: write: ");
+			ROS_INFO_STREAM(arm_lower_position_msg.data);
 			//ROS_INFO_STREAM(std::endl);
 			
-			//device4_3_publisher.publish(arm_lower_position_msg);
+			device4_3_publisher.publish(arm_lower_position_msg);
 
 
             //UPPER_ARM
@@ -325,6 +335,10 @@ namespace tfr_control
         position.push_back(position_values[static_cast<int>(Joint::SCOOP)]);
     }
 
+	void RobotInterface::readDevice4Encoder(const std_msgs::Int32 &msg)
+	{
+		device4_encoder = msg.data;
+	}
 
     /*
      * Register this joint with each neccessary hardware interface

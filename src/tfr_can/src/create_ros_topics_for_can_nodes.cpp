@@ -17,11 +17,11 @@ int main(int argc, char* argv[]) {
 
 	// Set the name of your CAN bus. "slcan0" is a common bus name
 	// for the first SocketCAN device on a Linux system.
-	const std::string busname = "can0";
+	const std::string busname = "can1";
 
 	// Set the baudrate of your CAN bus. Most drivers support the values
 	// "1M", "500K", "125K", "100K", "50K", "20K", "10K" and "5K".
-	const std::string baudrate = "1M";
+	const std::string baudrate = "250K";
 
 	const size_t num_devices_required = 1;
 

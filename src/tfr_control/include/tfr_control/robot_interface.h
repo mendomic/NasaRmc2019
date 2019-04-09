@@ -116,6 +116,7 @@ namespace tfr_control {
 	// Read the relative velocity counters from the brushless motor controller
 	ros::Subscriber brushless_a_vel;
 	ros::Subscriber brushless_b_vel;
+	ros::Subscriber device4_3_subscriber_encoder;
 	
 	ros::Publisher brushless_a_vel_publisher;
 	ros::Publisher brushless_b_vel_publisher;
@@ -128,13 +129,18 @@ namespace tfr_control {
 	std::mutex brushless_b_mutex;
 	int32_t accumulated_brushless_b_vel = 0;
 	int32_t accumulated_brushless_b_vel_num_updates = 0;
+	
 	void accumulateBrushlessAVel(const std_msgs::Int32 &msg);
 	void accumulateBrushlessBVel(const std_msgs::Int32 &msg);
+	
+	int32_t device4_encoder = 0;
+	void readDevice4Encoder(const std_msgs::Int32 &msg);
+	
 	int32_t readBrushlessAVel();
 	int32_t readBrushlessBVel();
 	
-	const int32_t arm_lower_encoder_min =  20;
-	const int32_t arm_lower_encoder_max = 960;
+	const int32_t arm_lower_encoder_min = -451;
+	const int32_t arm_lower_encoder_max =  430;
 	const double arm_lower_joint_min = 0.104;
 	const double arm_lower_joint_max = 1.55;
 	
@@ -143,7 +149,8 @@ namespace tfr_control {
 	
 	double  linear_interp_double(double x, double x1, double y1, double x2, double y2);
 	int32_t linear_interp_int(int32_t x, int32_t x1, int32_t y1, int32_t x2, int32_t y2);
-	//double linear_interp(double x, double x1, double y1, double x2, double y2);
+	
+	
 
         // Populated by controller layer for us to use
         double command_values[JOINT_COUNT]{};
