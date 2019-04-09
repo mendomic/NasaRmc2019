@@ -94,9 +94,9 @@ namespace tfr_control
             //position_values[static_cast<int>(Joint::LOWER_ARM)] = reading_a.arm_lower_pos;
             position_values[static_cast<int>(Joint::LOWER_ARM)] = position_values[static_cast<int>(Joint::LOWER_ARM)];
 
-			ROS_INFO_STREAM("arm_lower_position: read: ");
-			ROS_INFO_STREAM(position_values[static_cast<int>(Joint::LOWER_ARM)]);
-			ROS_INFO_STREAM(std::endl);
+			//ROS_INFO_STREAM("arm_lower_position: read: ");
+			//ROS_INFO_STREAM(position_values[static_cast<int>(Joint::LOWER_ARM)]);
+			//ROS_INFO_STREAM(std::endl);
 			
             velocity_values[static_cast<int>(Joint::LOWER_ARM)] = 0;
             effort_values[static_cast<int>(Joint::LOWER_ARM)] = 0;
@@ -170,11 +170,11 @@ namespace tfr_control
 			std_msgs::Int32 arm_lower_position_msg;
 			arm_lower_position_msg.data = arm_lower_position;
 			position_values[static_cast<int>(Joint::LOWER_ARM)] = position_values[static_cast<int>(Joint::LOWER_ARM)];
-			ROS_INFO_STREAM("arm_lower_position: write: ");
-			ROS_INFO_STREAM(arm_lower_position_msg.data);
-			ROS_INFO_STREAM(std::endl);
+			//ROS_INFO_STREAM("arm_lower_position: write: ");
+			//ROS_INFO_STREAM(arm_lower_position_msg.data);
+			//ROS_INFO_STREAM(std::endl);
 			
-			device4_3_publisher.publish(arm_lower_position_msg);
+			//device4_3_publisher.publish(arm_lower_position_msg);
 
 
             //UPPER_ARM
