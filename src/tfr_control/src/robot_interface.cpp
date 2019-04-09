@@ -169,7 +169,7 @@ namespace tfr_control
 			int32_t arm_lower_position = position_values[static_cast<int>(Joint::LOWER_ARM)];
 			std_msgs::Int32 arm_lower_position_msg;
 			arm_lower_position_msg.data = arm_lower_position;
-			
+			position_values[static_cast<int>(Joint::LOWER_ARM)] = position_values[static_cast<int>(Joint::LOWER_ARM)];
 			ROS_INFO_STREAM("arm_lower_position: write: ");
 			ROS_INFO_STREAM(arm_lower_position_msg.data);
 			ROS_INFO_STREAM(std::endl);
