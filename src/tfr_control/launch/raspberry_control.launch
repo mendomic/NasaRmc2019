@@ -2,7 +2,7 @@
     <machine name="mouse_droid" address="192.168.0.162" env-loader="~/NasaRmc2019/ros_remote.sh" user="trickfire" password="tfire2019"/>
     
     <node machine="mouse_droid" pkg="tfr_control" type="rp_control" name="rp_control" output="screen">
-        <param name="right_power_scale"  value="70" type="int"/> 
-        <param name="left_power_scale"  value="70" type="int"/> 
+        <param name="right_power_scale"  value="40" type="int"/> 
+        <param name="left_power_scale"  value="40" type="int"/> 
     </node>
 </launch>

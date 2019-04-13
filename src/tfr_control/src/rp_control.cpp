@@ -30,26 +30,26 @@ int left_power_scale = 75;
 void serialWriteCallback(const tfr_msgs::PwmCommand & command) {
     //ROS_INFO("In callback");
 
-    int8_t motor_power[COMMAND_SIZE_BYTES] = {0, 0};
-
+    int8_t motorPower[COMMAND_SIZE_BYTES] = {0, 0};
+    uint8_t * unsignedPower = (uint8_t *)motorPower;
     
     if(command.enabled) {
         ros::param::getCached("~right_power_scale", right_power_scale);
         ros::param::getCached("~left_power_scale", left_power_scale);
         
 
-        motor_power[MOTOR_RIGHT] = command.tread_right * right_power_scale;
-        motor_power[MOTOR_LEFT] = -command.tread_left * left_power_scale;
+        motorPower[MOTOR_RIGHT] = command.tread_right * right_power_scale;
+        motorPower[MOTOR_LEFT] = -command.tread_left * left_power_scale;
         
         if (command.tread_right != 0 || command.tread_left != 0) {
-            ROS_INFO("writing power: %d, %d", motor_power[MOTOR_RIGHT], motor_power[MOTOR_LEFT]);
+            ROS_INFO("writing power: %d, %d", motorPower[MOTOR_RIGHT], motorPower[MOTOR_LEFT]);
         }
 
-        write(fd, motor_power, COMMAND_SIZE_BYTES);	
+        write(fd, motorPower, COMMAND_SIZE_BYTES);	
     }
     else {
         ROS_INFO("command not enabled");
-        write(fd, motor_power, COMMAND_SIZE_BYTES);
+        write(fd, motorPower, COMMAND_SIZE_BYTES);
     }
 }
 
