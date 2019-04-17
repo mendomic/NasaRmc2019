@@ -76,7 +76,9 @@ class AutonomousExecutive
             ros::param::param<bool>("~localization_finish", LOCALIZATION_FINISH, true);
             if (LOCALIZATION_TO || LOCALIZATION_FROM || LOCALIZATION_FINISH)
             {
+                ROS_INFO("Autonomous Action Server: Connecting to localization server");
                 localizationClient.waitForServer();
+                ROS_INFO("Autonomous Action Server: Connected to localization server");
                 status_publisher.info(StatusCode::EXC_CONNECT_LOCALIZATION, 1.0);
             }
             ros::param::param<bool>("~navigation_to", NAVIGATION_TO, true);

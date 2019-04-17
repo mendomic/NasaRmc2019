@@ -1,6 +1,7 @@
 <launch>
     <group ns="sensors">
         <include file="$(find tfr_sensor)/launch/fiducial_cam.launch"/>
-        <include file="$(find tfr_sensor)/launch/realsense.launch"/>
+        <include file="$(find tfr_sensor)/launch/realsense.launch">
+        </include>
     </group>
 </launch>

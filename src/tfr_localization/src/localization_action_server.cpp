@@ -82,17 +82,15 @@ class Localizer
             cmd.angular.z = turn_velocity;
             cmd_publisher.publish(cmd);
 
-            ROS_INFO("Localization Action Server: odometry %d, target yaw %f",
-                    odometry, goal->target_yaw);
+            ROS_INFO("Localization Action Server: odometry %s, target yaw %f",
+                    odometry ? "set": "unset", goal->target_yaw);
 
             tfr_msgs::LocalizationResult output;
             //loop
-            while (true)
-            {
+            while (true) {
 
                 ROS_INFO("Localization Action Server: iterating");
-                if (server.isPreemptRequested())
-                {
+                if (server.isPreemptRequested()) {
                     ROS_INFO("Localization Action Server: preempt requested");
                     server.setPreempted(output);
                     success = false;
@@ -108,15 +106,13 @@ class Localizer
                     result = sendAruco(image_wrapper);
 
                 ROS_INFO("Localization Action Server: frontcam %d", result->number_found);
-                if (result != nullptr && result->number_found > 0)
-                {
+                if (result != nullptr && result->number_found > 0) {
                     //we found something
                     geometry_msgs::PoseStamped unprocessed_pose = result->relative_pose;
 
                     //transform from camera to footprint perspective
                     geometry_msgs::PoseStamped processed_pose;
-                    if (!tf_manipulator.transform_pose(unprocessed_pose, processed_pose, "base_footprint"))
-                    {
+                    if (!tf_manipulator.transform_pose(unprocessed_pose, processed_pose, "base_footprint")) {
                         ROS_WARN("Localization Action Server: Transform Failed");
                         server.setAborted(output);
                         success = false;
@@ -134,21 +130,17 @@ class Localizer
                     tfr_msgs::PoseSrv::Response response;
                     output.pose = processed_pose.pose;
 
-                        while(odometry)
-                        {
-                            if(ros::service::call("/localize_bin", request, response))
-                            {
-                                ROS_INFO("localized");
-                                tfr_msgs::LocalizationResult result;
-                                server.setSucceeded(output);
-                                odometry = false;
-                                set = true;
-                            }
-                            else
-                            {
-                                ROS_INFO("Localization Action Server: retrying to localize movable point");
-                            }
+                    while(odometry) {
+                        if(ros::service::call("/localize_bin", request, response)) {
+                            ROS_INFO("localized");
+                            tfr_msgs::LocalizationResult result;
+                            server.setSucceeded(output);
+                            odometry = false;
+                            set = true;
+                        } else {
+                            ROS_INFO("Localization Action Server: retrying to localize movable point");
                         }
+                    }
 
 
                     auto siny = +2.0 * 
@@ -192,8 +184,7 @@ class Localizer
             ROS_INFO("Localization Action Server: Localize Finished");
         }
 
-        tfr_msgs::ArucoResultConstPtr sendAruco(const tfr_msgs::WrappedImage& msg)
-        {
+        tfr_msgs::ArucoResultConstPtr sendAruco(const tfr_msgs::WrappedImage& msg) {
             tfr_msgs::ArucoGoal goal;
             goal.image = msg.response.image;
             goal.camera_info = msg.response.camera_info;
