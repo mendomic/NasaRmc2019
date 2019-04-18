@@ -37,20 +37,19 @@ namespace tfr_control
         upper_limits{upper_lim}, drivebase_v0{std::make_pair(0,0)},
         last_update{ros::Time::now()},
         enabled{true}
-
     {
         // Note: the string parameters in these constructors must match the
         // joint names from the URDF, and yaml controller description. 
 
         // Connect and register each joint with appropriate interfaces at our
         // layer
-        registerJoint("left_tread_joint", Joint::LEFT_TREAD);
-        registerJoint("right_tread_joint", Joint::RIGHT_TREAD);
-        registerBinJoint("bin_joint", Joint::BIN); 
-        registerArmJoint("turntable_joint", Joint::TURNTABLE);
-        registerArmJoint("lower_arm_joint", Joint::LOWER_ARM);
-        registerArmJoint("upper_arm_joint", Joint::UPPER_ARM);
-        registerArmJoint("scoop_joint", Joint::SCOOP);
+        registerJointEffortInterface("left_tread_joint", Joint::LEFT_TREAD);
+        registerJointEffortInterface("right_tread_joint", Joint::RIGHT_TREAD);
+        registerJointPositionIterface("bin_joint", Joint::BIN); 
+        registerJointPositionIterface("turntable_joint", Joint::TURNTABLE);
+        registerJointPositionIterface("lower_arm_joint", Joint::LOWER_ARM);
+        registerJointPositionIterface("upper_arm_joint", Joint::UPPER_ARM);
+        registerJointPositionIterface("scoop_joint", Joint::SCOOP);
         //register the interfaces with the controller layer
         registerInterface(&joint_state_interface);
         registerInterface(&joint_effort_interface);
@@ -61,8 +60,8 @@ namespace tfr_control
     /*
      * Reads from our hardware and populates from shared memory.  
      *
-     * Information that is not that are not expicity needed by our controllers 
-     * are written to some safe sensible default (usually 0).
+     * Information that is not explicity needed by our controllers 
+     * is written to some safe sensible default (usually 0).
      *
      * A couple of our logical joints are controlled by two actuators and read
      * by multiple potentiometers. For the purpose of populating information for
@@ -366,7 +365,7 @@ namespace tfr_control
     /*
      * Register this joint with each neccessary hardware interface
      * */
-    void RobotInterface::registerJoint(std::string name, Joint joint) 
+    void RobotInterface::registerJointEffortInterface(std::string name, Joint joint) 
     {
         auto idx = static_cast<int>(joint);
         //give the joint a state
@@ -382,6 +381,7 @@ namespace tfr_control
     /*
      * Register this joint with each neccessary hardware interface
      * */
+	 /*
     void RobotInterface::registerBinJoint(std::string name, Joint joint) 
     {
         auto idx = static_cast<int>(joint);
@@ -394,12 +394,13 @@ namespace tfr_control
         JointHandle handle(state_handle, &command_values[idx]);
         joint_position_interface.registerHandle(handle);
     }
+	*/
 
 
     /*
      * Register this joint with each neccessary hardware interface
      * */
-    void RobotInterface::registerArmJoint(std::string name, Joint joint) 
+    void RobotInterface::registerJointPositionIterface(std::string name, Joint joint) 
     {
         auto idx = static_cast<int>(joint);
         //give the joint a state

@@ -181,9 +181,9 @@ namespace tfr_control {
         ros::Time last_update;
 
         
-        void registerJoint(std::string name, Joint joint);
-        void registerArmJoint(std::string name, Joint joint);
-        void registerBinJoint(std::string name, Joint joint);
+        void registerJointEffortInterface(std::string name, Joint joint);
+        void registerJointPositionIterface(std::string name, Joint joint);
+        //void registerBinJoint(std::string name, Joint joint);
 
 		/*
         //callback for publisher
