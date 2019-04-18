@@ -105,52 +105,67 @@ namespace tfr_control {
         hardware_interface::EffortJointInterface joint_effort_interface;
 
         //reads from arduino encoder publisher
-        ros::Subscriber arduino_a;
+        /*
+		ros::Subscriber arduino_a;
         ros::Subscriber arduino_b;
         ros::Publisher pwm_publisher;
+		*/
         bool enabled;
-        tfr_msgs::ArduinoAReadingConstPtr latest_arduino_a;
+        
+		/*
+		tfr_msgs::ArduinoAReadingConstPtr latest_arduino_a;
         tfr_msgs::ArduinoBReadingConstPtr latest_arduino_b;
+		*/
         double turntable_offset;
 
-	// Read the relative velocity counters from the brushless motor controller
-	ros::Subscriber brushless_a_vel;
-	ros::Subscriber brushless_b_vel;
-	ros::Subscriber device4_3_subscriber_encoder;
-	
-	ros::Publisher brushless_a_vel_publisher;
-	ros::Publisher brushless_b_vel_publisher;
-	
-	ros::Publisher device4_3_publisher;
-	
-	std::mutex brushless_a_mutex;
-	int32_t accumulated_brushless_a_vel = 0;
-	int32_t accumulated_brushless_a_vel_num_updates = 0;
-	std::mutex brushless_b_mutex;
-	int32_t accumulated_brushless_b_vel = 0;
-	int32_t accumulated_brushless_b_vel_num_updates = 0;
-	
-	void accumulateBrushlessAVel(const std_msgs::Int32 &msg);
-	void accumulateBrushlessBVel(const std_msgs::Int32 &msg);
-	
-	int32_t device4_encoder = 0;
-	void readDevice4Encoder(const std_msgs::Int32 &msg);
-	
-	int32_t readBrushlessAVel();
-	int32_t readBrushlessBVel();
-	
-	const int32_t arm_lower_encoder_min = -451;
-	const int32_t arm_lower_encoder_max =  430;
-	const double arm_lower_joint_min = 0.104;
-	const double arm_lower_joint_max = 1.55;
-	
-	const int32_t get_arm_lower_min_int();
-	const int32_t get_arm_lower_max_int();
-	
-	double  linear_interp_double(double x, double x1, double y1, double x2, double y2);
-	int32_t linear_interp_int(int32_t x, int32_t x1, int32_t y1, int32_t x2, int32_t y2);
-	
-	
+		// Read the relative velocity counters from the brushless motor controller
+		ros::Subscriber brushless_a_vel;
+		ros::Subscriber brushless_b_vel;
+		ros::Subscriber device4_3_subscriber_encoder;
+		ros::Subscriber device4_3_subscriber_command;
+		
+		ros::Publisher brushless_a_vel_publisher;
+		ros::Publisher brushless_b_vel_publisher;
+		
+		ros::Publisher device4_3_publisher;
+		
+		std::mutex brushless_a_mutex;
+		int32_t accumulated_brushless_a_vel = 0;
+		int32_t accumulated_brushless_a_vel_num_updates = 0;
+		std::mutex brushless_b_mutex;
+		int32_t accumulated_brushless_b_vel = 0;
+		int32_t accumulated_brushless_b_vel_num_updates = 0;
+		
+		void accumulateBrushlessAVel(const std_msgs::Int32 &msg);
+		void accumulateBrushlessBVel(const std_msgs::Int32 &msg);
+		
+		int32_t device4_encoder = 0;
+		void readDevice4Encoder(const std_msgs::Int32 &msg);
+		void readDevice4Command(const std_msgs::Float64 &msg);
+		
+		int32_t readBrushlessAVel();
+		int32_t readBrushlessBVel();
+		
+		const int32_t arm_lower_encoder_min = 0;
+		const int32_t arm_lower_encoder_max = 0;
+		const double arm_lower_joint_min = 0.104;
+		const double arm_lower_joint_max = 1.55;
+		
+		const int32_t arm_upper_encoder_min = 0;
+		const int32_t arm_upper_encoder_max = 0;
+		const double arm_upper_joint_min = 0.0;
+		const double arm_upper_joint_max = 0.0;
+		
+		const int32_t arm_end_encoder_min = 0;
+		const int32_t arm_end_encoder_max = 0;
+		const double arm_end_joint_min = 0.0;
+		const double arm_end_joint_max = 0.0;
+		
+		const int32_t get_arm_lower_min_int();
+		const int32_t get_arm_lower_max_int();
+		
+		double  linear_interp_double(double x, double x1, double y1, double x2, double y2);
+		int32_t linear_interp_int(int32_t x, int32_t x1, int32_t y1, int32_t x2, int32_t y2);
 
         // Populated by controller layer for us to use
         double command_values[JOINT_COUNT]{};
@@ -170,39 +185,41 @@ namespace tfr_control {
         void registerArmJoint(std::string name, Joint joint);
         void registerBinJoint(std::string name, Joint joint);
 
-
+		/*
         //callback for publisher
         void readArduinoA(const tfr_msgs::ArduinoAReadingConstPtr &msg);
         //callback for publisher
         void readArduinoB(const tfr_msgs::ArduinoBReadingConstPtr &msg);
-	
+		*/
 	
 	
         /**
          * Gets the PWM appropriate output for an angle joint at the current time
          * */
-        double angleToPWM(const double &desired, const double &measured);
+        //double angleToPWM(const double &desired, const double &measured);
 
         /**
          * Gets the PWM appropriate output for turntable at the current time
          * */
-        double turntableAngleToPWM(const double &desired, const double &measured);
+        //double turntableAngleToPWM(const double &desired, const double &measured);
 
         /**
          * Gets the PWM appropriate output for turntable at the current time
          * */
-        std::pair<double, double> twinAngleToPWM(const double &desired, 
+        /*
+		std::pair<double, double> twinAngleToPWM(const double &desired, 
                 const double &measured_left, const double &measured_right);
+		*/
 
         /**
          * Gets the PWM appropriate output for a joint at the current time
          * */
-        double drivebaseVelocityToPWM(const double &v_1, const double &v_0);
+        //double drivebaseVelocityToPWM(const double &v_1, const double &v_0);
 
         /*
          * Scale the PWM outputs to avoid browning out 
          * */
-        double scalePWM(const double &pwm_1, const double &pwm_0);
+        //double scalePWM(const double &pwm_1, const double &pwm_0);
 
         void adjustFakeJoint(const Joint &joint);
 
