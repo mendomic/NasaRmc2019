@@ -96,16 +96,10 @@ class Localizer
                     success = false;
                     break;
                 }
-                tfr_msgs::ArucoResultConstPtr result = nullptr;
-                tfr_msgs::WrappedImage image_wrapper{};
-                if (rear_cam_client.call(image_wrapper))
-                    result = sendAruco(image_wrapper);
-                ROS_INFO("Localization Action Server: rearcam %d", result->number_found);
-
-                if (result != nullptr && result->number_found == 0 && front_cam_client.call(image_wrapper))
-                    result = sendAruco(image_wrapper);
-
-                ROS_INFO("Localization Action Server: frontcam %d", result->number_found);
+                
+                tfr_msgs::ArucoResultConstPtr result = getArucoResult();
+                
+                
                 if (result != nullptr && result->number_found > 0) {
                     //we found something
                     geometry_msgs::PoseStamped unprocessed_pose = result->relative_pose;
@@ -141,7 +135,6 @@ class Localizer
                             ROS_INFO("Localization Action Server: retrying to localize movable point");
                         }
                     }
-
 
                     auto siny = +2.0 * 
                         (processed_pose.pose.orientation.w * processed_pose.pose.orientation.z + 
@@ -182,6 +175,21 @@ class Localizer
             cmd_publisher.publish(cmd);
             //teardown
             ROS_INFO("Localization Action Server: Localize Finished");
+        }
+        
+        tfr_msgs::ArucoResultConstPtr getArucoResult(){
+            tfr_msgs::ArucoResultConstPtr result = nullptr;
+            tfr_msgs::WrappedImage image_wrapper{};
+            //rear camera
+            if (rear_cam_client.call(image_wrapper))
+                result = sendAruco(image_wrapper);
+            ROS_INFO("Localization Action Server: rearcam %d", result->number_found);
+
+            //front camera
+            if (result != nullptr && result->number_found == 0 && front_cam_client.call(image_wrapper))
+                result = sendAruco(image_wrapper);
+            ROS_INFO("Localization Action Server: frontcam %d", result->number_found);
+            return result;
         }
 
         tfr_msgs::ArucoResultConstPtr sendAruco(const tfr_msgs::WrappedImage& msg) {
