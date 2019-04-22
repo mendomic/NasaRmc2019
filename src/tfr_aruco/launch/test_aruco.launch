@@ -4,7 +4,7 @@
    cv_camera/device_id 1`
   -->
   <group ns="sensors">
-      <include file="$(find tfr_sensor)/launch/realsense.launch"/>
+      <include file="$(find tfr_sensor)/launch/fiducial_cam.launch"/>
   </group>
 
   <!-- load up the server -->
@@ -14,6 +14,6 @@
   <!-- load up the client and remap so that it gets the right images -->
   <remap from="/image_raw" to="/camera/color/image_raw" />
   <remap from="/camera_info" to="/camera/color/camera_info" />
-  <node type="aruco_action_client" name="tfr_aruco_example_client"
+  <node type="aruco_action_server" name="tfr_aruco_example_client"
       pkg="tfr_aruco" output="screen" />
 </launch>

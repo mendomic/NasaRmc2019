@@ -46,6 +46,7 @@ class ImageWrapper
         void set_current(const sensor_msgs::ImageConstPtr &i, const
                 sensor_msgs::CameraInfoConstPtr &in)
         {
+            ROS_INFO("Image subscription callback");
             //this is safe because of shared pointers and non threaded spinning
             image = i;
             info = in;

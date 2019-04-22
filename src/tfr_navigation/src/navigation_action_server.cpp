@@ -103,7 +103,7 @@ class Navigator
             //test for completion
             while (true)
             {
-                ROS_INFO("%d %d", server.isPreemptRequested(), server.isActive());
+                ROS_INFO("Navigation Server Preempt Request:%d Active:%d", server.isPreemptRequested(), server.isActive());
 
                 //Deal with preemption or error
                 if (server.isPreemptRequested() || !ros::ok()) 
@@ -117,7 +117,7 @@ class Navigator
                 {
                     rate.sleep();
                 }
-                ROS_INFO("state %s", nav_stack.getState().toString().c_str());
+                ROS_INFO("Navigation Stack state %s", nav_stack.getState().toString().c_str());
                 if (nav_stack.getState().isDone())
                     break;
             }

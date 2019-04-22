@@ -62,7 +62,7 @@ class FiducialOdom
                 busy_wait.sleep();
             while(!front_cam_client.call(request))
                 busy_wait.sleep();
-            ROS_INFO("Fiducial Od)om Publisher: Connected Image Clients");
+            ROS_INFO("Fiducial Odom Publisher: Connected Image Clients");
         }
 
         ~FiducialOdom() = default;

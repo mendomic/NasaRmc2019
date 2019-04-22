@@ -6,12 +6,15 @@
 #include <cv_bridge/cv_bridge.h>
 #include <image_geometry/pinhole_camera_model.h>
 #include <sensor_msgs/image_encodings.h>
+#include <sensor_msgs/Image.h>
 #include <tfr_msgs/ArucoAction.h>
 #include <actionlib/server/simple_action_server.h>
 #include <tf2/LinearMath/Quaternion.h>
 #include "generatedMarker.h"
-//Hello
 #include <iostream>
+
+#define DRAW_MARKERS 1
+
 typedef actionlib::SimpleActionServer<tfr_msgs::ArucoAction> Server;
 
 class TFR_Aruco {
@@ -21,7 +24,9 @@ class TFR_Aruco {
         cv::Ptr<cv::aruco::DetectorParameters> params;
         image_geometry::PinholeCameraModel cameraModel;
 
-        TFR_Aruco() {
+        TFR_Aruco(ros::NodeHandle &n):
+            drawnMarkerPublisher{n.advertise<sensor_msgs::Image>("drawn_markers",10)}
+        {
             dictionary = cv::aruco::getPredefinedDictionary(cv::aruco::DICT_5X5_250);
 
             // set up board. This method is temporary until an official board is created. Works for now
@@ -36,6 +41,7 @@ class TFR_Aruco {
             params = cv::Ptr<cv::aruco::DetectorParameters>(new cv::aruco::DetectorParameters);
             params->cornerRefinementMethod = cv::aruco::CORNER_REFINE_SUBPIX;
             params->cornerRefinementWinSize = 5;
+            
         }
 
         /* This is the method that will be called when a client makes use
@@ -59,12 +65,9 @@ class TFR_Aruco {
             // convert ROS message to opencv image
             // the image is stored at imageHolder->image
             cv_bridge::CvImagePtr imageHolder;
-            try 
-            {
+            try {
                 imageHolder = cv_bridge::toCvCopy(goal->image, sensor_msgs::image_encodings::BGR8);
-            }
-            catch (cv_bridge::Exception& e)
-            {
+            } catch (cv_bridge::Exception& e) {
                 ROS_ERROR("cv_bridge exception: %s", e.what());
                 return;
             }
@@ -75,6 +78,12 @@ class TFR_Aruco {
             std::vector<std::vector<cv::Point2f> > markerCorners;
 
             cv::aruco::detectMarkers(imageHolder->image, dictionary, markerCorners, markerIds, params);
+            
+            #ifdef DRAW_MARKERS
+            cv_bridge::CvImagePtr drawnImageHolder = cv_bridge::toCvCopy(goal->image, sensor_msgs::image_encodings::BGR8);
+            cv::aruco::drawDetectedMarkers(drawnImageHolder->image, markerCorners, markerIds);
+            drawnMarkerPublisher.publish(drawnImageHolder->toImageMsg());
+            #endif
 
             // get individual marker poses
             cv::Mat cameraMatrix = cv::Mat(cameraModel.fullIntrinsicMatrix()).clone();
@@ -111,13 +120,14 @@ class TFR_Aruco {
         }
     private:
         static constexpr double PI = 3.1415;
+        ros::Publisher drawnMarkerPublisher;
 };
 
 int main(int argc, char** argv)
 {
     ros::init(argc, argv, "aruco_action_server");
-    ros::NodeHandle n;
-    TFR_Aruco aruco;
+    ros::NodeHandle n{};
+    TFR_Aruco aruco{n};
     Server server(n, "aruco_action_server", boost::bind(&TFR_Aruco::execute, aruco, _1, &server), false);
     server.start();
     ros::spin();
