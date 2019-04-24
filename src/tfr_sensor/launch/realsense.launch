@@ -10,7 +10,8 @@
         <arg name="initial_reset" value="true"/>
         <arg name="depth_fps"     value="4"/>
         <arg name="enable_fisheye" value="false"/>
-        <arg name="enable_color"  value="false"/>
+        <arg name="enable_color"  value="true"/>
+        <arg name="color_fps"  value="4"/>
         <arg name="filters" value="pointcloud"/>
     </include>
 </launch>

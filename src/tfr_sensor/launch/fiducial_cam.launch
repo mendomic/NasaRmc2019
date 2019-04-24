@@ -7,7 +7,7 @@
             device_id: 4
             frame_id: front_cam_link
             camera_info_url: file:///home/trickfire/NasaRmc2019/src/tfr_sensor/calib/front.yaml
-            rate: 10
+            rate: 5
         </rosparam>
     </node>
     <node machine="mouse_droid" name="front_cam_wrapper" pkg="tfr_sensor" type="image_topic_wrapper">
@@ -23,7 +23,7 @@
             device_id: 3
             frame_id: rear_cam_link
             camera_info_url: file:///home/trickfire/NasaRmc2019/src/tfr_sensor/calib/rear.yaml
-            rate: 10
+            rate: 5
         </rosparam>
     </node>
     <node machine="mouse_droid" name="rear_cam_wrapper" pkg="tfr_sensor" type="image_topic_wrapper">
