@@ -25,7 +25,8 @@ class TFR_Aruco {
         image_geometry::PinholeCameraModel cameraModel;
 
         TFR_Aruco(ros::NodeHandle &n):
-            drawnMarkerPublisher{n.advertise<sensor_msgs::Image>("drawn_markers",10)}
+            drawnMarkerPublisher{n.advertise<sensor_msgs::Image>("drawn_markers",10)},
+            server{n, "aruco_action_server", boost::bind(&TFR_Aruco::execute, this, _1) ,false}
         {
             dictionary = cv::aruco::getPredefinedDictionary(cv::aruco::DICT_5X5_250);
 
@@ -42,6 +43,9 @@ class TFR_Aruco {
             params->cornerRefinementMethod = cv::aruco::CORNER_REFINE_SUBPIX;
             params->cornerRefinementWinSize = 5;
             
+            ROS_INFO("Aruco Action Server: Starting");
+            server.start();
+            ROS_INFO("Aruco Action Server: Started");
         }
 
         /* This is the method that will be called when a client makes use
@@ -52,11 +56,11 @@ class TFR_Aruco {
          * in the result. Additionally, if any markers were indeed found, the relative pose of
          * the board is returned as well.
          **/
-        void execute(const tfr_msgs::ArucoGoalConstPtr& goal, Server* server)
+        void execute(const tfr_msgs::ArucoGoalConstPtr& goal)
         {
-            if (server->isPreemptRequested() || !ros::ok())
+            if (server.isPreemptRequested() || !ros::ok())
             {
-                server->setPreempted();
+                server.setPreempted();
                 return;
             }
             cameraModel.fromCameraInfo(goal->camera_info);
@@ -116,11 +120,12 @@ class TFR_Aruco {
                 result.relative_pose.pose.orientation.z = rotated.z();
                 result.relative_pose.pose.orientation.w = rotated.w();
             }
-            server->setSucceeded(result);
+            server.setSucceeded(result);
         }
     private:
         static constexpr double PI = 3.1415;
         ros::Publisher drawnMarkerPublisher;
+        Server server;
 };
 
 int main(int argc, char** argv)
@@ -128,8 +133,6 @@ int main(int argc, char** argv)
     ros::init(argc, argv, "aruco_action_server");
     ros::NodeHandle n{};
     TFR_Aruco aruco{n};
-    Server server(n, "aruco_action_server", boost::bind(&TFR_Aruco::execute, aruco, _1, &server), false);
-    server.start();
     ros::spin();
     return 0;
 }
