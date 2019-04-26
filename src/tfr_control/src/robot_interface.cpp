@@ -167,11 +167,11 @@ namespace tfr_control
     void RobotInterface::write() 
     {
         //Grab the neccessary data
-        tfr_msgs::ArduinoAReading reading_a;
-        tfr_msgs::ArduinoBReading reading_b;
+        //tfr_msgs::ArduinoAReading reading_a;
+        //tfr_msgs::ArduinoBReading reading_b;
 
         //package for outgoing data
-        tfr_msgs::PwmCommand command;
+        //tfr_msgs::PwmCommand command;
         /*
 		if (latest_arduino_a != nullptr)
             reading_a = *latest_arduino_a;
