@@ -21,23 +21,42 @@ namespace tfr_control
         arduino_b{n.subscribe("/sensors/arduino_b", 5,
                 &RobotInterface::readArduinoB, this)},
 		*/
-	brushless_a_vel{n.subscribe("/device8/get_qry_relcntr/channel_1", 5,
-                &RobotInterface::accumulateBrushlessAVel, this)},
-	brushless_b_vel{n.subscribe("/device8/get_qry_relcntr/channel_2", 5,
-                &RobotInterface::accumulateBrushlessBVel, this)},
-		brushless_a_vel_publisher{n.advertise<std_msgs::Int32>("/device8/set_cmd_cango/cmd_cango_1", 1)},
-		brushless_b_vel_publisher{n.advertise<std_msgs::Int32>("/device8/set_cmd_cango/cmd_cango_2", 1)},
-		device4_3_subscriber_encoder{n.subscribe("/device4/qry_abcntr/channel_3", 5,
-                &RobotInterface::readDevice4Encoder, this)},
-		device4_3_subscriber_command{n.subscribe("/device4_subscriber_command", 1,
-                &RobotInterface::readDevice4Command, this)},
-		device4_3_publisher{n.advertise<std_msgs::Int32>("/device4/set_cmd_cango/cmd_cango_3", 1)},
+        brushless_right_tread_vel{n.subscribe("/device8/get_qry_relcntr/channel_1", 5,
+                &RobotInterface::accumulateBrushlessRightVel, this)},
+		brushless_left_tread_vel{n.subscribe("/device8/get_qry_relcntr/channel_2", 5,
+                &RobotInterface::accumulateBrushlessLeftVel, this)},
+		brushless_right_tread_vel_publisher{n.advertise<std_msgs::Int32>("/device8/set_cmd_cango/cmd_cango_1", 1)},
+		brushless_left_tread_vel_publisher{n.advertise<std_msgs::Int32>("/device8/set_cmd_cango/cmd_cango_2", 1)},
+		scoop_subscriber_encoder{n.subscribe("/device4/qry_abcntr/channel_3", 5,
+                &RobotInterface::readScoopEncoder, this)},
+		scoop_subscriber_command{n.subscribe("/device4_subscriber_command", 1,
+                &RobotInterface::readScoopCommand, this)},
+		scoop_publisher{n.advertise<std_msgs::Int32>("/device4/set_cmd_cango/cmd_cango_3", 1)},
+		
         //pwm_publisher{n.advertise<tfr_msgs::PwmCommand>("/motor_output", 15)},
         use_fake_values{fakes}, lower_limits{lower_lim},
         upper_limits{upper_lim}, drivebase_v0{std::make_pair(0,0)},
         last_update{ros::Time::now()},
         enabled{true}
     {
+		/*
+		// TODO: Enable getting parameters from server instead of hardcoded values in .h file.
+		if (    !n.getParam("bin_joint/min", static_cast<int>(bin_encoder_min))
+			 || !n.getParam("bin_joint/max", static_cast<int>(bin_encoder_max))
+			 || !n.getParam("turntable_joint/min", static_cast<int>(turntable_encoder_min))
+			 || !n.getParam("turntable_joint/max", static_cast<int>(turntable_encoder_max))
+			 || !n.getParam("lower_arm_joint/min", static_cast<int>(arm_lower_encoder_min))
+			 || !n.getParam("lower_arm_joint/max", static_cast<int>(arm_lower_encoder_max))
+			 || !n.getParam("upper_arm_joint/min", static_cast<int>(arm_upper_encoder_min))
+			 || !n.getParam("upper_arm_joint/max", static_cast<int>(arm_upper_encoder_max))
+			 || !n.getParam("scoop_joint/min", static_cast<int>(arm_end_encoder_min))
+			 || !n.getParam("scoop_joint/max", static_cast<int>(arm_end_encoder_max))
+		   )
+		   {
+			   ROS_ERROR("tfr_control failed to find all of the encoder limits. Maybe they weren't uploaded to the parameter server by the launch file?");
+		   }
+		*/
+		
         // Note: the string parameters in these constructors must match the
         // joint names from the URDF, and yaml controller description. 
 
@@ -81,12 +100,12 @@ namespace tfr_control
 
         //LEFT_TREAD
         position_values[static_cast<int>(Joint::LEFT_TREAD)] = 0;
-        velocity_values[static_cast<int>(Joint::LEFT_TREAD)] = readBrushlessAVel();
+        velocity_values[static_cast<int>(Joint::LEFT_TREAD)] = readBrushlessRightVel();
         effort_values[static_cast<int>(Joint::LEFT_TREAD)] = 0;
 
         //RIGHT_TREAD
         position_values[static_cast<int>(Joint::RIGHT_TREAD)] = 0;
-        velocity_values[static_cast<int>(Joint::RIGHT_TREAD)] = readBrushlessBVel();
+        velocity_values[static_cast<int>(Joint::RIGHT_TREAD)] = readBrushlessLeftVel();
         effort_values[static_cast<int>(Joint::RIGHT_TREAD)] = 0;
 
         if (!use_fake_values)
@@ -101,7 +120,7 @@ namespace tfr_control
             //position_values[static_cast<int>(Joint::LOWER_ARM)] = reading_a.arm_lower_pos;
 			double lower_arm_position_double = 
 				linear_interp_double(
-					static_cast<double>(device4_encoder),
+					static_cast<double>(scoop_encoder),
 					static_cast<double>(arm_lower_encoder_min),
 					arm_lower_joint_min,
 					static_cast<double>(arm_lower_encoder_max),
@@ -192,7 +211,7 @@ namespace tfr_control
 			ROS_INFO_STREAM(arm_lower_position_msg.data);
 			//ROS_INFO_STREAM(std::endl);
 			
-			device4_3_publisher.publish(arm_lower_position_msg);
+			scoop_publisher.publish(arm_lower_position_msg);
 
 
             //UPPER_ARM
@@ -216,13 +235,13 @@ namespace tfr_control
         double left_tread_command = command_values[static_cast<int32_t>(Joint::LEFT_TREAD)];
 		std_msgs::Int32 left_tread_msg;
 		left_tread_msg.data = static_cast<int32_t>(left_tread_command);
-        brushless_a_vel_publisher.publish(left_tread_msg);
+        brushless_right_tread_vel_publisher.publish(left_tread_msg);
 
         //RIGHT_TREAD
         double right_tread_command = command_values[static_cast<int32_t>(Joint::RIGHT_TREAD)];
 		std_msgs::Int32 right_tread_msg;
 		right_tread_msg.data = static_cast<int32_t>(right_tread_command);
-        brushless_b_vel_publisher.publish(right_tread_msg);
+        brushless_left_tread_vel_publisher.publish(right_tread_msg);
 
         //BIN
 		/*
@@ -352,12 +371,12 @@ namespace tfr_control
         position.push_back(position_values[static_cast<int>(Joint::SCOOP)]);
     }
 
-	void RobotInterface::readDevice4Encoder(const std_msgs::Int32 &msg)
+	void RobotInterface::readScoopEncoder(const std_msgs::Int32 &msg)
 	{
-		device4_encoder = msg.data;
+		scoop_encoder = msg.data;
 	}
 	
-	void RobotInterface::readDevice4Command(const std_msgs::Float64 &msg)
+	void RobotInterface::readScoopCommand(const std_msgs::Float64 &msg)
 	{
 		position_values[static_cast<int>(Joint::LOWER_ARM)] = msg.data;
 	}
@@ -412,6 +431,11 @@ namespace tfr_control
         JointHandle handle(state_handle, &command_values[idx]);
         joint_position_interface.registerHandle(handle);
     }
+
+	double RobotInterface::brushlessEncoderCountToRadians(int32_t encoder_count)
+	{
+		return static_cast<double>(encoder_count) / static_cast<double>(brushless_encoder_count_per_revolution);
+	}
 
     /*
      * Input is angle desired/measured and output is in raw pwm frequency.
@@ -556,56 +580,63 @@ namespace tfr_control
     }
 	*/
 
-	void RobotInterface::accumulateBrushlessAVel(const std_msgs::Int32 &msg)
+	void RobotInterface::accumulateBrushlessRightVel(const std_msgs::Int32 &msg)
 	{
-		brushless_a_mutex.lock();
+		brushless_right_tread_mutex.lock();
 
-		accumulated_brushless_a_vel += msg.data;
-		accumulated_brushless_a_vel_num_updates++;
+		accumulated_brushless_right_tread_vel += msg.data;
+		accumulated_brushless_right_tread_vel_num_updates++;
+		accumulated_brushless_right_tread_vel_end_time = ros::Time::now(); // keep this call inside the mutex. The readBrushlessRightVel() call will also update it.
 
-		brushless_a_mutex.unlock();
-	}
-	
-	void RobotInterface::accumulateBrushlessBVel(const std_msgs::Int32 &msg)
-	{
-		brushless_b_mutex.lock();
-
-		accumulated_brushless_b_vel += msg.data;
-		accumulated_brushless_b_vel_num_updates++;
-
-		brushless_b_mutex.unlock();
-	}
-	
-	int32_t RobotInterface::readBrushlessAVel()
-	{
-		brushless_a_mutex.lock();
-
-		int32_t vel = accumulated_brushless_a_vel;
-		int32_t num_updates = accumulated_brushless_a_vel_num_updates;
-
-		accumulated_brushless_a_vel = 0;
-		accumulated_brushless_a_vel_num_updates = 0;
-
-		brushless_a_mutex.unlock();
+		brushless_right_tread_mutex.unlock();
 		
-		// TODO: Calculate the velocity to return.
-		return vel;
+		
 	}
 	
-	int32_t RobotInterface::readBrushlessBVel()
+	void RobotInterface::accumulateBrushlessLeftVel(const std_msgs::Int32 &msg)
 	{
-		brushless_b_mutex.lock();
+		brushless_left_tread_mutex.lock();
 
-		int32_t vel = accumulated_brushless_b_vel;
-		int32_t num_updates = accumulated_brushless_b_vel_num_updates;
+		accumulated_brushless_left_tread_vel += msg.data;
+		accumulated_brushless_left_tread_vel_num_updates++;
+		accumulated_brushless_left_tread_vel_end_time = ros::Time::now();
 
-		accumulated_brushless_b_vel = 0;
-		accumulated_brushless_b_vel_num_updates = 0;
-
-		brushless_b_mutex.unlock();
+		brushless_left_tread_mutex.unlock();
 		
-		// TODO: Calculate the velocity to return.
-		return vel;
+	}
+	
+	double RobotInterface::readBrushlessRightVel()
+	{
+		brushless_right_tread_mutex.lock();
+
+		int32_t encoder_count = accumulated_brushless_right_tread_vel;
+		int32_t num_updates = accumulated_brushless_right_tread_vel_num_updates;
+
+		accumulated_brushless_right_tread_vel = 0;
+		accumulated_brushless_right_tread_vel_num_updates = 0;
+		accumulated_brushless_right_tread_vel_start_time = ros::Time::now();
+		accumulated_brushless_right_tread_vel_end_time = ros::Time::now();
+
+		brushless_right_tread_mutex.unlock();
+		
+		return brushlessEncoderCountToRadians(encoder_count) / accumulated_brushless_right_tread_vel_end_time.toSec();
+	}
+	
+	double RobotInterface::readBrushlessLeftVel()
+	{
+		brushless_left_tread_mutex.lock();
+
+		int32_t encoder_count = accumulated_brushless_left_tread_vel;
+		int32_t num_updates = accumulated_brushless_left_tread_vel_num_updates;
+
+		accumulated_brushless_left_tread_vel = 0;
+		accumulated_brushless_left_tread_vel_num_updates = 0;
+		accumulated_brushless_right_tread_vel_start_time = ros::Time::now();
+		accumulated_brushless_right_tread_vel_end_time = ros::Time::now();
+
+		brushless_left_tread_mutex.unlock();
+		
+		return brushlessEncoderCountToRadians(encoder_count) / accumulated_brushless_left_tread_vel_end_time.toSec();
 	}
 	
 	

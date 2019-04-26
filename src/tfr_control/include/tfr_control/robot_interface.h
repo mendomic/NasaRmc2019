@@ -119,47 +119,80 @@ namespace tfr_control {
         double turntable_offset;
 
 		// Read the relative velocity counters from the brushless motor controller
-		ros::Subscriber brushless_a_vel;
-		ros::Subscriber brushless_b_vel;
-		ros::Subscriber device4_3_subscriber_encoder;
-		ros::Subscriber device4_3_subscriber_command;
+		ros::Subscriber brushless_right_tread_vel;
+		ros::Subscriber brushless_left_tread_vel;
 		
-		ros::Publisher brushless_a_vel_publisher;
-		ros::Publisher brushless_b_vel_publisher;
 		
-		ros::Publisher device4_3_publisher;
+		ros::Subscriber lower_arm_subscriber_encoder;
+		ros::Subscriber lower_arm_subscriber_command;
+		ros::Publisher  lower_arm_publisher;
+		int32_t lower_arm_encoder = 0;
 		
-		std::mutex brushless_a_mutex;
-		int32_t accumulated_brushless_a_vel = 0;
-		int32_t accumulated_brushless_a_vel_num_updates = 0;
-		std::mutex brushless_b_mutex;
-		int32_t accumulated_brushless_b_vel = 0;
-		int32_t accumulated_brushless_b_vel_num_updates = 0;
+		ros::Subscriber upper_arm_subscriber_encoder;
+		ros::Subscriber upper_arm_subscriber_command;
+		ros::Publisher  upper_arm_publisher;
+		int32_t upper_arm_encoder = 0;
 		
-		void accumulateBrushlessAVel(const std_msgs::Int32 &msg);
-		void accumulateBrushlessBVel(const std_msgs::Int32 &msg);
+		ros::Subscriber scoop_subscriber_encoder;
+		ros::Subscriber scoop_subscriber_command;
+		ros::Publisher  scoop_publisher;
+		int32_t scoop_encoder = 0;
 		
-		int32_t device4_encoder = 0;
-		void readDevice4Encoder(const std_msgs::Int32 &msg);
-		void readDevice4Command(const std_msgs::Float64 &msg);
+		void readScoopEncoder(const std_msgs::Int32 &msg);
+		void readScoopCommand(const std_msgs::Float64 &msg); // Subcribe to a ROS publisher who tells us what the next position should be.
 		
-		int32_t readBrushlessAVel();
-		int32_t readBrushlessBVel();
+		ros::Publisher brushless_right_tread_vel_publisher;
+		ros::Publisher brushless_left_tread_vel_publisher;
 		
-		const int32_t arm_lower_encoder_min = 0;
-		const int32_t arm_lower_encoder_max = 0;
-		const double arm_lower_joint_min = 0.104;
-		const double arm_lower_joint_max = 1.55;
 		
-		const int32_t arm_upper_encoder_min = 0;
-		const int32_t arm_upper_encoder_max = 0;
-		const double arm_upper_joint_min = 0.0;
-		const double arm_upper_joint_max = 0.0;
+		std::mutex brushless_right_tread_mutex;
+		int32_t accumulated_brushless_right_tread_vel = 0;
+		int32_t accumulated_brushless_right_tread_vel_num_updates = 0;
+		ros::Time accumulated_brushless_right_tread_vel_start_time;
+		ros::Time accumulated_brushless_right_tread_vel_end_time;
 		
-		const int32_t arm_end_encoder_min = 0;
-		const int32_t arm_end_encoder_max = 0;
-		const double arm_end_joint_min = 0.0;
-		const double arm_end_joint_max = 0.0;
+		
+		std::mutex brushless_left_tread_mutex;
+		int32_t accumulated_brushless_left_tread_vel = 0;
+		int32_t accumulated_brushless_left_tread_vel_num_updates = 0;
+		ros::Time accumulated_brushless_left_tread_vel_start_time;
+		ros::Time accumulated_brushless_left_tread_vel_end_time;
+		
+		
+		void accumulateBrushlessRightVel(const std_msgs::Int32 &msg);
+		void accumulateBrushlessLeftVel(const std_msgs::Int32 &msg);
+		
+		
+		double readBrushlessRightVel();
+		double readBrushlessLeftVel();
+		
+		const int32_t brushless_encoder_count_per_revolution = 1280;
+		double brushlessEncoderCountToRadians(int32_t encoder_count);
+		
+		 int32_t bin_encoder_min = 0;
+		 int32_t bin_encoder_max = 1000;
+		 double bin_joint_min = 0.0;
+		 double bin_joint_max = 0.0;
+		
+		 int32_t turntable_encoder_min = 0;
+		 int32_t turntable_encoder_max = 1000;
+		 double turntable_joint_min = 0.0;
+		 double turntable_joint_max = 0.0;
+		
+		 int32_t arm_lower_encoder_min = 0;
+		 int32_t arm_lower_encoder_max = 1000;
+		 double arm_lower_joint_min = 0.0;
+		 double arm_lower_joint_max = 0.0;
+		
+		 int32_t arm_upper_encoder_min = 0;
+		 int32_t arm_upper_encoder_max = 1000;
+		 double arm_upper_joint_min = 0.0;
+		 double arm_upper_joint_max = 0.0;
+		
+		 int32_t arm_end_encoder_min = 0;
+		 int32_t arm_end_encoder_max = 1000;
+		 double arm_end_joint_min = 0.0;
+		 double arm_end_joint_max = 0.0;
 		
 		const int32_t get_arm_lower_min_int();
 		const int32_t get_arm_lower_max_int();
