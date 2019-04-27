@@ -124,17 +124,17 @@ namespace tfr_control {
 		
 		
 		ros::Subscriber lower_arm_subscriber_encoder;
-		ros::Subscriber lower_arm_subscriber_command;
+		ros::Subscriber lower_arm_subscriber_amps;
 		ros::Publisher  lower_arm_publisher;
 		int32_t lower_arm_encoder = 0;
 		
 		ros::Subscriber upper_arm_subscriber_encoder;
-		ros::Subscriber upper_arm_subscriber_command;
+		ros::Subscriber upper_arm_subscriber_amps;
 		ros::Publisher  upper_arm_publisher;
 		int32_t upper_arm_encoder = 0;
 		
 		ros::Subscriber scoop_subscriber_encoder;
-		ros::Subscriber scoop_subscriber_command;
+		ros::Subscriber scoop_subscriber_amps;
 		ros::Publisher  scoop_publisher;
 		int32_t scoop_encoder = 0;
 		
@@ -215,7 +215,7 @@ namespace tfr_control {
 
         
         void registerJointEffortInterface(std::string name, Joint joint);
-        void registerJointPositionIterface(std::string name, Joint joint);
+        void registerJointPositionInterface(std::string name, Joint joint);
         //void registerBinJoint(std::string name, Joint joint);
 
 		/*

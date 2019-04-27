@@ -21,15 +21,35 @@ namespace tfr_control
         arduino_b{n.subscribe("/sensors/arduino_b", 5,
                 &RobotInterface::readArduinoB, this)},
 		*/
-        brushless_right_tread_vel{n.subscribe("/device8/get_qry_relcntr/channel_1", 5,
-                &RobotInterface::accumulateBrushlessRightVel, this)},
+        
+		
 		brushless_left_tread_vel{n.subscribe("/device8/get_qry_relcntr/channel_2", 5,
                 &RobotInterface::accumulateBrushlessLeftVel, this)},
-		brushless_right_tread_vel_publisher{n.advertise<std_msgs::Int32>("/device8/set_cmd_cango/cmd_cango_1", 1)},
 		brushless_left_tread_vel_publisher{n.advertise<std_msgs::Int32>("/device8/set_cmd_cango/cmd_cango_2", 1)},
+		
+		
+		brushless_right_tread_vel{n.subscribe("/device8/get_qry_relcntr/channel_1", 5,
+                &RobotInterface::accumulateBrushlessRightVel, this)},
+		brushless_right_tread_vel_publisher{n.advertise<std_msgs::Int32>("/device8/set_cmd_cango/cmd_cango_1", 1)},
+		
+		
+		lower_arm_subscriber_encoder{n.subscribe("/device4/qry_abcntr/channel_1", 5,
+                &RobotInterface::readScoopEncoder, this)},
+		lower_arm_subscriber_amps{n.subscribe("/device4/qry_batamps/channel_1", 1,
+                &RobotInterface::readScoopCommand, this)},
+		lower_arm_publisher{n.advertise<std_msgs::Int32>("/device4/set_cmd_cango/cmd_cango_1", 1)},
+		
+		
+		upper_arm_subscriber_encoder{n.subscribe("/device4/qry_abcntr/channel_2", 5,
+                &RobotInterface::readScoopEncoder, this)},
+		upper_arm_subscriber_amps{n.subscribe("/device4/qry_batamps/channel_2", 1,
+                &RobotInterface::readScoopCommand, this)},
+		upper_arm_publisher{n.advertise<std_msgs::Int32>("/device4/set_cmd_cango/cmd_cango_2", 1)},
+		
+		
 		scoop_subscriber_encoder{n.subscribe("/device4/qry_abcntr/channel_3", 5,
                 &RobotInterface::readScoopEncoder, this)},
-		scoop_subscriber_command{n.subscribe("/device4_subscriber_command", 1,
+		scoop_subscriber_amps{n.subscribe("/device4/qry_batamps/channel_3", 1,
                 &RobotInterface::readScoopCommand, this)},
 		scoop_publisher{n.advertise<std_msgs::Int32>("/device4/set_cmd_cango/cmd_cango_3", 1)},
 		
@@ -64,11 +84,11 @@ namespace tfr_control
         // layer
         registerJointEffortInterface("left_tread_joint", Joint::LEFT_TREAD);
         registerJointEffortInterface("right_tread_joint", Joint::RIGHT_TREAD);
-        registerJointPositionIterface("bin_joint", Joint::BIN); 
-        registerJointPositionIterface("turntable_joint", Joint::TURNTABLE);
-        registerJointPositionIterface("lower_arm_joint", Joint::LOWER_ARM);
-        registerJointPositionIterface("upper_arm_joint", Joint::UPPER_ARM);
-        registerJointPositionIterface("scoop_joint", Joint::SCOOP);
+        registerJointPositionInterface("bin_joint", Joint::BIN); 
+        registerJointPositionInterface("turntable_joint", Joint::TURNTABLE);
+        registerJointPositionInterface("lower_arm_joint", Joint::LOWER_ARM);
+        registerJointPositionInterface("upper_arm_joint", Joint::UPPER_ARM);
+        registerJointPositionInterface("scoop_joint", Joint::SCOOP);
         //register the interfaces with the controller layer
         registerInterface(&joint_state_interface);
         registerInterface(&joint_effort_interface);
@@ -206,7 +226,6 @@ namespace tfr_control
 			int32_t arm_lower_position = position_values[static_cast<int>(Joint::LOWER_ARM)];
 			std_msgs::Int32 arm_lower_position_msg;
 			arm_lower_position_msg.data = arm_lower_position;
-			position_values[static_cast<int>(Joint::LOWER_ARM)] = position_values[static_cast<int>(Joint::LOWER_ARM)];
 			ROS_INFO_STREAM("arm_lower_position: write: ");
 			ROS_INFO_STREAM(arm_lower_position_msg.data);
 			//ROS_INFO_STREAM(std::endl);
@@ -254,7 +273,7 @@ namespace tfr_control
 		*/
 		
 
-        command.enabled = enabled;
+        //command.enabled = enabled;
         //pwm_publisher.publish(command);
         
         //UPKEEP
@@ -419,7 +438,7 @@ namespace tfr_control
     /*
      * Register this joint with each neccessary hardware interface
      * */
-    void RobotInterface::registerJointPositionIterface(std::string name, Joint joint) 
+    void RobotInterface::registerJointPositionInterface(std::string name, Joint joint) 
     {
         auto idx = static_cast<int>(joint);
         //give the joint a state
@@ -432,9 +451,12 @@ namespace tfr_control
         joint_position_interface.registerHandle(handle);
     }
 
+	// get the ratio of the encoder count to the max encoder count for a revolution
 	double RobotInterface::brushlessEncoderCountToRadians(int32_t encoder_count)
 	{
-		return static_cast<double>(encoder_count) / static_cast<double>(brushless_encoder_count_per_revolution);
+		//static const double pi = boost::math::constants::pi<double>();
+		static const double pi = 3.14159265358979;
+		return (static_cast<double>(encoder_count) * (2 * pi)) / static_cast<double>(brushless_encoder_count_per_revolution);
 	}
 
     /*
