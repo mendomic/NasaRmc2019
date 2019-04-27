@@ -204,7 +204,6 @@ namespace tfr_control
             adjustFakeJoint(Joint::LOWER_ARM);
             adjustFakeJoint(Joint::UPPER_ARM);
             adjustFakeJoint(Joint::SCOOP);
-
         }
         else  // we are working with the real arm
         {
@@ -222,7 +221,7 @@ namespace tfr_control
             //          position_values[static_cast<int>(Joint::LOWER_ARM)]);
             //command.arm_lower = signal;
 			
-			
+			/*
 			int32_t arm_lower_position = position_values[static_cast<int>(Joint::LOWER_ARM)];
 			std_msgs::Int32 arm_lower_position_msg;
 			arm_lower_position_msg.data = arm_lower_position;
@@ -231,7 +230,7 @@ namespace tfr_control
 			//ROS_INFO_STREAM(std::endl);
 			
 			scoop_publisher.publish(arm_lower_position_msg);
-
+			*/
 
             //UPPER_ARM
 			/*
@@ -248,19 +247,21 @@ namespace tfr_control
             command.arm_scoop = signal;
 			*/
 
-         }
-
+        }
+		
         //LEFT_TREAD
         double left_tread_command = command_values[static_cast<int32_t>(Joint::LEFT_TREAD)];
+		left_tread_command = linear_interp_double(left_tread_command, 0.0, 0.0, 1.0, 1000.0);
 		std_msgs::Int32 left_tread_msg;
 		left_tread_msg.data = static_cast<int32_t>(left_tread_command);
-        brushless_right_tread_vel_publisher.publish(left_tread_msg);
+        brushless_left_tread_vel_publisher.publish(left_tread_msg);
 
         //RIGHT_TREAD
         double right_tread_command = command_values[static_cast<int32_t>(Joint::RIGHT_TREAD)];
+		right_tread_command = linear_interp_double(right_tread_command, 0.0, 0.0, 1.0, 1000.0);
 		std_msgs::Int32 right_tread_msg;
 		right_tread_msg.data = static_cast<int32_t>(right_tread_command);
-        brushless_left_tread_vel_publisher.publish(right_tread_msg);
+        brushless_right_tread_vel_publisher.publish(right_tread_msg);
 
         //BIN
 		/*
