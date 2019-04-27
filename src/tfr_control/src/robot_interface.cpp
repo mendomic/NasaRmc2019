@@ -251,16 +251,16 @@ namespace tfr_control
 		
         //LEFT_TREAD
         double left_tread_command = command_values[static_cast<int32_t>(Joint::LEFT_TREAD)];
-		left_tread_command = linear_interp_double(left_tread_command, 0.0, 0.0, 1.0, 1000.0);
+		//left_tread_command = linear_interp_double(left_tread_command, 0.0, 0.0, 1.0, 1000.0);
 		std_msgs::Int32 left_tread_msg;
-		left_tread_msg.data = static_cast<int32_t>(left_tread_command);
+		left_tread_msg.data = static_cast<int32_t>(left_tread_command * 1000);
         brushless_left_tread_vel_publisher.publish(left_tread_msg);
 
         //RIGHT_TREAD
         double right_tread_command = command_values[static_cast<int32_t>(Joint::RIGHT_TREAD)];
-		right_tread_command = linear_interp_double(right_tread_command, 0.0, 0.0, 1.0, 1000.0);
+		//right_tread_command = linear_interp_double(right_tread_command, 0.0, 0.0, 1.0, 1000.0);
 		std_msgs::Int32 right_tread_msg;
-		right_tread_msg.data = static_cast<int32_t>(right_tread_command);
+		right_tread_msg.data = static_cast<int32_t>(right_tread_command * 1000);
         brushless_right_tread_vel_publisher.publish(right_tread_msg);
 
         //BIN
