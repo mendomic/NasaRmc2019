@@ -7,8 +7,7 @@
             finish_line: 1.5
         </rosparam>
     </node>
-    <machine name="mouse_droid" address="192.168.0.162" env-loader="~/NasaRmc2019/ros_remote.sh" user="trickfire" password="tfire2019"/>
-    <node machine="mouse_droid" pkg="move_base" type="move_base" respawn="false" name="move_base" output="screen">
+    <node pkg="move_base" type="move_base" respawn="false" name="move_base" output="screen">
         <rosparam file="$(find tfr_navigation)/params/move_base.yaml"
           command="load" />
         <rosparam file="$(find tfr_navigation)/params/shared_costmap.yaml"

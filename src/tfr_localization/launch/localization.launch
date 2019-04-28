@@ -1,7 +1,6 @@
 <launch>
-    <machine name="mouse_droid" address="192.168.0.162" env-loader="~/NasaRmc2019/ros_remote.sh" user="trickfire" password="tfire2019"/>
     <!--spins up a settable broadcaster for the location of the bin-->
-    <node name="localization_action_server" pkg="tfr_localization" output="screen" type="localization_action_server">
+    <node pkg="tfr_localization" output="screen" type="localization_action_server">
         <rosparam>
             turn_velocity: 0.2
             turn_duration: 1.15 

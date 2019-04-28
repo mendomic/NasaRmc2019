@@ -1,8 +1,7 @@
 <launch>
-    <machine name="mouse_droid" address="192.168.0.162" env-loader="~/NasaRmc2019/ros_remote.sh" user="trickfire" password="tfire2019"/>
     <node name="front_cam_tf_broadcaster" pkg="tf2_ros" type="static_transform_publisher"
         args="0.2 0.03 0.017 0 0 0 1 base_link front_cam_link"/>
-    <node machine="mouse_droid" name="front_cam" pkg="cv_camera" type="cv_camera_node" output="screen">
+    <node name="front_cam" pkg="cv_camera" type="cv_camera_node" output="screen">
         <rosparam>
             file: "nvcamerasrc sensor-id=0 fpsRange=\"30.0 30.0\" ! nvvidconv flip-method=2 ! video/x-raw, format=(string)I420 ! videoconvert ! video/x-raw, format=(string)BGR !  appsink" 
             frame_id: front_cam_link
@@ -10,7 +9,7 @@
             rate: 5
         </rosparam>
     </node>
-    <node machine="mouse_droid" name="front_cam_wrapper" pkg="tfr_sensor" type="image_topic_wrapper">
+    <node name="front_cam_wrapper" pkg="tfr_sensor" type="image_topic_wrapper">
         <rosparam>
             camera_topic: /sensors/front_cam/image_raw
             service_name: /on_demand/front_cam/image_raw
@@ -18,7 +17,7 @@
     </node>
     <node name="rear_cam_tf_broadcaster" pkg="tf2_ros" type="static_transform_publisher"
         args="-0.065 0.04 0.015 0 0 1 0 base_link rear_cam_link"/>
-    <node machine="mouse_droid" name="rear_cam" pkg="cv_camera" type="cv_camera_node" output="screen">
+    <node name="rear_cam" pkg="cv_camera" type="cv_camera_node" output="screen">
         <rosparam>
             file: "nvcamerasrc sensor-id=1 fpsRange=\"30.0 30.0\" ! nvvidconv flip-method=2 ! video/x-raw, format=(string)I420 ! videoconvert ! video/x-raw, format=(string)BGR !  appsink" 
             frame_id: rear_cam_link
@@ -26,7 +25,7 @@
             rate: 5
         </rosparam>
     </node>
-    <node machine="mouse_droid" name="rear_cam_wrapper" pkg="tfr_sensor" type="image_topic_wrapper">
+    <node name="rear_cam_wrapper" pkg="tfr_sensor" type="image_topic_wrapper">
         <rosparam>
             camera_topic: /sensors/rear_cam/image_raw
             service_name: /on_demand/rear_cam/image_raw

@@ -1,7 +1,5 @@
 <launch>
-    <machine name="mouse_droid" address="192.168.0.162" env-loader="~/NasaRmc2019/ros_remote.sh" user="trickfire" password="tfire2019"/>
-    
-    <node machine="mouse_droid" name="fiducial_odom_publisher" pkg="tfr_sensor" type="fiducial_odom_publisher" output="screen">
+    <node name="fiducial_odom_publisher" pkg="tfr_sensor" type="fiducial_odom_publisher" output="screen">
         <rosparam>
             camera_frame: rear_cam_link
             footprint_frame: base_footprint
