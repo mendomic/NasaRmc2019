@@ -27,12 +27,12 @@
         bin_position_controller
         arm_controller
         arm_end_controller"/>
+	
+	<param name="left_tread_scale" value="3000" type="int"/>
+	<param name="right_tread_scale" value="3000" type="int"/>
 
     <!-- Launch all the MoveIt! nodes -->
     <include file="$(find tfr_moveit)/launch/move_group.launch"/>
     
-    <!-- Launch rasp move controller -->
-    <include file="$(find tfr_control)/launch/raspberry_control.launch"/>
-
     <node name="arm_action_server" pkg="tfr_control" type="arm_action_server" output="screen"/>
 </launch>
