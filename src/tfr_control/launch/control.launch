@@ -17,7 +17,8 @@
             rate: 20
         </rosparam>
     </node>
-
+	<rosparam file="$(find tfr_control)/config/encoder_limits.yaml" command="load" />
+	
     <!-- Spawn the controllers -->
     <node name="controller_spawner" pkg="controller_manager" type="spawner"
         args="joint_state_controller

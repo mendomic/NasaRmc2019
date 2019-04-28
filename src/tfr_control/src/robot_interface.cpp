@@ -15,29 +15,80 @@ namespace tfr_control
      * */
     RobotInterface::RobotInterface(ros::NodeHandle &n, bool fakes, 
             const double *lower_lim, const double *upper_lim) :
+		/*
         arduino_a{n.subscribe("/sensors/arduino_a", 5,
                 &RobotInterface::readArduinoA, this)},
         arduino_b{n.subscribe("/sensors/arduino_b", 5,
                 &RobotInterface::readArduinoB, this)},
-        pwm_publisher{n.advertise<tfr_msgs::PwmCommand>("/motor_output", 15)},
+		*/
+        
+		
+		brushless_left_tread_vel{n.subscribe("/device8/get_qry_relcntr/channel_2", 5,
+                &RobotInterface::accumulateBrushlessLeftVel, this)},
+		brushless_left_tread_vel_publisher{n.advertise<std_msgs::Int32>("/device8/set_cmd_cango/cmd_cango_2", 1)},
+		
+		
+		brushless_right_tread_vel{n.subscribe("/device8/get_qry_relcntr/channel_1", 5,
+                &RobotInterface::accumulateBrushlessRightVel, this)},
+		brushless_right_tread_vel_publisher{n.advertise<std_msgs::Int32>("/device8/set_cmd_cango/cmd_cango_1", 1)},
+		
+		
+		lower_arm_subscriber_encoder{n.subscribe("/device4/qry_abcntr/channel_1", 5,
+                &RobotInterface::readScoopEncoder, this)},
+		lower_arm_subscriber_amps{n.subscribe("/device4/qry_batamps/channel_1", 1,
+                &RobotInterface::readScoopCommand, this)},
+		lower_arm_publisher{n.advertise<std_msgs::Int32>("/device4/set_cmd_cango/cmd_cango_1", 1)},
+		
+		
+		upper_arm_subscriber_encoder{n.subscribe("/device4/qry_abcntr/channel_2", 5,
+                &RobotInterface::readScoopEncoder, this)},
+		upper_arm_subscriber_amps{n.subscribe("/device4/qry_batamps/channel_2", 1,
+                &RobotInterface::readScoopCommand, this)},
+		upper_arm_publisher{n.advertise<std_msgs::Int32>("/device4/set_cmd_cango/cmd_cango_2", 1)},
+		
+		
+		scoop_subscriber_encoder{n.subscribe("/device4/qry_abcntr/channel_3", 5,
+                &RobotInterface::readScoopEncoder, this)},
+		scoop_subscriber_amps{n.subscribe("/device4/qry_batamps/channel_3", 1,
+                &RobotInterface::readScoopCommand, this)},
+		scoop_publisher{n.advertise<std_msgs::Int32>("/device4/set_cmd_cango/cmd_cango_3", 1)},
+		
+        //pwm_publisher{n.advertise<tfr_msgs::PwmCommand>("/motor_output", 15)},
         use_fake_values{fakes}, lower_limits{lower_lim},
         upper_limits{upper_lim}, drivebase_v0{std::make_pair(0,0)},
         last_update{ros::Time::now()},
         enabled{true}
-
     {
+		/*
+		// TODO: Enable getting parameters from server instead of hardcoded values in .h file.
+		if (    !n.getParam("bin_joint/min", static_cast<int>(bin_encoder_min))
+			 || !n.getParam("bin_joint/max", static_cast<int>(bin_encoder_max))
+			 || !n.getParam("turntable_joint/min", static_cast<int>(turntable_encoder_min))
+			 || !n.getParam("turntable_joint/max", static_cast<int>(turntable_encoder_max))
+			 || !n.getParam("lower_arm_joint/min", static_cast<int>(arm_lower_encoder_min))
+			 || !n.getParam("lower_arm_joint/max", static_cast<int>(arm_lower_encoder_max))
+			 || !n.getParam("upper_arm_joint/min", static_cast<int>(arm_upper_encoder_min))
+			 || !n.getParam("upper_arm_joint/max", static_cast<int>(arm_upper_encoder_max))
+			 || !n.getParam("scoop_joint/min", static_cast<int>(arm_end_encoder_min))
+			 || !n.getParam("scoop_joint/max", static_cast<int>(arm_end_encoder_max))
+		   )
+		   {
+			   ROS_ERROR("tfr_control failed to find all of the encoder limits. Maybe they weren't uploaded to the parameter server by the launch file?");
+		   }
+		*/
+		
         // Note: the string parameters in these constructors must match the
         // joint names from the URDF, and yaml controller description. 
 
         // Connect and register each joint with appropriate interfaces at our
         // layer
-        registerJoint("left_tread_joint", Joint::LEFT_TREAD);
-        registerJoint("right_tread_joint", Joint::RIGHT_TREAD);
-        registerBinJoint("bin_joint", Joint::BIN); 
-        registerArmJoint("turntable_joint", Joint::TURNTABLE);
-        registerArmJoint("lower_arm_joint", Joint::LOWER_ARM);
-        registerArmJoint("upper_arm_joint", Joint::UPPER_ARM);
-        registerArmJoint("scoop_joint", Joint::SCOOP);
+        registerJointEffortInterface("left_tread_joint", Joint::LEFT_TREAD);
+        registerJointEffortInterface("right_tread_joint", Joint::RIGHT_TREAD);
+        registerJointPositionInterface("bin_joint", Joint::BIN); 
+        registerJointPositionInterface("turntable_joint", Joint::TURNTABLE);
+        registerJointPositionInterface("lower_arm_joint", Joint::LOWER_ARM);
+        registerJointPositionInterface("upper_arm_joint", Joint::UPPER_ARM);
+        registerJointPositionInterface("scoop_joint", Joint::SCOOP);
         //register the interfaces with the controller layer
         registerInterface(&joint_state_interface);
         registerInterface(&joint_effort_interface);
@@ -48,8 +99,8 @@ namespace tfr_control
     /*
      * Reads from our hardware and populates from shared memory.  
      *
-     * Information that is not that are not expicity needed by our controllers 
-     * are written to some safe sensible default (usually 0).
+     * Information that is not explicity needed by our controllers 
+     * is written to some safe sensible default (usually 0).
      *
      * A couple of our logical joints are controlled by two actuators and read
      * by multiple potentiometers. For the purpose of populating information for
@@ -58,50 +109,66 @@ namespace tfr_control
     void RobotInterface::read() 
     {
         //Grab the neccessary data
+		/*
         tfr_msgs::ArduinoAReading reading_a;
         tfr_msgs::ArduinoBReading reading_b;
         if (latest_arduino_a != nullptr)
             reading_a = *latest_arduino_a;
         if (latest_arduino_b != nullptr)
             reading_b = *latest_arduino_b;
+		*/
 
         //LEFT_TREAD
         position_values[static_cast<int>(Joint::LEFT_TREAD)] = 0;
-        velocity_values[static_cast<int>(Joint::LEFT_TREAD)] = -reading_a.tread_left_vel;
+        velocity_values[static_cast<int>(Joint::LEFT_TREAD)] = readBrushlessRightVel();
         effort_values[static_cast<int>(Joint::LEFT_TREAD)] = 0;
 
         //RIGHT_TREAD
         position_values[static_cast<int>(Joint::RIGHT_TREAD)] = 0;
-        velocity_values[static_cast<int>(Joint::RIGHT_TREAD)] = reading_b.tread_right_vel;
+        velocity_values[static_cast<int>(Joint::RIGHT_TREAD)] = readBrushlessLeftVel();
         effort_values[static_cast<int>(Joint::RIGHT_TREAD)] = 0;
 
         if (!use_fake_values)
         {
             //TURNTABLE
-            position_values[static_cast<int>(Joint::TURNTABLE)] =
-                reading_a.arm_turntable_pos + turntable_offset;
+            position_values[static_cast<int>(Joint::TURNTABLE)] = 0;
+                //reading_a.arm_turntable_pos + turntable_offset;
             velocity_values[static_cast<int>(Joint::TURNTABLE)] = 0; 
             effort_values[static_cast<int>(Joint::TURNTABLE)] = 0;
 
             //LOWER_ARM
-            position_values[static_cast<int>(Joint::LOWER_ARM)] = reading_a.arm_lower_pos;
+            //position_values[static_cast<int>(Joint::LOWER_ARM)] = reading_a.arm_lower_pos;
+			double lower_arm_position_double = 
+				linear_interp_double(
+					static_cast<double>(scoop_encoder),
+					static_cast<double>(arm_lower_encoder_min),
+					arm_lower_joint_min,
+					static_cast<double>(arm_lower_encoder_max),
+					arm_lower_joint_max
+					);
+            position_values[static_cast<int>(Joint::LOWER_ARM)] = lower_arm_position_double;
+
+			//ROS_INFO_STREAM("arm_lower_position: read: ");
+			//ROS_INFO_STREAM(position_values[static_cast<int>(Joint::LOWER_ARM)]);
+			//ROS_INFO_STREAM(std::endl);
+			
             velocity_values[static_cast<int>(Joint::LOWER_ARM)] = 0;
             effort_values[static_cast<int>(Joint::LOWER_ARM)] = 0;
 
             //UPPER_ARM
-            position_values[static_cast<int>(Joint::UPPER_ARM)] = reading_a.arm_upper_pos;
+            position_values[static_cast<int>(Joint::UPPER_ARM)] = 0; //reading_a.arm_upper_pos;
             velocity_values[static_cast<int>(Joint::UPPER_ARM)] = 0;
             effort_values[static_cast<int>(Joint::UPPER_ARM)] = 0;
 
             //SCOOP
-            position_values[static_cast<int>(Joint::SCOOP)] = reading_a.arm_scoop_pos;
+            position_values[static_cast<int>(Joint::SCOOP)] = 0; //reading_a.arm_scoop_pos;
             velocity_values[static_cast<int>(Joint::SCOOP)] = 0;
             effort_values[static_cast<int>(Joint::SCOOP)] = 0;
         }
  
         //BIN
-        position_values[static_cast<int>(Joint::BIN)] = 
-            (reading_a.bin_left_pos + reading_a.bin_right_pos)/2;
+        position_values[static_cast<int>(Joint::BIN)] = 0; 
+            //(reading_a.bin_left_pos + reading_a.bin_right_pos)/2;
         velocity_values[static_cast<int>(Joint::BIN)] = 0;
         effort_values[static_cast<int>(Joint::BIN)] = 0;
 
@@ -120,13 +187,15 @@ namespace tfr_control
     void RobotInterface::write() 
     {
         //Grab the neccessary data
-        tfr_msgs::ArduinoAReading reading_a;
-        tfr_msgs::ArduinoBReading reading_b;
+        //tfr_msgs::ArduinoAReading reading_a;
+        //tfr_msgs::ArduinoBReading reading_b;
 
         //package for outgoing data
-        tfr_msgs::PwmCommand command;
-        if (latest_arduino_a != nullptr)
+        //tfr_msgs::PwmCommand command;
+        /*
+		if (latest_arduino_a != nullptr)
             reading_a = *latest_arduino_a;
+		*/
 
         double signal;
         if (use_fake_values) //test code  for working with rviz simulator
@@ -135,56 +204,78 @@ namespace tfr_control
             adjustFakeJoint(Joint::LOWER_ARM);
             adjustFakeJoint(Joint::UPPER_ARM);
             adjustFakeJoint(Joint::SCOOP);
-
         }
         else  // we are working with the real arm
         {
             //TURNTABLE
+			/*
             signal = turntableAngleToPWM(command_values[static_cast<int>(Joint::TURNTABLE)],
                         position_values[static_cast<int>(Joint::TURNTABLE)]);
             command.arm_turntable = signal;
-
+			*/
 
 
             //LOWER_ARM
             //NOTE we reverse these because actuator is mounted backwards
-            signal = -angleToPWM(command_values[static_cast<int>(Joint::LOWER_ARM)],
-                        position_values[static_cast<int>(Joint::LOWER_ARM)]);
-            command.arm_lower = signal;
-
+            //signal = -angleToPWM(command_values[static_cast<int>(Joint::LOWER_ARM)],
+            //          position_values[static_cast<int>(Joint::LOWER_ARM)]);
+            //command.arm_lower = signal;
+			
+			/*
+			int32_t arm_lower_position = position_values[static_cast<int>(Joint::LOWER_ARM)];
+			std_msgs::Int32 arm_lower_position_msg;
+			arm_lower_position_msg.data = arm_lower_position;
+			ROS_INFO_STREAM("arm_lower_position: write: ");
+			ROS_INFO_STREAM(arm_lower_position_msg.data);
+			//ROS_INFO_STREAM(std::endl);
+			
+			scoop_publisher.publish(arm_lower_position_msg);
+			*/
 
             //UPPER_ARM
+			/*
             signal = angleToPWM(command_values[static_cast<int>(Joint::UPPER_ARM)],
                         position_values[static_cast<int>(Joint::UPPER_ARM)]);
             command.arm_upper = signal;
+			*/
 
 
             //SCOOP
+			/*
             signal = angleToPWM(command_values[static_cast<int>(Joint::SCOOP)],
                         position_values[static_cast<int>(Joint::SCOOP)]);
             command.arm_scoop = signal;
+			*/
 
-         }
-
+        }
+		
         //LEFT_TREAD
-        signal = -drivebaseVelocityToPWM(command_values[static_cast<int>(Joint::LEFT_TREAD)], drivebase_v0.first);
-        command.tread_left = signal;
+        double left_tread_command = command_values[static_cast<int32_t>(Joint::LEFT_TREAD)];
+		//left_tread_command = linear_interp_double(left_tread_command, 0.0, 0.0, 1.0, 1000.0);
+		std_msgs::Int32 left_tread_msg;
+		left_tread_msg.data = static_cast<int32_t>(left_tread_command * 1000);
+        brushless_left_tread_vel_publisher.publish(left_tread_msg);
 
         //RIGHT_TREAD
-        signal = drivebaseVelocityToPWM(command_values[static_cast<int>(Joint::RIGHT_TREAD)],
-                    drivebase_v0.second);
-        command.tread_right = signal;
-
+        double right_tread_command = command_values[static_cast<int32_t>(Joint::RIGHT_TREAD)];
+		//right_tread_command = linear_interp_double(right_tread_command, 0.0, 0.0, 1.0, 1000.0);
+		std_msgs::Int32 right_tread_msg;
+		right_tread_msg.data = static_cast<int32_t>(right_tread_command * 1000);
+        brushless_right_tread_vel_publisher.publish(right_tread_msg);
 
         //BIN
-        auto twin_signal = twinAngleToPWM(command_values[static_cast<int>(Joint::BIN)],
-                    reading_a.bin_left_pos,
-                    reading_a.bin_right_pos);
+		/*
+        auto twin_signal = twinAngleToPWM(command_values[static_cast<int>(Joint::BIN)], 0, 0);
+					//reading_a.bin_left_pos,
+                    //reading_a.bin_right_pos);
+					
         command.bin_left = twin_signal.first;
         command.bin_right = twin_signal.second;
+		*/
+		
 
-        command.enabled = enabled;
-        pwm_publisher.publish(command);
+        //command.enabled = enabled;
+        //pwm_publisher.publish(command);
         
         //UPKEEP
         last_update = ros::Time::now();
@@ -192,6 +283,47 @@ namespace tfr_control
         drivebase_v0.second = velocity_values[static_cast<int>(Joint::RIGHT_TREAD)];
     }
 
+	double RobotInterface::linear_interp_double(double x, double x1, double y1, double x2, double y2)
+	{
+		// line defined by two points: (x1, y1) and (x2, y2)
+        double y = ((y2 - y1)/(x2 - x1))*(x - x1) + y1;
+		return y;
+	}
+	
+	int32_t RobotInterface::linear_interp_int(int32_t x, int32_t x1, int32_t y1, int32_t x2, int32_t y2)
+	{
+		// line defined by two points: (x1, y1) and (x2, y2)
+        int32_t y = ((y2 - y1)/(x2 - x1))*(x - x1) + y1;
+		return y;
+	}
+	
+	// TODO: Horrible duplication of code should be removed.
+	// has hardcoded min joint position in header file
+	const int32_t RobotInterface::get_arm_lower_min_int()
+	{
+		double arm_lower_joint_min_mapped = linear_interp_double(arm_lower_joint_min * -10,
+				arm_lower_joint_min,
+				std::numeric_limits<int32_t>::min(),
+				arm_lower_joint_max, 
+				std::numeric_limits<int32_t>::max());
+		int32_t arm_lower_joint_min_mapped_int = static_cast<int32_t>(arm_lower_joint_min_mapped);
+		
+		return arm_lower_joint_min_mapped_int;
+	}
+		
+	// has hardcoded max joint position in header file
+	const int32_t RobotInterface::get_arm_lower_max_int()
+	{
+		double arm_lower_joint_max_mapped = linear_interp_double(arm_lower_joint_max * 10,
+				arm_lower_joint_min,
+				std::numeric_limits<int32_t>::min(),
+				arm_lower_joint_max, 
+				std::numeric_limits<int32_t>::max());
+		int32_t arm_lower_joint_max_mapped_int = static_cast<int32_t>(arm_lower_joint_max_mapped);
+		
+		return arm_lower_joint_max_mapped_int;
+	}
+	
     void RobotInterface::setEnabled(bool val)
     {
         enabled = val;
@@ -259,11 +391,20 @@ namespace tfr_control
         position.push_back(position_values[static_cast<int>(Joint::SCOOP)]);
     }
 
+	void RobotInterface::readScoopEncoder(const std_msgs::Int32 &msg)
+	{
+		scoop_encoder = msg.data;
+	}
+	
+	void RobotInterface::readScoopCommand(const std_msgs::Float64 &msg)
+	{
+		position_values[static_cast<int>(Joint::LOWER_ARM)] = msg.data;
+	}
 
     /*
      * Register this joint with each neccessary hardware interface
      * */
-    void RobotInterface::registerJoint(std::string name, Joint joint) 
+    void RobotInterface::registerJointEffortInterface(std::string name, Joint joint) 
     {
         auto idx = static_cast<int>(joint);
         //give the joint a state
@@ -279,6 +420,7 @@ namespace tfr_control
     /*
      * Register this joint with each neccessary hardware interface
      * */
+	 /*
     void RobotInterface::registerBinJoint(std::string name, Joint joint) 
     {
         auto idx = static_cast<int>(joint);
@@ -291,12 +433,13 @@ namespace tfr_control
         JointHandle handle(state_handle, &command_values[idx]);
         joint_position_interface.registerHandle(handle);
     }
+	*/
 
 
     /*
      * Register this joint with each neccessary hardware interface
      * */
-    void RobotInterface::registerArmJoint(std::string name, Joint joint) 
+    void RobotInterface::registerJointPositionInterface(std::string name, Joint joint) 
     {
         auto idx = static_cast<int>(joint);
         //give the joint a state
@@ -309,9 +452,18 @@ namespace tfr_control
         joint_position_interface.registerHandle(handle);
     }
 
+	// get the ratio of the encoder count to the max encoder count for a revolution
+	double RobotInterface::brushlessEncoderCountToRadians(int32_t encoder_count)
+	{
+		//static const double pi = boost::math::constants::pi<double>();
+		static const double pi = 3.14159265358979;
+		return (static_cast<double>(encoder_count) * (2 * pi)) / static_cast<double>(brushless_encoder_count_per_revolution);
+	}
+
     /*
      * Input is angle desired/measured and output is in raw pwm frequency.
      * */
+	/*
     double RobotInterface::angleToPWM(const double &desired, const double &actual)
     {
         //we don't anticipate this changing very much keep at method level
@@ -328,12 +480,14 @@ namespace tfr_control
         }
         return 0;
     }
+	*/
 
     /*
      * Input is angle desired/measured of a twin acutuator joint and output is
      * in raw pwm frequency for both of them. The actuator further ahead get's
      * scaled down.
      * */
+	/*
     std::pair<double,double> RobotInterface::twinAngleToPWM(const double &desired, 
             const double &actual_left, const double &actual_right)
     {
@@ -370,10 +524,12 @@ namespace tfr_control
         }
         return std::make_pair(0,0);
     }
-    
+    */
+	
     /*
      * Input is angle desired/measured of turntable and output is in raw pwm frequency.
      * */
+	/*
     double RobotInterface::turntableAngleToPWM(const double &desired, const double &actual)
     {
         //we don't anticipate this changing very much keep at method level
@@ -388,6 +544,7 @@ namespace tfr_control
         }
         return 0;
     }
+	*/
 
     /*
      * Takes in a velocity, and converts it to pwm for the drivebase.
@@ -396,6 +553,7 @@ namespace tfr_control
      * NOTE we have a safety limit here of 1 m/s^2 any more and it will snap a
      * shaft
      * */
+	 /*
     double RobotInterface::drivebaseVelocityToPWM(const double& v_1, const double& v_0)
     {
         //limit for max velocity
@@ -410,35 +568,104 @@ namespace tfr_control
         }
         return 0;
     }
+	*/
 
     /*
      * Prevents large pwm changes to avoid brown out
      * */
+	/*
     double RobotInterface::scalePWM(const double& pwm_1, const double& pwm_0)
     {
         double sign = ((pwm_1 - pwm_0) > 0) ? 1 : -1;
         double magnitude = std::min(std::abs(pwm_1-pwm_0), 0.01);
         return pwm_0 + sign * magnitude;
     }
+	*/
 
+	
     /*
      * Callback for our encoder subscriber
      * */
+	/*
     void RobotInterface::readArduinoA(const tfr_msgs::ArduinoAReadingConstPtr &msg)
     {
         latest_arduino_a = msg;
     }
-
+	*/
+	
     /*
      * Callback for our encoder subscriber
      * */
+	/*
     void RobotInterface::readArduinoB(const tfr_msgs::ArduinoBReadingConstPtr &msg)
     {
         latest_arduino_b = msg;
     }
+	*/
 
+	void RobotInterface::accumulateBrushlessRightVel(const std_msgs::Int32 &msg)
+	{
+		brushless_right_tread_mutex.lock();
+
+		accumulated_brushless_right_tread_vel += msg.data;
+		accumulated_brushless_right_tread_vel_num_updates++;
+		accumulated_brushless_right_tread_vel_end_time = ros::Time::now(); // keep this call inside the mutex. The readBrushlessRightVel() call will also update it.
+
+		brushless_right_tread_mutex.unlock();
+		
+		
+	}
+	
+	void RobotInterface::accumulateBrushlessLeftVel(const std_msgs::Int32 &msg)
+	{
+		brushless_left_tread_mutex.lock();
+
+		accumulated_brushless_left_tread_vel += msg.data;
+		accumulated_brushless_left_tread_vel_num_updates++;
+		accumulated_brushless_left_tread_vel_end_time = ros::Time::now();
+
+		brushless_left_tread_mutex.unlock();
+		
+	}
+	
+	double RobotInterface::readBrushlessRightVel()
+	{
+		brushless_right_tread_mutex.lock();
+
+		int32_t encoder_count = accumulated_brushless_right_tread_vel;
+		int32_t num_updates = accumulated_brushless_right_tread_vel_num_updates;
+
+		accumulated_brushless_right_tread_vel = 0;
+		accumulated_brushless_right_tread_vel_num_updates = 0;
+		accumulated_brushless_right_tread_vel_start_time = ros::Time::now();
+		accumulated_brushless_right_tread_vel_end_time = ros::Time::now();
+
+		brushless_right_tread_mutex.unlock();
+		
+		return brushlessEncoderCountToRadians(encoder_count) / accumulated_brushless_right_tread_vel_end_time.toSec();
+	}
+	
+	double RobotInterface::readBrushlessLeftVel()
+	{
+		brushless_left_tread_mutex.lock();
+
+		int32_t encoder_count = accumulated_brushless_left_tread_vel;
+		int32_t num_updates = accumulated_brushless_left_tread_vel_num_updates;
+
+		accumulated_brushless_left_tread_vel = 0;
+		accumulated_brushless_left_tread_vel_num_updates = 0;
+		accumulated_brushless_right_tread_vel_start_time = ros::Time::now();
+		accumulated_brushless_right_tread_vel_end_time = ros::Time::now();
+
+		brushless_left_tread_mutex.unlock();
+		
+		return brushlessEncoderCountToRadians(encoder_count) / accumulated_brushless_left_tread_vel_end_time.toSec();
+	}
+	
+	
     void RobotInterface::zeroTurntable()
     {
+		/*
         //Grab the neccessary data
         tfr_msgs::ArduinoAReading reading_a;
         if (latest_arduino_a != nullptr)
@@ -447,6 +674,8 @@ namespace tfr_control
             return;
 
         turntable_offset = -reading_a.arm_turntable_pos; 
+		*/
     }
+	
 
 }
