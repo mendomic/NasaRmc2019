@@ -138,8 +138,14 @@ namespace tfr_control {
 		ros::Publisher  scoop_publisher;
 		int32_t scoop_encoder = 0;
 		
+		void readLowerArmEncoder(const std_msgs::Int32 &msg);
+		void readLowerArmAmps(const std_msgs::Float64 &msg);
+		
+		void readUpperArmEncoder(const std_msgs::Int32 &msg);
+		void readUpperArmAmps(const std_msgs::Float64 &msg);
+		
 		void readScoopEncoder(const std_msgs::Int32 &msg);
-		void readScoopCommand(const std_msgs::Float64 &msg); // Subcribe to a ROS publisher who tells us what the next position should be.
+		void readScoopAmps(const std_msgs::Float64 &msg);
 		
 		ros::Publisher brushless_right_tread_vel_publisher;
 		ros::Publisher brushless_left_tread_vel_publisher;
@@ -179,18 +185,18 @@ namespace tfr_control {
 		 double turntable_joint_min = 0.0;
 		 double turntable_joint_max = 0.0;
 		
-		 int32_t arm_lower_encoder_min = 0;
-		 int32_t arm_lower_encoder_max = 1000;
+		 int32_t arm_lower_encoder_min = -439;
+		 int32_t arm_lower_encoder_max = 274;
 		 double arm_lower_joint_min = 0.0;
 		 double arm_lower_joint_max = 0.0;
 		
-		 int32_t arm_upper_encoder_min = 0;
-		 int32_t arm_upper_encoder_max = 1000;
+		 int32_t arm_upper_encoder_min = -14070;
+		 int32_t arm_upper_encoder_max = -13238;
 		 double arm_upper_joint_min = 0.0;
 		 double arm_upper_joint_max = 0.0;
 		
-		 int32_t arm_end_encoder_min = 0;
-		 int32_t arm_end_encoder_max = 1000;
+		 int32_t arm_end_encoder_min = -5650;
+		 int32_t arm_end_encoder_max = -3900;
 		 double arm_end_joint_min = 0.0;
 		 double arm_end_joint_max = 0.0;
 		
