@@ -1,6 +1,6 @@
 <launch>
     <!--spins up a settable broadcaster for the location of the bin-->
-    <node pkg="tfr_localization" output="screen" type="localization_action_server">
+    <node name="localization_action_server" pkg="tfr_localization" output="screen" type="localization_action_server">
         <rosparam>
             turn_velocity: 0.2
             turn_duration: 1.15 
