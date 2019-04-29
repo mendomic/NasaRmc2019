@@ -131,7 +131,7 @@ private:
                     ros::Duration(1.5).sleep(); // Setting this to 2 seconds works for sure
                 }
                 
-                if (std::abs(state[4]) > 1.05 )
+                /*if (std::abs(state[4]) > 1.05 )
                 {
                     geometry_msgs::Twist pulse;
                     pulse.linear.x = -0.2;
@@ -143,7 +143,7 @@ private:
                 else if (std::abs(state[4]) > 0.05)
                 {
                     ros::Duration(0.5).sleep(); 
-                }
+                }*/
             }
         }
         ROS_WARN("Moving arm to final position, exiting.");

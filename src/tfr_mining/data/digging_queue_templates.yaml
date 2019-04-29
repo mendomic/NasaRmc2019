@@ -29,7 +29,7 @@
 # state[1]: lower arm???
 # state[2]: upper arm???
 # state[3]: scoop???
-# state[4]: ???
+# state[4]: ??? Delay
 positions: [
     [[0.0, 0.1, 1.07, 1.62, 1.0], #zero position
     [3.05, 0.8, 1.07, -1.16, 1.0], #1a
