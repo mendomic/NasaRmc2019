@@ -179,17 +179,17 @@ namespace tfr_control
             velocity_values[static_cast<int>(Joint::SCOOP)] = 0;
             effort_values[static_cast<int>(Joint::SCOOP)] = 0;
 			
-			ROS_INFO_STREAM("arm_lower_position: read: ");
-			ROS_INFO_STREAM(position_values[static_cast<int>(Joint::LOWER_ARM)]);
-			ROS_INFO_STREAM(std::endl);
+			//ROS_INFO_STREAM("arm_lower_position: read: ");
+			//ROS_INFO_STREAM(position_values[static_cast<int>(Joint::LOWER_ARM)]);
+			//ROS_INFO_STREAM(std::endl);
 			
-			ROS_INFO_STREAM("arm_upper_position: read: ");
-			ROS_INFO_STREAM(position_values[static_cast<int>(Joint::UPPER_ARM)]);
-			ROS_INFO_STREAM(std::endl);
+			//ROS_INFO_STREAM("arm_upper_position: read: ");
+			//ROS_INFO_STREAM(position_values[static_cast<int>(Joint::UPPER_ARM)]);
+			//ROS_INFO_STREAM(std::endl);
 			
-			ROS_INFO_STREAM("scoop_position: read: ");
-			ROS_INFO_STREAM(position_values[static_cast<int>(Joint::SCOOP)]);
-			ROS_INFO_STREAM(std::endl);
+			//ROS_INFO_STREAM("scoop_position: read: ");
+			//ROS_INFO_STREAM(position_values[static_cast<int>(Joint::SCOOP)]);
+			//ROS_INFO_STREAM(std::endl);
 			
         }
  
@@ -245,13 +245,13 @@ namespace tfr_control
             //LOWER_ARM
             //NOTE we reverse these because actuator is mounted backwards
 			
-			
+				
 			int32_t arm_lower_position = position_values[static_cast<int>(Joint::LOWER_ARM)];
 			std_msgs::Int32 arm_lower_position_msg;
 			arm_lower_position_msg.data = arm_lower_position;
-			ROS_INFO_STREAM("arm_lower_position: write: ");
-			ROS_INFO_STREAM(arm_lower_position_msg.data);
-			ROS_INFO_STREAM(std::endl);
+			//ROS_INFO_STREAM("arm_lower_position: write: ");
+			//ROS_INFO_STREAM(arm_lower_position_msg.data);
+			//ROS_INFO_STREAM(std::endl);
 			lower_arm_publisher.publish(arm_lower_position_msg);
 			
 
@@ -259,9 +259,9 @@ namespace tfr_control
 			int32_t arm_upper_position = position_values[static_cast<int>(Joint::UPPER_ARM)];
 			std_msgs::Int32 arm_upper_position_msg;
 			arm_upper_position_msg.data = arm_upper_position;
-			ROS_INFO_STREAM("arm_upper_position: write: ");
-			ROS_INFO_STREAM(arm_upper_position_msg.data);
-			ROS_INFO_STREAM(std::endl);
+			//ROS_INFO_STREAM("arm_upper_position: write: ");
+			//ROS_INFO_STREAM(arm_upper_position_msg.data);
+			//ROS_INFO_STREAM(std::endl);
 			upper_arm_publisher.publish(arm_upper_position_msg);
 
 
@@ -269,9 +269,9 @@ namespace tfr_control
 			int32_t scoop_position = position_values[static_cast<int>(Joint::SCOOP)];
 			std_msgs::Int32 scoop_position_msg;
 			scoop_position_msg.data = scoop_position;
-			ROS_INFO_STREAM("scoop_position: write: ");
-			ROS_INFO_STREAM(scoop_position_msg.data);
-			ROS_INFO_STREAM(std::endl);
+			//ROS_INFO_STREAM("scoop_position: write: ");
+			//ROS_INFO_STREAM(scoop_position_msg.data);
+			//ROS_INFO_STREAM(std::endl);
 			scoop_publisher.publish(scoop_position_msg);
 			
 			ROS_INFO_STREAM("arm_lower_position: write: ");
@@ -285,13 +285,13 @@ namespace tfr_control
 			ROS_INFO_STREAM("scoop_position: write: ");
 			ROS_INFO_STREAM(scoop_position);
 			ROS_INFO_STREAM(std::endl);
-
+			
         }
 		
         //LEFT_TREAD
 	int left_tread_scale = 1;
 	ros::param::getCached("left_tread_scale", left_tread_scale);
-	ROS_INFO("Left tread scale %d", left_tread_scale);
+	//ROS_INFO("Left tread scale %d", left_tread_scale);
         double left_tread_command = command_values[static_cast<int32_t>(Joint::LEFT_TREAD)];
 		//left_tread_command = linear_interp_double(left_tread_command, 0.0, 0.0, 1.0, 1000.0);
 		std_msgs::Int32 left_tread_msg;
@@ -435,12 +435,34 @@ namespace tfr_control
         position.push_back(position_values[static_cast<int>(Joint::SCOOP)]);
     }
 
+	void RobotInterface::readLowerArmEncoder(const std_msgs::Int32 &msg)
+	{
+		lower_arm_encoder = msg.data;
+	}
+	
+	void RobotInterface::readLowerArmAmps(const std_msgs::Float64 &msg)
+	{
+		position_values[static_cast<int>(Joint::LOWER_ARM)] = msg.data;
+	}
+	
+	
+	void RobotInterface::readUpperArmEncoder(const std_msgs::Int32 &msg)
+	{
+		upper_arm_encoder = msg.data;
+	}
+	
+	void RobotInterface::readUpperArmAmps(const std_msgs::Float64 &msg)
+	{
+		position_values[static_cast<int>(Joint::UPPER_ARM)] = msg.data;
+	}
+	
+	
 	void RobotInterface::readScoopEncoder(const std_msgs::Int32 &msg)
 	{
 		scoop_encoder = msg.data;
 	}
 	
-	void RobotInterface::readScoopCommand(const std_msgs::Float64 &msg)
+	void RobotInterface::readScoopAmps(const std_msgs::Float64 &msg)
 	{
 		position_values[static_cast<int>(Joint::LOWER_ARM)] = msg.data;
 	}
