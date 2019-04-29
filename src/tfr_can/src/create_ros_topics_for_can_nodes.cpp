@@ -13,19 +13,52 @@
 //#include <ros/package.h> // for looking up the location of the current package, in order to find our EDS files.
 //#include <ros>
 
+// Set the name of your CAN bus. "slcan0" is a common bus name
+// for the first SocketCAN device on a Linux system.
+const std::string busname = "can1";
+
+// Set the baudrate of your CAN bus. Most drivers support the values
+// "1M", "500K", "125K", "100K", "50K", "20K", "10K" and "5K".
+const std::string baudrate = "250K";
+
+const size_t num_devices_required = 1;
+
+const double loop_rate = 10; // [Hz]
+
+void setupDriveBaseController(kaco::Device& device, kaco::Bridge& bridge, std::string& eds_files_path){
+    // Roboteq SDC3260 in Closed Loop Count Position mode.
+
+	auto iosub_4_1_1 = std::make_shared<kaco::EntrySubscriber>(device, "cmd_cango/cmd_cango_1");
+	bridge.add_subscriber(iosub_4_1_1);
+
+	auto iopub_4_1_2 = std::make_shared<kaco::EntryPublisher>(device, "qry_motamps/channel_1");
+	bridge.add_publisher(iopub_4_1_2, loop_rate);
+	
+	auto iopub_4_1_3 = std::make_shared<kaco::EntryPublisher>(device, "qry_abcntr/channel_1");
+	bridge.add_publisher(iopub_4_1_3, loop_rate);
+	
+	
+	auto iosub_4_2_1 = std::make_shared<kaco::EntrySubscriber>(device, "cmd_cango/cmd_cango_2");
+	bridge.add_subscriber(iosub_4_2_1);
+
+	auto iopub_4_2_2 = std::make_shared<kaco::EntryPublisher>(device, "qry_motamps/channel_2");
+	bridge.add_publisher(iopub_4_2_2, loop_rate);
+	
+	auto iopub_4_2_3 = std::make_shared<kaco::EntryPublisher>(device, "qry_abcntr/channel_2");
+	bridge.add_publisher(iopub_4_2_3, loop_rate);
+	
+	
+	auto iosub_4_3_1 = std::make_shared<kaco::EntrySubscriber>(device, "cmd_cango/cmd_cango_3");
+	bridge.add_subscriber(iosub_4_3_1);
+
+	auto iopub_4_3_2 = std::make_shared<kaco::EntryPublisher>(device, "qry_motamps/channel_3");
+	bridge.add_publisher(iopub_4_3_2, loop_rate);
+	
+	auto iopub_4_3_3 = std::make_shared<kaco::EntryPublisher>(device, "qry_abcntr/channel_3");
+	bridge.add_publisher(iopub_4_3_3, loop_rate);
+}
+
 int main(int argc, char* argv[]) {
-
-	// Set the name of your CAN bus. "slcan0" is a common bus name
-	// for the first SocketCAN device on a Linux system.
-	const std::string busname = "can1";
-
-	// Set the baudrate of your CAN bus. Most drivers support the values
-	// "1M", "500K", "125K", "100K", "50K", "20K", "10K" and "5K".
-	const std::string baudrate = "250K";
-
-	const size_t num_devices_required = 1;
-
-	const double loop_rate = 10; // [Hz]
 
 	
 	kaco::Master master;
@@ -53,77 +86,27 @@ int main(int argc, char* argv[]) {
 		device.start();
 
 		PRINT("Found device with node ID "<<device.get_node_id()<<": "<<device.get_entry("manufacturer_device_name"));
-
-		if (device.get_node_id() == 4)
-		{
-			// Roboteq SDC3260 in Closed Loop Count Position mode.
-			
-			ros::NodeHandle nh{"~"};
-			std::string eds_files_path;
-			if (nh.getParam("eds_files_path", eds_files_path))
-			{
+		std::string eds_files_path;
+		if (ros::param::getCached("~eds_files_path", eds_files_path)) {
 				PRINT("Great it worked.");
 				PRINT(eds_files_path);
-			}
-			else
-			{
-				ERROR("tfr_can could not find the private parameter 'eds_files_path'. Make sure this parameter is getting set in the launch file for tfr_can.");
-			}
-			
-			//const std::string eds_files_path = "/src/tfr_can/eds_files/";
-			device.load_dictionary_from_eds(eds_files_path + "roboteq_motor_controllers_v60.eds");
-			
+		} else {
+		    ERROR("tfr_can could not find the private parameter 'eds_files_path'. Make sure this parameter is getting set in the launch file for tfr_can.");
+		}
+		
+		device.load_dictionary_from_eds(eds_files_path + "roboteq_motor_controllers_v60.eds");
+		
+		int deviceId = device.get_node_id();
 
-			auto iosub_4_1_1 = std::make_shared<kaco::EntrySubscriber>(device, "cmd_cango/cmd_cango_1");
-    		bridge.add_subscriber(iosub_4_1_1);
-
-			auto iopub_4_1_2 = std::make_shared<kaco::EntryPublisher>(device, "qry_motamps/channel_1");
-    		bridge.add_publisher(iopub_4_1_2, loop_rate);
-			
-			auto iopub_4_1_3 = std::make_shared<kaco::EntryPublisher>(device, "qry_abcntr/channel_1");
-    		bridge.add_publisher(iopub_4_1_3, loop_rate);
-			
-			
-			auto iosub_4_2_1 = std::make_shared<kaco::EntrySubscriber>(device, "cmd_cango/cmd_cango_2");
-    		bridge.add_subscriber(iosub_4_2_1);
-
-			auto iopub_4_2_2 = std::make_shared<kaco::EntryPublisher>(device, "qry_motamps/channel_2");
-    		bridge.add_publisher(iopub_4_2_2, loop_rate);
-			
-			auto iopub_4_2_3 = std::make_shared<kaco::EntryPublisher>(device, "qry_abcntr/channel_2");
-    		bridge.add_publisher(iopub_4_2_3, loop_rate);
-			
-			
-			auto iosub_4_3_1 = std::make_shared<kaco::EntrySubscriber>(device, "cmd_cango/cmd_cango_3");
-    		bridge.add_subscriber(iosub_4_3_1);
-
-			auto iopub_4_3_2 = std::make_shared<kaco::EntryPublisher>(device, "qry_motamps/channel_3");
-    		bridge.add_publisher(iopub_4_3_2, loop_rate);
-			
-			auto iopub_4_3_3 = std::make_shared<kaco::EntryPublisher>(device, "qry_abcntr/channel_3");
-    		bridge.add_publisher(iopub_4_3_3, loop_rate);
+		if (deviceId == 4)
+		{
+			setupDriveBaseController(device, bridge, eds_files_path);
 		}
 		
 		
-		if (device.get_node_id() == 8)
+		else if (deviceId == 8)
 		{
 			// Roboteq SBL2360 in Closed Loop Speed Position mode.
-			
-			ros::NodeHandle nh{"~"};
-			std::string eds_files_path;
-			if (nh.getParam("eds_files_path", eds_files_path))
-			{
-				PRINT("Great it worked.");
-				PRINT(eds_files_path);
-			}
-			else
-			{
-				ERROR("tfr_can could not find the private parameter 'eds_files_path'. Make sure this parameter is getting set in the launch file for tfr_can.");
-			}
-			
-			//const std::string eds_files_path = "/src/tfr_can/eds_files/";
-			device.load_dictionary_from_eds(eds_files_path + "roboteq_motor_controllers_v60.eds");
-			
 
 			auto iosub_8_1_1 = std::make_shared<kaco::EntrySubscriber>(device, "cmd_cango/cmd_cango_1");
     		bridge.add_subscriber(iosub_8_1_1);
@@ -151,25 +134,9 @@ int main(int argc, char* argv[]) {
     		bridge.add_publisher(iopub_8_2_3, loop_rate);
 		}
 		
-		if (device.get_node_id() == 12)
+		else if (deviceId == 12)
 		{
 			// Roboteq SDC3260 in Closed Loop Count Position mode.
-			
-			ros::NodeHandle nh{"~"};
-			std::string eds_files_path;
-			if (nh.getParam("eds_files_path", eds_files_path))
-			{
-				PRINT("Great it worked.");
-				PRINT(eds_files_path);
-			}
-			else
-			{
-				ERROR("tfr_can could not find the private parameter 'eds_files_path'. Make sure this parameter is getting set in the launch file for tfr_can.");
-			}
-			
-			//const std::string eds_files_path = "/src/tfr_can/eds_files/";
-			device.load_dictionary_from_eds(eds_files_path + "roboteq_motor_controllers_v60.eds");
-			
 
 			auto iosub_12_1_1 = std::make_shared<kaco::EntrySubscriber>(device, "cmd_cango/cmd_cango_1");
     		bridge.add_subscriber(iosub_12_1_1);
