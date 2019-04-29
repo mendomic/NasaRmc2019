@@ -32,7 +32,7 @@ typedef actionlib::SimpleActionClient<tfr_msgs::ArmMoveAction> Client;
 class DiggingActionServer {
 public:
     DiggingActionServer(ros::NodeHandle &nh, ros::NodeHandle &p_nh) :
-        priv_nh{p_nh}, queue{priv_nh}, 
+        priv_nh{p_nh}, diggingQueue{priv_nh}, 
         drivebase_publisher{nh.advertise<geometry_msgs::Twist>("cmd_vel", 5)},
         server{nh, "dig", boost::bind(&DiggingActionServer::execute, this, _1),
             false},
@@ -69,10 +69,10 @@ private:
         client.waitForServer();
         ROS_DEBUG("Connected with arm action server");
 
-        while (!queue.isEmpty())
+        while (!diggingQueue.isEmpty())
         {
             ROS_INFO("Time remaining: %f", (endTime - ros::Time::now()).toSec());
-            tfr_mining::DiggingSet set = queue.popDiggingSet();
+            tfr_mining::DiggingSet set = diggingQueue.popDiggingSet();
             ros::Time now = ros::Time::now();
 
             ROS_INFO("starting set");
@@ -162,7 +162,7 @@ private:
     ros::Publisher drivebase_publisher;
  
     ArmManipulator arm_manipulator;
-    tfr_mining::DiggingQueue queue;
+    tfr_mining::DiggingQueue diggingQueue;
     Server server;
 };
 

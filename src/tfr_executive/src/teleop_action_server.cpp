@@ -79,8 +79,10 @@ class TeleopExecutive
             use_digging{u_d}
         {
             if (use_digging){
+                ROS_INFO("Teleop Action Server conecting to digging");
                 digging_client.waitForServer();
                 ROS_INFO("Teleop Action Server connected to digging");
+                ROS_INFO("Teleop Action Server conecting to arm");
                 arm_client.waitForServer();
                 ROS_INFO("Teleop Action Server connected to arm");
             }
