@@ -34,23 +34,23 @@ namespace tfr_control
 		brushless_right_tread_vel_publisher{n.advertise<std_msgs::Int32>("/device8/set_cmd_cango/cmd_cango_1", 1)},
 		
 		
-		lower_arm_subscriber_encoder{n.subscribe("/device4/qry_abcntr/channel_1", 5,
+		lower_arm_subscriber_encoder{n.subscribe("/device4/get_qry_abcntr/channel_1", 5,
                 &RobotInterface::readLowerArmEncoder, this)},
-		lower_arm_subscriber_amps{n.subscribe("/device4/qry_batamps/channel_1", 1,
+		lower_arm_subscriber_amps{n.subscribe("/device4/get_qry_batamps/channel_1", 1,
                 &RobotInterface::readLowerArmAmps, this)},
 		lower_arm_publisher{n.advertise<std_msgs::Int32>("/device4/set_cmd_cango/cmd_cango_1", 1)},
 		
 		
-		upper_arm_subscriber_encoder{n.subscribe("/device4/qry_abcntr/channel_2", 5,
+		upper_arm_subscriber_encoder{n.subscribe("/device4/get_qry_abcntr/channel_2", 5,
                 &RobotInterface::readUpperArmEncoder, this)},
-		upper_arm_subscriber_amps{n.subscribe("/device4/qry_batamps/channel_2", 1,
+		upper_arm_subscriber_amps{n.subscribe("/device4/get_qry_batamps/channel_2", 1,
                 &RobotInterface::readUpperArmAmps, this)},
 		upper_arm_publisher{n.advertise<std_msgs::Int32>("/device4/set_cmd_cango/cmd_cango_2", 1)},
 		
 		
-		scoop_subscriber_encoder{n.subscribe("/device4/qry_abcntr/channel_3", 5,
+		scoop_subscriber_encoder{n.subscribe("/device4/get_qry_abcntr/channel_3", 5,
                 &RobotInterface::readScoopEncoder, this)},
-		scoop_subscriber_amps{n.subscribe("/device4/qry_batamps/channel_3", 1,
+		scoop_subscriber_amps{n.subscribe("/device4/get_qry_batamps/channel_3", 1,
                 &RobotInterface::readScoopAmps, this)},
 		scoop_publisher{n.advertise<std_msgs::Int32>("/device4/set_cmd_cango/cmd_cango_3", 1)},
 		
@@ -180,11 +180,16 @@ namespace tfr_control
             velocity_values[static_cast<int>(Joint::SCOOP)] = 0;
             effort_values[static_cast<int>(Joint::SCOOP)] = 0;
 
+			/*
             ROS_INFO_STREAM("arm_lower_position: read: " << position_values[static_cast<int>(Joint::LOWER_ARM)] << std::endl);
 
+			
+			ROS_INFO_STREAM("arm_upper_position: read: encoder: " << upper_arm_encoder << std::endl);
             ROS_INFO_STREAM("arm_upper_position: read: " << position_values[static_cast<int>(Joint::UPPER_ARM)] << std::endl);
 
+			ROS_INFO_STREAM("scoop_position: read: encoder: " << scoop_encoder << std::endl);
             ROS_INFO_STREAM("scoop_position: read: " << position_values[static_cast<int>(Joint::SCOOP)] << std::endl);
+			*/
         }
  
         //BIN
@@ -282,14 +287,22 @@ namespace tfr_control
 			        
 			std_msgs::Int32 scoop_position_msg;
 			scoop_position_msg.data = scoop_position;
-			//scoop_publisher.publish(scoop_position_msg);
+			scoop_publisher.publish(scoop_position_msg);
 			
+			/*
 			ROS_INFO_STREAM("arm_lower_position: write: " << arm_lower_position << std::endl);
+			
 			ROS_INFO_STREAM("arm_upper_position: position: write: " << position_values[static_cast<int>(Joint::UPPER_ARM)] << std::endl);
 			ROS_INFO_STREAM("arm_upper_position: command: write: " << command_values[static_cast<int>(Joint::UPPER_ARM)] << std::endl);
 			ROS_INFO_STREAM("arm_upper_position: effort: write: " << effort_values[static_cast<int>(Joint::UPPER_ARM)] << std::endl);
-			 ROS_INFO_STREAM("arm_upper_position: velocity: write: " << velocity_values[static_cast<int>(Joint::UPPER_ARM)] << std::endl);
+			ROS_INFO_STREAM("arm_upper_position: velocity: write: " << velocity_values[static_cast<int>(Joint::UPPER_ARM)] << std::endl);
 			ROS_INFO_STREAM("arm_upper_position: write: " << arm_upper_position << std::endl);
+			*/
+			
+			ROS_INFO_STREAM("scoop_position: position: write: " << position_values[static_cast<int>(Joint::SCOOP)] << std::endl);
+			ROS_INFO_STREAM("scoop_position: command: write: " << command_values[static_cast<int>(Joint::SCOOP)] << std::endl);
+			ROS_INFO_STREAM("scoop_position: effort: write: " << effort_values[static_cast<int>(Joint::SCOOP)] << std::endl);
+			ROS_INFO_STREAM("scoop_position: velocity: write: " << velocity_values[static_cast<int>(Joint::SCOOP)] << std::endl);
 			ROS_INFO_STREAM("scoop_position: write: " << scoop_position << std::endl);
 			
         }
@@ -313,8 +326,8 @@ namespace tfr_control
 		right_tread_msg.data = static_cast<int32_t>(right_tread_command * right_tread_scale);
         brushless_right_tread_vel_publisher.publish(right_tread_msg);
 
-		ROS_INFO_STREAM("left_tread_scale: " << left_tread_msg.data << std::endl);
-		ROS_INFO_STREAM("right_tread_scale: " << right_tread_msg.data << std::endl);
+		//ROS_INFO_STREAM("left_tread_scale: " << left_tread_msg.data << std::endl);
+		//ROS_INFO_STREAM("right_tread_scale: " << right_tread_msg.data << std::endl);
 
         //BIN
 		/*
@@ -446,34 +459,52 @@ namespace tfr_control
 
 	void RobotInterface::readLowerArmEncoder(const std_msgs::Int32 &msg)
 	{
+		lower_arm_mutex.lock();
+		
 		lower_arm_encoder = msg.data;
+		//ROS_INFO_STREAM("lower_arm_encoder: " << lower_arm_encoder << std::endl);
+		
+		lower_arm_mutex.unlock();
 	}
 	
 	void RobotInterface::readLowerArmAmps(const std_msgs::Float64 &msg)
 	{
-		position_values[static_cast<int>(Joint::LOWER_ARM)] = msg.data;
+		//position_values[static_cast<int>(Joint::LOWER_ARM)] = msg.data;
+		//ROS_INFO_STREAM("lower_arm_ams: " << position_values[static_cast<int>(Joint::LOWER_ARM)] << std::endl);
 	}
 	
 	
 	void RobotInterface::readUpperArmEncoder(const std_msgs::Int32 &msg)
 	{
+		upper_arm_mutex.lock();
+		
 		upper_arm_encoder = msg.data;
+		//ROS_INFO_STREAM("upper_arm_encoder: " << upper_arm_encoder << std::endl);
+		
+		upper_arm_mutex.unlock();
 	}
 	
 	void RobotInterface::readUpperArmAmps(const std_msgs::Float64 &msg)
 	{
-		position_values[static_cast<int>(Joint::UPPER_ARM)] = msg.data;
+		//position_values[static_cast<int>(Joint::UPPER_ARM)] = msg.data;
+		//ROS_INFO_STREAM("lower_arm_ams: " << position_values[static_cast<int>(Joint::UPPER_ARM)] << std::endl);
 	}
 	
 	
 	void RobotInterface::readScoopEncoder(const std_msgs::Int32 &msg)
 	{
+		scoop_mutex.lock();
+		
 		scoop_encoder = msg.data;
+		//ROS_INFO_STREAM("scoop_encoder: " << scoop_encoder << std::endl);
+		
+		scoop_mutex.unlock();
 	}
 	
 	void RobotInterface::readScoopAmps(const std_msgs::Float64 &msg)
 	{
-		position_values[static_cast<int>(Joint::LOWER_ARM)] = msg.data;
+		//position_values[static_cast<int>(Joint::LOWER_ARM)] = msg.data;
+		//ROS_INFO_STREAM("lower_arm_ams: " << position_values[static_cast<int>(Joint::LOWER_ARM)] << std::endl);
 	}
 
     /*
@@ -678,6 +709,7 @@ namespace tfr_control
     }
 	*/
 
+    //This DOES work
 	void RobotInterface::accumulateBrushlessRightVel(const std_msgs::Int32 &msg)
 	{
 		brushless_right_tread_mutex.lock();
@@ -688,9 +720,12 @@ namespace tfr_control
 
 		brushless_right_tread_mutex.unlock();
 		
+		//ROS_INFO_STREAM("accumulateBrushlessRightVel: " << accumulated_brushless_right_tread_vel << std::endl);
+		
 		
 	}
 	
+	//This DOES work
 	void RobotInterface::accumulateBrushlessLeftVel(const std_msgs::Int32 &msg)
 	{
 		brushless_left_tread_mutex.lock();
@@ -700,6 +735,8 @@ namespace tfr_control
 		accumulated_brushless_left_tread_vel_end_time = ros::Time::now();
 
 		brushless_left_tread_mutex.unlock();
+		
+		//ROS_INFO_STREAM("accumulateBrushlessLeftVel: " << accumulated_brushless_left_tread_vel << std::endl);
 		
 	}
 	

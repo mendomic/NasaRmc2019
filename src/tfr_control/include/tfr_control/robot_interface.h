@@ -123,20 +123,23 @@ namespace tfr_control {
 		ros::Subscriber brushless_left_tread_vel;
 		
 		
-		ros::Subscriber lower_arm_subscriber_encoder;
-		ros::Subscriber lower_arm_subscriber_amps;
+		volatile ros::Subscriber lower_arm_subscriber_encoder;
+		volatile ros::Subscriber lower_arm_subscriber_amps;
 		ros::Publisher  lower_arm_publisher;
-		int32_t lower_arm_encoder = 0;
+		volatile int32_t lower_arm_encoder = 0;
+		std::mutex lower_arm_mutex;
 		
-		ros::Subscriber upper_arm_subscriber_encoder;
-		ros::Subscriber upper_arm_subscriber_amps;
+		volatile ros::Subscriber upper_arm_subscriber_encoder;
+		volatile ros::Subscriber upper_arm_subscriber_amps;
 		ros::Publisher  upper_arm_publisher;
-		int32_t upper_arm_encoder = 0;
+		volatile int32_t upper_arm_encoder = 0;
+		std::mutex upper_arm_mutex;
 		
-		ros::Subscriber scoop_subscriber_encoder;
-		ros::Subscriber scoop_subscriber_amps;
+		volatile ros::Subscriber scoop_subscriber_encoder;
+		volatile ros::Subscriber scoop_subscriber_amps;
 		ros::Publisher  scoop_publisher;
-		int32_t scoop_encoder = 0;
+		volatile int32_t scoop_encoder = 0;
+		std::mutex scoop_mutex;
 		
 		void readLowerArmEncoder(const std_msgs::Int32 &msg);
 		void readLowerArmAmps(const std_msgs::Float64 &msg);
