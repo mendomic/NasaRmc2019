@@ -179,17 +179,17 @@ namespace tfr_control
             velocity_values[static_cast<int>(Joint::SCOOP)] = 0;
             effort_values[static_cast<int>(Joint::SCOOP)] = 0;
 
-            //ROS_INFO_STREAM("arm_lower_position: read: ");
-            //ROS_INFO_STREAM(position_values[static_cast<int>(Joint::LOWER_ARM)]);
-            //ROS_INFO_STREAM(std::endl);
+            ROS_DEBUG_STREAM("arm_lower_position: read: ");
+            ROS_DEBUG_STREAM(position_values[static_cast<int>(Joint::LOWER_ARM)]);
+            ROS_DEBUG_STREAM(std::endl);
 
-            //ROS_INFO_STREAM("arm_upper_position: read: ");
-            //ROS_INFO_STREAM(position_values[static_cast<int>(Joint::UPPER_ARM)]);
-            //ROS_INFO_STREAM(std::endl);
+            ROS_DEBUG_STREAM("arm_upper_position: read: ");
+            ROS_DEBUG_STREAM(position_values[static_cast<int>(Joint::UPPER_ARM)]);
+            ROS_DEBUG_STREAM(std::endl);
 
-            //ROS_INFO_STREAM("scoop_position: read: ");
-            //ROS_INFO_STREAM(position_values[static_cast<int>(Joint::SCOOP)]);
-            //ROS_INFO_STREAM(std::endl);
+            ROS_DEBUG_STREAM("scoop_position: read: ");
+            ROS_DEBUG_STREAM(position_values[static_cast<int>(Joint::SCOOP)]);
+            ROS_DEBUG_STREAM(std::endl);
 			
         }
  
@@ -244,28 +244,42 @@ namespace tfr_control
 
             //LOWER_ARM
             //NOTE we reverse these because actuator is mounted backwards
-			int32_t arm_lower_position = position_values[static_cast<int>(Joint::LOWER_ARM)];
+			int32_t arm_lower_position = command_values[static_cast<int>(Joint::LOWER_ARM)];
 			std_msgs::Int32 arm_lower_position_msg;
 			arm_lower_position_msg.data = arm_lower_position;
 			lower_arm_publisher.publish(arm_lower_position_msg);
 			
 
             //UPPER_ARM
-			int32_t arm_upper_position = position_values[static_cast<int>(Joint::UPPER_ARM)];
+			int32_t arm_upper_position = command_values[static_cast<int>(Joint::UPPER_ARM)];
 			std_msgs::Int32 arm_upper_position_msg;
 			arm_upper_position_msg.data = arm_upper_position;
 			upper_arm_publisher.publish(arm_upper_position_msg);
 
 
             //SCOOP
-			int32_t scoop_position = position_values[static_cast<int>(Joint::SCOOP)];
+			int32_t scoop_position = command_values[static_cast<int>(Joint::SCOOP)];
+			    /*
+			    static_cast<int32_t>
+			    (
+			        linear_interp_double
+			        (
+			            position_values[static_cast<int>(Joint::SCOOP)],
+		                static_cast<double>(arm_end_joint_min),
+		                arm_end_encoder_min,
+		                static_cast<double>(arm_end_joint_max),
+		                arm_end_encoder_max
+		            )
+		        );
+		        */
+			        
 			std_msgs::Int32 scoop_position_msg;
 			scoop_position_msg.data = scoop_position;
 			scoop_publisher.publish(scoop_position_msg);
 			
-			//ROS_INFO("arm_lower_position: write: %d", arm_lower_position);
-			//ROS_INFO("arm_upper_position: write: %d", arm_upper_position);
-			//ROS_INFO("scoop_position: write: %d", scoop_position);
+			ROS_DEBUG_STREAM("arm_lower_position: write: " << arm_lower_position << std::endl);
+			ROS_DEBUG_STREAM("arm_upper_position: write: " << arm_upper_position << std::endl);
+			ROS_DEBUG_STREAM("scoop_position: write: " << scoop_position << std::endl);
 			
         }
 		
