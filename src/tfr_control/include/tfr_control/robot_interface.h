@@ -185,20 +185,20 @@ namespace tfr_control {
 		 double turntable_joint_min = 0.0;
 		 double turntable_joint_max = 0.0;
 		
-		 int32_t arm_lower_encoder_min = -439;
-		 int32_t arm_lower_encoder_max = 274;
-		 double arm_lower_joint_min = 0.0;
-		 double arm_lower_joint_max = 0.0;
+		 int32_t arm_lower_encoder_min = 0;
+		 int32_t arm_lower_encoder_max = 28;
+		 double arm_lower_joint_min = 0.104;
+		 double arm_lower_joint_max = 1.55;
 		
-		 int32_t arm_upper_encoder_min = -14070;
-		 int32_t arm_upper_encoder_max = -13238;
-		 double arm_upper_joint_min = 0.0;
-		 double arm_upper_joint_max = 0.0;
+		 int32_t arm_upper_encoder_min = 0;
+		 int32_t arm_upper_encoder_max = 836;
+		 double arm_upper_joint_min = 0.98;
+		 double arm_upper_joint_max = 2.4;
 		
-		 int32_t arm_end_encoder_min = -5650;
-		 int32_t arm_end_encoder_max = -3900;
-		 double arm_end_joint_min = 0.0;
-		 double arm_end_joint_max = 0.0;
+		 int32_t arm_end_encoder_min = 0;
+		 int32_t arm_end_encoder_max = 1721;
+		 double arm_end_joint_min = -1.16614;
+		 double arm_end_joint_max = 1.62;
 		
 		const int32_t get_arm_lower_min_int();
 		const int32_t get_arm_lower_max_int();
