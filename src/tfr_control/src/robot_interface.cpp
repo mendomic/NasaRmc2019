@@ -180,18 +180,11 @@ namespace tfr_control
             velocity_values[static_cast<int>(Joint::SCOOP)] = 0;
             effort_values[static_cast<int>(Joint::SCOOP)] = 0;
 
-            ROS_INFO_STREAM("arm_lower_position: read: ");
-            ROS_INFO_STREAM(position_values[static_cast<int>(Joint::LOWER_ARM)]);
-            ROS_INFO_STREAM(std::endl);
+            ROS_INFO_STREAM("arm_lower_position: read: " << position_values[static_cast<int>(Joint::LOWER_ARM)] << std::endl);
 
-            ROS_INFO_STREAM("arm_upper_position: read: ");
-            ROS_INFO_STREAM(position_values[static_cast<int>(Joint::UPPER_ARM)]);
-            ROS_INFO_STREAM(std::endl);
+            ROS_INFO_STREAM("arm_upper_position: read: " << position_values[static_cast<int>(Joint::UPPER_ARM)] << std::endl);
 
-            ROS_INFO_STREAM("scoop_position: read: ");
-            ROS_INFO_STREAM(position_values[static_cast<int>(Joint::SCOOP)]);
-            ROS_INFO_STREAM(std::endl);
-			
+            ROS_INFO_STREAM("scoop_position: read: " << position_values[static_cast<int>(Joint::SCOOP)] << std::endl);
         }
  
         //BIN
@@ -318,6 +311,9 @@ namespace tfr_control
 		std_msgs::Int32 right_tread_msg;
 		right_tread_msg.data = static_cast<int32_t>(right_tread_command * right_tread_scale);
         brushless_right_tread_vel_publisher.publish(right_tread_msg);
+
+		ROS_INFO_STREAM("left_tread_scale: " << left_tread_msg.data << std::endl);
+		ROS_INFO_STREAM("right_tread_scale: " << right_tread_msg.data << std::endl);
 
         //BIN
 		/*
