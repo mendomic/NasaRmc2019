@@ -243,7 +243,18 @@ namespace tfr_control
 
             //LOWER_ARM
             //NOTE we reverse these because actuator is mounted backwards
-			int32_t arm_lower_position = command_values[static_cast<int>(Joint::LOWER_ARM)];
+			int32_t arm_lower_position = // command_values[static_cast<int>(Joint::LOWER_ARM)];
+			static_cast<int32_t>
+                            (
+                                linear_interp_double
+                                (
+                                    command_values[static_cast<int>(Joint::LOWER_ARM)],
+                                0,
+                                0,
+                                1000,
+                                1000
+                            )
+                        );
 			std_msgs::Int32 arm_lower_position_msg;
 			arm_lower_position_msg.data = arm_lower_position;
 			//lower_arm_publisher.publish(arm_lower_position_msg);
@@ -252,14 +263,14 @@ namespace tfr_control
             //UPPER_ARM
 			int32_t arm_upper_position = // command_values[static_cast<int>(Joint::UPPER_ARM)];
 			
-   static_cast<int32_t>
+	static_cast<int32_t>
                             (
                                 linear_interp_double
                                 (
                                     command_values[static_cast<int>(Joint::UPPER_ARM)],
-                                static_cast<double>(arm_upper_joint_min),
-                                -1000,
-                                static_cast<double>(arm_upper_joint_max),
+                                0,
+                                0,
+                                1000,
                                 1000
                             )
                         );
@@ -277,9 +288,9 @@ namespace tfr_control
 			        linear_interp_double
 			        (
 			            command_values[static_cast<int>(Joint::SCOOP)],
-		                static_cast<double>(arm_end_joint_min),
-		                -1000,
-		                static_cast<double>(arm_end_joint_max),
+		                0,
+		                0,
+		                1000,
 		                1000
 		            )
 		        );
@@ -289,15 +300,20 @@ namespace tfr_control
 			scoop_position_msg.data = scoop_position;
 			scoop_publisher.publish(scoop_position_msg);
 			
-			/*
+			
+			ROS_INFO_STREAM("arm_lower_position: position: write: " << position_values[static_cast<int>(Joint::LOWER_ARM)] << std::endl);
+			ROS_INFO_STREAM("arm_lower_position: command: write: " << command_values[static_cast<int>(Joint::LOWER_ARM)] << std::endl);
+			ROS_INFO_STREAM("arm_lower_position: effort: write: " << effort_values[static_cast<int>(Joint::LOWER_ARM)] << std::endl);
+			ROS_INFO_STREAM("arm_lower_position: velocity: write: " << velocity_values[static_cast<int>(Joint::LOWER_ARM)] << std::endl);
 			ROS_INFO_STREAM("arm_lower_position: write: " << arm_lower_position << std::endl);
+			
 			
 			ROS_INFO_STREAM("arm_upper_position: position: write: " << position_values[static_cast<int>(Joint::UPPER_ARM)] << std::endl);
 			ROS_INFO_STREAM("arm_upper_position: command: write: " << command_values[static_cast<int>(Joint::UPPER_ARM)] << std::endl);
 			ROS_INFO_STREAM("arm_upper_position: effort: write: " << effort_values[static_cast<int>(Joint::UPPER_ARM)] << std::endl);
 			ROS_INFO_STREAM("arm_upper_position: velocity: write: " << velocity_values[static_cast<int>(Joint::UPPER_ARM)] << std::endl);
 			ROS_INFO_STREAM("arm_upper_position: write: " << arm_upper_position << std::endl);
-			*/
+			
 			
 			ROS_INFO_STREAM("scoop_position: position: write: " << position_values[static_cast<int>(Joint::SCOOP)] << std::endl);
 			ROS_INFO_STREAM("scoop_position: command: write: " << command_values[static_cast<int>(Joint::SCOOP)] << std::endl);
@@ -421,21 +437,17 @@ namespace tfr_control
         command_values[static_cast<int>(Joint::RIGHT_TREAD)] = 0;
 
         //TURNTABLE
-        command_values[static_cast<int>(Joint::TURNTABLE)] = 
-            -position_values[static_cast<int>(Joint::TURNTABLE)];
+        command_values[static_cast<int>(Joint::TURNTABLE)] = 0;
 
         //LOWER_ARM
-        command_values[static_cast<int>(Joint::LOWER_ARM)] =
-            position_values[static_cast<int>(Joint::LOWER_ARM)];
+        command_values[static_cast<int>(Joint::LOWER_ARM)] = 0;
+		
         //UPPER_ARM
-        command_values[static_cast<int>(Joint::UPPER_ARM)] =
-            position_values[static_cast<int>(Joint::UPPER_ARM)];
+        command_values[static_cast<int>(Joint::UPPER_ARM)] = 0;
         //SCOOP
-        command_values[static_cast<int>(Joint::SCOOP)] =
-            position_values[static_cast<int>(Joint::SCOOP)];
+        command_values[static_cast<int>(Joint::SCOOP)] = 0;
         //BIN
-        command_values[static_cast<int>(Joint::BIN)] =
-            position_values[static_cast<int>(Joint::BIN)];
+        command_values[static_cast<int>(Joint::BIN)] = 0;
     }
 
     /*
