@@ -53,12 +53,12 @@ right_tread_velocity_controller:
 
 
 bin_position_controller:
-    type: position_controllers/JointPositionController
+    type: effort_controllers/JointPositionController
     joint: bin_joint
 
 # Controls all the joints of the main part of the arm
 arm_controller:
-    type: position_controllers/JointTrajectoryController
+    type: effort_controllers/JointTrajectoryController
     joints:
         - turntable_joint
         - lower_arm_joint
@@ -74,7 +74,7 @@ arm_controller:
 # separate from the main arm controller as MoveIt requires
 # having a separate controller for the end effector
 arm_end_controller:
-    type: position_controllers/JointTrajectoryController
+    type: effort_controllers/JointTrajectoryController
     joints:
         - scoop_joint
     gains:
