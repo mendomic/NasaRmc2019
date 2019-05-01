@@ -293,6 +293,8 @@ namespace tfr_control
 			    
 			    static_cast<int32_t>
 			    (
+					std::max(
+					std::min(
 			        linear_interp_double
 			        (
 			            command_values[static_cast<int>(Joint::SCOOP)],
@@ -300,7 +302,7 @@ namespace tfr_control
 		                0,
 		                1,
 						-1
-		            )
+		            ), 1000.0), -1000.0)
 		        );
 				
 		        
