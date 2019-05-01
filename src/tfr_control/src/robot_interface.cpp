@@ -311,7 +311,7 @@ namespace tfr_control
 			        
 			std_msgs::Int32 scoop_position_msg;
 			scoop_position_msg.data = scoop_position;
-			scoop_publisher.publish(scoop_position_msg);
+			//scoop_publisher.publish(scoop_position_msg);
 			
 			/*
 			ROS_INFO_STREAM("arm_lower_position: position: write: " << position_values[static_cast<int>(Joint::LOWER_ARM)] << std::endl);
