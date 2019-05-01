@@ -127,18 +127,21 @@ namespace tfr_control {
 		volatile ros::Subscriber lower_arm_subscriber_amps;
 		ros::Publisher  lower_arm_publisher;
 		volatile int32_t lower_arm_encoder = 0;
+		volatile double lower_arm_amps = 0.0;
 		std::mutex lower_arm_mutex;
 		
 		volatile ros::Subscriber upper_arm_subscriber_encoder;
 		volatile ros::Subscriber upper_arm_subscriber_amps;
 		ros::Publisher  upper_arm_publisher;
 		volatile int32_t upper_arm_encoder = 0;
+		volatile double upper_arm_amps = 0.0;
 		std::mutex upper_arm_mutex;
 		
 		volatile ros::Subscriber scoop_subscriber_encoder;
 		volatile ros::Subscriber scoop_subscriber_amps;
 		ros::Publisher  scoop_publisher;
 		volatile int32_t scoop_encoder = 0;
+		volatile double scoop_amps = 0.0;
 		std::mutex scoop_mutex;
 		
 		void readLowerArmEncoder(const std_msgs::Int32 &msg);
