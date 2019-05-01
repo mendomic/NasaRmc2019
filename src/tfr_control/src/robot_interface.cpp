@@ -285,7 +285,7 @@ namespace tfr_control
 
 			std_msgs::Int32 arm_upper_position_msg;
 			arm_upper_position_msg.data = arm_upper_position;
-			//upper_arm_publisher.publish(arm_upper_position_msg);
+			upper_arm_publisher.publish(arm_upper_position_msg);
 
 
             //SCOOP
