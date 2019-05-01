@@ -271,17 +271,19 @@ namespace tfr_control
             //UPPER_ARM
 			int32_t arm_upper_position = // command_values[static_cast<int>(Joint::UPPER_ARM)];
 			
-	static_cast<int32_t>
-                            (
-                                linear_interp_double
-                                (
-                                    command_values[static_cast<int>(Joint::UPPER_ARM)],
-                                0,
-                                0,
-                                1,
-                                1000
-                            )
-                        );
+				static_cast<int32_t>
+			    (
+					std::max(
+					std::min(
+			        linear_interp_double
+			        (
+			            command_values[static_cast<int>(Joint::UPPER_ARM)],
+		                0,
+		                0,
+		                1,
+						-1
+		            ), 1000.0), -1000.0)
+		        );
 
 			std_msgs::Int32 arm_upper_position_msg;
 			arm_upper_position_msg.data = arm_upper_position;

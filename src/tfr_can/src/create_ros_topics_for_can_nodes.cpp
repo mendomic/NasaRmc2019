@@ -134,7 +134,7 @@ int main(int argc, char* argv[]) {
     		bridge.add_publisher(iopub_8_2_3, loop_rate);
 		}
 		
-		else if (deviceId == 12)
+		else if (deviceId == 9)
 		{
 			// Roboteq SDC3260 in Closed Loop Count Position mode.
 
