@@ -202,7 +202,7 @@ int main(int argc, char **argv)
     ros::NodeHandle n;
 
     double rate;
-    ros::param::param<double>("~rate", rate, 30.0);
+    ros::param::param<double>("~rate", rate, 10.0);
 
     //test code
     if (use_fake_values)

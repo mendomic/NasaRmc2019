@@ -96,7 +96,7 @@ namespace tfr_control
         registerInterface(&joint_position_interface);
 		
 		
-        for (int joint = 0; jint < JOINT_COUNT; joint++)
+        for (int joint = 0; joint < JOINT_COUNT; joint++)
 		{
 			velocity_values[static_cast<int>(Joint::RIGHT_TREAD)] = 0;
 			effort_values[static_cast<int>(Joint::RIGHT_TREAD)] = 0;
@@ -175,20 +175,20 @@ namespace tfr_control
 		            );
 
             position_values[static_cast<int>(Joint::LOWER_ARM)] = lower_arm_position_double;
-            //velocity_values[static_cast<int>(Joint::LOWER_ARM)] = 0;
-            //effort_values[static_cast<int>(Joint::LOWER_ARM)] = 0;
+            velocity_values[static_cast<int>(Joint::LOWER_ARM)] = 0;
+            effort_values[static_cast<int>(Joint::LOWER_ARM)] = 0;
 
             //UPPER_ARM
             position_values[static_cast<int>(Joint::UPPER_ARM)] = upper_arm_position_double; //reading_a.arm_upper_pos;
-            //velocity_values[static_cast<int>(Joint::UPPER_ARM)] = 0;
-            //effort_values[static_cast<int>(Joint::UPPER_ARM)] = 0;
+            velocity_values[static_cast<int>(Joint::UPPER_ARM)] = 0;
+            effort_values[static_cast<int>(Joint::UPPER_ARM)] = 0;
 
             //SCOOP
             position_values[static_cast<int>(Joint::SCOOP)] = scoop_position_double; //reading_a.arm_scoop_pos;
-            //velocity_values[static_cast<int>(Joint::SCOOP)] = 0;
-            //effort_values[static_cast<int>(Joint::SCOOP)] = 0;
+            velocity_values[static_cast<int>(Joint::SCOOP)] = 0;
+            effort_values[static_cast<int>(Joint::SCOOP)] = 0;
 
-			
+			/*
             ROS_INFO_STREAM("arm_lower_position: read: encoder: " << lower_arm_encoder << std::endl);
 			ROS_INFO_STREAM("arm_lower_position: read: " << position_values[static_cast<int>(Joint::LOWER_ARM)] << std::endl);
 			
@@ -197,7 +197,7 @@ namespace tfr_control
 
 			ROS_INFO_STREAM("scoop_position: read: encoder: " << scoop_encoder << std::endl);
             ROS_INFO_STREAM("scoop_position: read: " << position_values[static_cast<int>(Joint::SCOOP)] << std::endl);
-			
+			*/
         }
  
         //BIN
@@ -259,7 +259,7 @@ namespace tfr_control
                                     command_values[static_cast<int>(Joint::LOWER_ARM)],
                                 0,
                                 0,
-                                10,
+                                1,
                                 1000
                             )
                         );
@@ -278,7 +278,7 @@ namespace tfr_control
                                     command_values[static_cast<int>(Joint::UPPER_ARM)],
                                 0,
                                 0,
-                                10,
+                                1,
                                 1000
                             )
                         );
@@ -289,7 +289,7 @@ namespace tfr_control
 
 
             //SCOOP
-			int32_t scoop_position = //command_values[static_cast<int>(Joint::SCOOP)];
+			int32_t scoop_position = // static_cast<int32_t>(command_values[static_cast<int>(Joint::SCOOP)]); //command_values[static_cast<int>(Joint::SCOOP)];
 			    
 			    static_cast<int32_t>
 			    (
@@ -298,17 +298,18 @@ namespace tfr_control
 			            command_values[static_cast<int>(Joint::SCOOP)],
 		                0,
 		                0,
-		                10,
-		                1000
+		                1,
+						-1
 		            )
 		        );
+				
 		        
 			        
 			std_msgs::Int32 scoop_position_msg;
 			scoop_position_msg.data = scoop_position;
 			scoop_publisher.publish(scoop_position_msg);
 			
-			
+			/*
 			ROS_INFO_STREAM("arm_lower_position: position: write: " << position_values[static_cast<int>(Joint::LOWER_ARM)] << std::endl);
 			ROS_INFO_STREAM("arm_lower_position: command: write: " << command_values[static_cast<int>(Joint::LOWER_ARM)] << std::endl);
 			ROS_INFO_STREAM("arm_lower_position: effort: write: " << effort_values[static_cast<int>(Joint::LOWER_ARM)] << std::endl);
@@ -321,7 +322,7 @@ namespace tfr_control
 			ROS_INFO_STREAM("arm_upper_position: effort: write: " << effort_values[static_cast<int>(Joint::UPPER_ARM)] << std::endl);
 			ROS_INFO_STREAM("arm_upper_position: velocity: write: " << velocity_values[static_cast<int>(Joint::UPPER_ARM)] << std::endl);
 			ROS_INFO_STREAM("arm_upper_position: write: " << arm_upper_position << std::endl);
-			
+			*/
 			
 			ROS_INFO_STREAM("scoop_position: position: write: " << position_values[static_cast<int>(Joint::SCOOP)] << std::endl);
 			ROS_INFO_STREAM("scoop_position: command: write: " << command_values[static_cast<int>(Joint::SCOOP)] << std::endl);
