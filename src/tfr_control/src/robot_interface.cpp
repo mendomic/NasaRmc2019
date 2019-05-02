@@ -141,7 +141,16 @@ namespace tfr_control
         if (!use_fake_values)
         {
             //TURNTABLE
-            position_values[static_cast<int>(Joint::TURNTABLE)] = 0;
+            double turntable_position_double = 
+	            linear_interp_double(
+		            static_cast<double>(turntable_encoder),
+		            static_cast<double>(turntable_encoder_min),
+		            turntable_joint_min,
+		            static_cast<double>(turntable_encoder_max),
+		            turntable_joint_max
+		            );
+			
+			position_values[static_cast<int>(Joint::TURNTABLE)] = turntable_position_double;
                 //reading_a.arm_turntable_pos + turntable_offset;
             velocity_values[static_cast<int>(Joint::TURNTABLE)] = 0; 
             effort_values[static_cast<int>(Joint::TURNTABLE)] = 0;
@@ -189,6 +198,9 @@ namespace tfr_control
             velocity_values[static_cast<int>(Joint::SCOOP)] = 0;
             effort_values[static_cast<int>(Joint::SCOOP)] = 0;
 
+			ROS_INFO_STREAM("turntable_position: read: encoder: " << turntable_encoder << std::endl);
+			ROS_INFO_STREAM("turntable_position: read: " << position_values[static_cast<int>(Joint::TURNTABLE)] << std::endl);
+			
 			/*
             ROS_INFO_STREAM("arm_lower_position: read: encoder: " << lower_arm_encoder << std::endl);
 			ROS_INFO_STREAM("arm_lower_position: read: " << position_values[static_cast<int>(Joint::LOWER_ARM)] << std::endl);
@@ -243,11 +255,23 @@ namespace tfr_control
         else  // we are working with the real arm
         {
             //TURNTABLE
+			int32_t turntable_position = command_values[static_cast<int>(Joint::TURNTABLE)];
 			/*
-            signal = turntableAngleToPWM(command_values[static_cast<int>(Joint::TURNTABLE)],
-                        position_values[static_cast<int>(Joint::TURNTABLE)]);
-            command.arm_turntable = signal;
+			static_cast<int32_t>
+                            (
+                                linear_interp_double
+                                (
+                                    command_values[static_cast<int>(Joint::TURNTABLE)],
+                                0,
+                                0,
+                                1,
+                                -1
+                            )
+                        );
 			*/
+			std_msgs::Int32 turntable_position_msg;
+			turntable_position_msg.data = turntable_position;
+			turntable_publisher.publish(turntable_position_msg);
 
 
             //LOWER_ARM
@@ -255,6 +279,8 @@ namespace tfr_control
 			int32_t arm_lower_position = // command_values[static_cast<int>(Joint::LOWER_ARM)];
 			static_cast<int32_t>
                             (
+								std::max(
+								std::min(
                                 linear_interp_double
                                 (
                                     command_values[static_cast<int>(Joint::LOWER_ARM)],
@@ -262,11 +288,11 @@ namespace tfr_control
                                 0,
                                 1,
                                 -1
-                            )
-                        );
+								), 1000.0), -1000.0)
+							);
 			std_msgs::Int32 arm_lower_position_msg;
 			arm_lower_position_msg.data = arm_lower_position;
-			lower_arm_publisher.publish(arm_lower_position_msg);
+			//lower_arm_publisher.publish(arm_lower_position_msg);
 			
 
             //UPPER_ARM
@@ -315,11 +341,20 @@ namespace tfr_control
 			//scoop_publisher.publish(scoop_position_msg);
 			
 			
+			ROS_INFO_STREAM("turntable_position: position: write: " << position_values[static_cast<int>(Joint::TURNTABLE)] << std::endl);
+			ROS_INFO_STREAM("turntable_position: command: write: " << command_values[static_cast<int>(Joint::TURNTABLE)] << std::endl);
+			ROS_INFO_STREAM("turntable_position: effort: write: " << effort_values[static_cast<int>(Joint::TURNTABLE)] << std::endl);
+			ROS_INFO_STREAM("turntable_position: velocity: write: " << velocity_values[static_cast<int>(Joint::TURNTABLE)] << std::endl);
+			ROS_INFO_STREAM("turntable_position: write: " << turntable_position << std::endl);
+			
+			
+			/*
 			ROS_INFO_STREAM("arm_lower_position: position: write: " << position_values[static_cast<int>(Joint::LOWER_ARM)] << std::endl);
 			ROS_INFO_STREAM("arm_lower_position: command: write: " << command_values[static_cast<int>(Joint::LOWER_ARM)] << std::endl);
 			ROS_INFO_STREAM("arm_lower_position: effort: write: " << effort_values[static_cast<int>(Joint::LOWER_ARM)] << std::endl);
 			ROS_INFO_STREAM("arm_lower_position: velocity: write: " << velocity_values[static_cast<int>(Joint::LOWER_ARM)] << std::endl);
 			ROS_INFO_STREAM("arm_lower_position: write: " << arm_lower_position << std::endl);
+			*/
 			
 			/*
 			ROS_INFO_STREAM("arm_upper_position: position: write: " << position_values[static_cast<int>(Joint::UPPER_ARM)] << std::endl);
@@ -346,7 +381,7 @@ namespace tfr_control
 		//left_tread_command = linear_interp_double(left_tread_command, 0.0, 0.0, 1.0, 1000.0);
 		std_msgs::Int32 left_tread_msg;
 		left_tread_msg.data = static_cast<int32_t>(left_tread_command * left_tread_scale);
-        brushless_left_tread_vel_publisher.publish(left_tread_msg);
+        //brushless_left_tread_vel_publisher.publish(left_tread_msg);
 
         //RIGHT_TREAD
 	int right_tread_scale = 1;
@@ -355,7 +390,7 @@ namespace tfr_control
 		//right_tread_command = linear_interp_double(right_tread_command, 0.0, 0.0, 1.0, 1000.0);
 		std_msgs::Int32 right_tread_msg;
 		right_tread_msg.data = static_cast<int32_t>(right_tread_command * right_tread_scale);
-        brushless_right_tread_vel_publisher.publish(right_tread_msg);
+        //brushless_right_tread_vel_publisher.publish(right_tread_msg);
 
 		//ROS_INFO_STREAM("left_tread_scale: " << left_tread_msg.data << std::endl);
 		//ROS_INFO_STREAM("right_tread_scale: " << right_tread_msg.data << std::endl);
