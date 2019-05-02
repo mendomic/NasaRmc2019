@@ -275,7 +275,7 @@ namespace tfr_control
 		        );
 			std_msgs::Int32 turntable_position_msg;
 			turntable_position_msg.data = turntable_position;
-			//turntable_publisher.publish(turntable_position_msg);
+			turntable_publisher.publish(turntable_position_msg);
 
 
             //LOWER_ARM
