@@ -29,9 +29,9 @@ namespace tfr_control
 		
 		
 		turntable_subscriber_encoder{n.subscribe("/device4/get_qry_abcntr/channel_1", 5,
-                &RobotInterface::readLowerArmEncoder, this)},
+                &RobotInterface::readTurntableEncoder, this)},
 		turntable_subscriber_amps{n.subscribe("/device4/get_qry_batamps/channel_1", 1,
-                &RobotInterface::readLowerArmAmps, this)},
+                &RobotInterface::readTurntableAmps, this)},
 		turntable_publisher{n.advertise<std_msgs::Int32>("/device4/set_cmd_cango/cmd_cango_1", 1)},
 		
 		
@@ -255,20 +255,20 @@ namespace tfr_control
         else  // we are working with the real arm
         {
             //TURNTABLE
-			int32_t turntable_position = command_values[static_cast<int>(Joint::TURNTABLE)];
-			/*
-			static_cast<int32_t>
-                            (
-                                linear_interp_double
-                                (
-                                    command_values[static_cast<int>(Joint::TURNTABLE)],
-                                0,
-                                0,
-                                1,
-                                -1
-                            )
-                        );
-			*/
+			int32_t turntable_position = 
+				static_cast<int32_t>
+			    (
+					std::max(
+					std::min(
+			        linear_interp_double
+			        (
+			            command_values[static_cast<int>(Joint::TURNTABLE)],
+		                0,
+		                0,
+		                1,
+						-1 // This value of -1 is really important. Otherwise the turntable may accelerate when it ought to decelerate and vice versa.
+		            ), 1000.0), -1000.0)
+		        );
 			std_msgs::Int32 turntable_position_msg;
 			turntable_position_msg.data = turntable_position;
 			turntable_publisher.publish(turntable_position_msg);

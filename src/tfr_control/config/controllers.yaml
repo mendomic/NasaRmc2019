@@ -64,7 +64,7 @@ arm_controller:
         - lower_arm_joint
         - upper_arm_joint
     gains:
-        turntable_joint: {p: 0.6, i: 0.1, d: 0.00}
+        turntable_joint: {p: 1500, i: 0.0, d: 0.00}
         lower_arm_joint: {p: 0.5, i: 0.2, d: 0.01}
         upper_arm_joint: {p: 5500, i: 2.00, d: 10.00}
     constraints:
