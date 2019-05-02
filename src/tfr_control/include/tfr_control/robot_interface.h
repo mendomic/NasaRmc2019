@@ -197,8 +197,8 @@ namespace tfr_control {
 		
 		 int32_t turntable_encoder_min = -6440;
 		 int32_t turntable_encoder_max = 6440;
-		 double turntable_joint_min = -3.14159265358979;
-		 double turntable_joint_max = 3.14159265358979;
+		 double turntable_joint_min = -2 * 3.14159265358979;
+		 double turntable_joint_max = 2 * 3.14159265358979;
 		
 		 int32_t arm_lower_encoder_min = 0;
 		 int32_t arm_lower_encoder_max = 149;
