@@ -16,14 +16,8 @@ namespace tfr_control
      * */
     RobotInterface::RobotInterface(ros::NodeHandle &n, bool fakes, 
             const double *lower_lim, const double *upper_lim) :
-		/*
-        arduino_a{n.subscribe("/sensors/arduino_a", 5,
-                &RobotInterface::readArduinoA, this)},
-        arduino_b{n.subscribe("/sensors/arduino_b", 5,
-                &RobotInterface::readArduinoB, this)},
-		*/
-        
-		
+
+
 		brushless_left_tread_vel{n.subscribe("/device8/get_qry_relcntr/channel_2", 5,
                 &RobotInterface::accumulateBrushlessLeftVel, this)},
 		brushless_left_tread_vel_publisher{n.advertise<std_msgs::Int32>("/device8/set_cmd_cango/cmd_cango_2", 1)},
@@ -34,25 +28,25 @@ namespace tfr_control
 		brushless_right_tread_vel_publisher{n.advertise<std_msgs::Int32>("/device8/set_cmd_cango/cmd_cango_1", 1)},
 		
 		
-		lower_arm_subscriber_encoder{n.subscribe("/device4/get_qry_abcntr/channel_1", 5,
+		lower_arm_subscriber_encoder{n.subscribe("/device12/get_qry_abcntr/channel_1", 5,
                 &RobotInterface::readLowerArmEncoder, this)},
-		lower_arm_subscriber_amps{n.subscribe("/device4/get_qry_batamps/channel_1", 1,
+		lower_arm_subscriber_amps{n.subscribe("/device12/get_qry_batamps/channel_1", 1,
                 &RobotInterface::readLowerArmAmps, this)},
-		lower_arm_publisher{n.advertise<std_msgs::Int32>("/device4/set_cmd_cango/cmd_cango_1", 1)},
+		lower_arm_publisher{n.advertise<std_msgs::Int32>("/device12/set_cmd_cango/cmd_cango_1", 1)},
 		
 		
-		upper_arm_subscriber_encoder{n.subscribe("/device4/get_qry_abcntr/channel_2", 5,
+		upper_arm_subscriber_encoder{n.subscribe("/device4/get_qry_abcntr/channel_3", 5,
                 &RobotInterface::readUpperArmEncoder, this)},
-		upper_arm_subscriber_amps{n.subscribe("/device4/get_qry_batamps/channel_2", 1,
+		upper_arm_subscriber_amps{n.subscribe("/device4/get_qry_batamps/channel_3", 1,
                 &RobotInterface::readUpperArmAmps, this)},
-		upper_arm_publisher{n.advertise<std_msgs::Int32>("/device4/set_cmd_cango/cmd_cango_2", 1)},
+		upper_arm_publisher{n.advertise<std_msgs::Int32>("/device4/set_cmd_cango/cmd_cango_3", 1)},
 		
 		
-		scoop_subscriber_encoder{n.subscribe("/device4/get_qry_abcntr/channel_3", 5,
+		scoop_subscriber_encoder{n.subscribe("/device4/get_qry_abcntr/channel_2", 5,
                 &RobotInterface::readScoopEncoder, this)},
-		scoop_subscriber_amps{n.subscribe("/device4/get_qry_batamps/channel_3", 1,
+		scoop_subscriber_amps{n.subscribe("/device4/get_qry_batamps/channel_2", 1,
                 &RobotInterface::readScoopAmps, this)},
-		scoop_publisher{n.advertise<std_msgs::Int32>("/device4/set_cmd_cango/cmd_cango_3", 1)},
+		scoop_publisher{n.advertise<std_msgs::Int32>("/device4/set_cmd_cango/cmd_cango_2", 1)},
 		
         //pwm_publisher{n.advertise<tfr_msgs::PwmCommand>("/motor_output", 15)},
         use_fake_values{fakes}, lower_limits{lower_lim},

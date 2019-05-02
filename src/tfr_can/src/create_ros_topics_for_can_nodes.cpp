@@ -100,7 +100,7 @@ int main(int argc, char* argv[]) {
 
 		if (deviceId == 4)
 		{
-			ROS_INFO_STREAM("case: Device 4" << std::endl);
+			ROS_DEBUG_STREAM("tfr_can: case: Device 4" << std::endl);
 			
 			setupArmTopics(device, bridge, eds_files_path);
 		}
@@ -108,7 +108,7 @@ int main(int argc, char* argv[]) {
 		
 		else if (deviceId == 8)
 		{
-			ROS_INFO_STREAM("case: Device 8" << std::endl);
+			ROS_DEBUG_STREAM("tfr_can: case: Device 8" << std::endl);
 			
 			// Roboteq SBL2360 in Closed Loop Speed Position mode.
 
@@ -140,9 +140,9 @@ int main(int argc, char* argv[]) {
 		
 		else if (deviceId == 12)
 		{
-			ROS_INFO_STREAM("case: Device 12" << std::endl);
+			ROS_DEBUG_STREAM("tfr_can: case: Device 12" << std::endl);
 			
-			/*
+			
 			auto iosub_12_1_1 = std::make_shared<kaco::EntrySubscriber>(device, "cmd_cango/cmd_cango_1");
     		bridge.add_subscriber(iosub_12_1_1);
 
@@ -171,7 +171,7 @@ int main(int argc, char* argv[]) {
 			
 			auto iopub_12_3_3 = std::make_shared<kaco::EntryPublisher>(device, "qry_abcntr/channel_3");
     		bridge.add_publisher(iopub_12_3_3, loop_rate);
-			*/
+			
 		}
 	}
 	PRINT("About to call bridge.run()");
