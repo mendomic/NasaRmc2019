@@ -122,6 +122,12 @@ namespace tfr_control {
 		ros::Subscriber brushless_right_tread_vel;
 		ros::Subscriber brushless_left_tread_vel;
 		
+		volatile ros::Subscriber turntable_subscriber_encoder;
+		volatile ros::Subscriber turntable_subscriber_amps;
+		ros::Publisher  turntable_publisher;
+		volatile int32_t turntable_encoder = 0;
+		volatile double turntable_amps = 0.0;
+		std::mutex turntable_mutex;
 		
 		volatile ros::Subscriber lower_arm_subscriber_encoder;
 		volatile ros::Subscriber lower_arm_subscriber_amps;
@@ -143,6 +149,9 @@ namespace tfr_control {
 		volatile int32_t scoop_encoder = 0;
 		volatile double scoop_amps = 0.0;
 		std::mutex scoop_mutex;
+		
+		void readTurntableEncoder(const std_msgs::Int32 &msg);
+		void readTurntableAmps(const std_msgs::Float64 &msg);
 		
 		void readLowerArmEncoder(const std_msgs::Int32 &msg);
 		void readLowerArmAmps(const std_msgs::Float64 &msg);
@@ -188,8 +197,8 @@ namespace tfr_control {
 		
 		 int32_t turntable_encoder_min = 0;
 		 int32_t turntable_encoder_max = 1000;
-		 double turntable_joint_min = 0.0;
-		 double turntable_joint_max = 0.0;
+		 double turntable_joint_min = -1.57079632679489;
+		 double turntable_joint_max = 1.57079632679489;
 		
 		 int32_t arm_lower_encoder_min = 0;
 		 int32_t arm_lower_encoder_max = 28;

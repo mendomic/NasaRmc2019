@@ -28,6 +28,13 @@ namespace tfr_control
 		brushless_right_tread_vel_publisher{n.advertise<std_msgs::Int32>("/device8/set_cmd_cango/cmd_cango_1", 1)},
 		
 		
+		turntable_subscriber_encoder{n.subscribe("/device4/get_qry_abcntr/channel_1", 5,
+                &RobotInterface::readLowerArmEncoder, this)},
+		turntable_subscriber_amps{n.subscribe("/device4/get_qry_batamps/channel_1", 1,
+                &RobotInterface::readLowerArmAmps, this)},
+		turntable_publisher{n.advertise<std_msgs::Int32>("/device4/set_cmd_cango/cmd_cango_1", 1)},
+		
+		
 		lower_arm_subscriber_encoder{n.subscribe("/device12/get_qry_abcntr/channel_1", 5,
                 &RobotInterface::readLowerArmEncoder, this)},
 		lower_arm_subscriber_amps{n.subscribe("/device12/get_qry_batamps/channel_1", 1,
@@ -477,6 +484,20 @@ namespace tfr_control
         position.push_back(position_values[static_cast<int>(Joint::SCOOP)]);
     }
 
+	void RobotInterface::readTurntableEncoder(const std_msgs::Int32 &msg)
+	{
+		turntable_mutex.lock();
+		
+		turntable_encoder = msg.data;
+		
+		turntable_mutex.unlock();
+	}
+	
+	void RobotInterface::readTurntableAmps(const std_msgs::Float64 &msg)
+	{
+		turntable_amps = msg.data;
+	}
+
 	void RobotInterface::readLowerArmEncoder(const std_msgs::Int32 &msg)
 	{
 		lower_arm_mutex.lock();
@@ -487,7 +508,7 @@ namespace tfr_control
 		lower_arm_mutex.unlock();
 	}
 	
-	// TODO: Add mutex to protect from reading while writing.
+	// TODO: Add mutex to protect all of these arm readings from reading while writing.
 	void RobotInterface::readLowerArmAmps(const std_msgs::Float64 &msg)
 	{
 		lower_arm_amps = msg.data;
