@@ -25,7 +25,7 @@ const size_t num_devices_required = 1;
 
 const double loop_rate = 10; // [Hz]
 
-void setupDriveBaseController(kaco::Device& device, kaco::Bridge& bridge, std::string& eds_files_path){
+void setupArmTopics(kaco::Device& device, kaco::Bridge& bridge, std::string& eds_files_path){
     // Roboteq SDC3260 in Closed Loop Count Position mode.
 
 	auto iosub_4_1_1 = std::make_shared<kaco::EntrySubscriber>(device, "cmd_cango/cmd_cango_1");
@@ -73,7 +73,7 @@ int main(int argc, char* argv[]) {
 		ERROR("Number of devices found: " << master.num_devices() << ". Waiting for " << num_devices_required << ".");
 		PRINT("Trying to discover more nodes via NMT Node Guarding...");
 		master.core.nmt.discover_nodes();
-		std::this_thread::sleep_for(std::chrono::seconds(1));
+		std::this_thread::sleep_for(std::chrono::seconds(2));
 	}
 
 	// Create bridge
@@ -100,7 +100,7 @@ int main(int argc, char* argv[]) {
 
 		if (deviceId == 4)
 		{
-			setupDriveBaseController(device, bridge, eds_files_path);
+			setupArmTopics(device, bridge, eds_files_path);
 		}
 		
 		
@@ -168,7 +168,6 @@ int main(int argc, char* argv[]) {
     		bridge.add_publisher(iopub_12_3_3, loop_rate);
 		}
 	}
-
 	PRINT("About to call bridge.run()");
 	bridge.run();
 	
