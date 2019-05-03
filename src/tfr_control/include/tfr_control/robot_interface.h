@@ -214,8 +214,8 @@ namespace tfr_control {
 		 double arm_lower_joint_min = 0.104; // lower arm UP
 		 double arm_lower_joint_max = 1.55;
 		
-		 int32_t arm_upper_encoder_min = 0; // arm UP
-		 int32_t arm_upper_encoder_max = 836;
+		 int32_t arm_upper_encoder_min = 836; // arm UP
+		 int32_t arm_upper_encoder_max = 0;
 		 double arm_upper_joint_min = 0.98; // arm UP
 		 double arm_upper_joint_max = 2.4; // arm DOWN, actuator EXTENDED
 		

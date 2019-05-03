@@ -21,6 +21,7 @@
 
 #include <tfr_msgs/DiggingAction.h> // Note: "Action" is appended
 #include <actionlib/client/simple_action_client.h>
+#include <tfr_utilities/arm_manipulator.h>
 #include <termios.h>
 
 typedef actionlib::SimpleActionClient<tfr_msgs::DiggingAction> Client;
@@ -85,10 +86,18 @@ int main(int argc, char** argv)
     // Ensure connection was established with Server
     client.waitForServer();
 
+	ros::NodeHandle nh;
+	//ros::NodeHandle nh;
+	ArmManipulator arm_manipulator{nh};
+	//arm_manipulator.moveArm(3.05, 0.1, 0.98, -1.17);
+	arm_manipulator.moveArm(3.05, 0.1, 0.98, 1.0);
+	
+	/*
     // Members of ExampleGoal are defined in tfr_msgs/action/Digging.action
     tfr_msgs::DiggingGoal goal;
     goal.diggingTime = ros::Duration(420.0);
 
+	
     // Callback functions: Result, Start, Feedback
     //note we must use NULL not nullptr, or boost error
     client.sendGoal(goal, &finished, NULL, &feedback);
@@ -105,6 +114,7 @@ int main(int argc, char** argv)
         ros::spinOnce();
         rate.sleep();
     }
-
+	*/
+	
     return 0;
 }

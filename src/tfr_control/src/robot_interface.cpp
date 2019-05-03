@@ -211,10 +211,13 @@ namespace tfr_control
 			/*
 			ROS_INFO_STREAM("arm_upper_position: read: encoder: " << upper_arm_encoder << std::endl);
             ROS_INFO_STREAM("arm_upper_position: read: " << position_values[static_cast<int>(Joint::UPPER_ARM)] << std::endl);
-
+			*/
+			
+			/*
 			ROS_INFO_STREAM("scoop_position: read: encoder: " << scoop_encoder << std::endl);
             ROS_INFO_STREAM("scoop_position: read: " << position_values[static_cast<int>(Joint::SCOOP)] << std::endl);
 			*/
+			
         }
  
         //BIN
@@ -312,7 +315,7 @@ namespace tfr_control
 		                0,
 		                0,
 		                1,
-						-1
+						1
 		            ), 1000.0), -1000.0)
 		        );
 
@@ -334,7 +337,7 @@ namespace tfr_control
 		                0,
 		                0,
 		                1,
-						-1
+						1
 		            ), 1000.0), -1000.0)
 		        );
 				
