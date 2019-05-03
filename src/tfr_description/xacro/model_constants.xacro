@@ -46,20 +46,20 @@
   <xacro:property name="lower_arm_primary_length" value="${16*itom}" />
   <xacro:property name="lower_arm_width" value="${6*itom}" />
   <xacro:property name="lower_arm_height" value="${6*itom}" />
-  <xacro:property name="lower_arm_min" value="0.104" />
-  <xacro:property name="lower_arm_max" value="1.55" />   
+  <xacro:property name="lower_arm_min" value="0.1144" />
+  <xacro:property name="lower_arm_max" value="1.395" />   
 
   <!-- Upper arm parameters -->
   <xacro:property name="upper_arm_length" value="${20*itom}" />
   <xacro:property name="upper_arm_width" value="${4.75*itom}" />
   <xacro:property name="upper_arm_height" value="${5*itom}" />
-  <xacro:property name="upper_arm_min" value="0.98"/>
-  <xacro:property name="upper_arm_max" value="2.4"/>
+  <xacro:property name="upper_arm_min" value="1.078"/>
+  <xacro:property name="upper_arm_max" value="2.16"/>
 
   <!-- Scoop parameters -->
   <xacro:property name="scoop_width" value="${8.5*itom}" />
   <xacro:property name="scoop_length" value="${12*itom}" />
   <xacro:property name="scoop_diameter" value="${12.5*itom}" />
-  <xacro:property name="scoop_min" value="-1.3" />
-  <xacro:property name="scoop_max" value="1.62" />
+  <xacro:property name="scoop_min" value="-1.43" />
+  <xacro:property name="scoop_max" value="1.458" />
 </robot>
