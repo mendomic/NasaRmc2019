@@ -1,6 +1,15 @@
 # Holds all of the positions for the test client to travel to, in order
 positions: [
-  [[0.0, 0.0, 0.0, 0.0, 0.0], ##1azero position
-  [0.0, 0.0, 0.0, 1.0, 0.0], #arm is hanging over digging spot
-  [0.0, 0.0, 0.0, 0.0, 0.0]], ##1azero position
+  [[3.05, 0.1, 0.98, -1.17], ##1azero position
+  [3.05, 0.1, 0.98, 1.0], #move scoop
+  [3.05, 0.1, 0.98, -1.17]],  # zero position
+  [[3.05, 0.1, 0.98, -1.17], ##1azero position
+  [3.05, 0.1, 1.94, -1.17], #move upper arm
+  [3.05, 0.1, 0.98, -1.17]],  # zero position
+  [[3.05, 0.1, 0.98, -1.17], ##1azero position
+  [3.05, 0.78, 0.98, -1.17], #move lower arm
+  [3.05, 0.1, 0.98, -1.17]],  # zero position
+  [[3.05, 0.1, 0.98, -1.17], ##1azero position
+  [1.56, 0.1, 0.98, -1.17], #move turntable
+  [3.05, 0.1, 0.98, -1.17]],  # zero position
  ]
