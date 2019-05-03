@@ -311,7 +311,8 @@ class TeleopExecutive
                         //all zeros by default
                         drivebase_publisher.publish(move_cmd);
                         //first grab the current state of the arm
-                        arm_manipulator.moveArm(0, 0.50, 1.07, 1.6);
+                        //arm_manipulator.moveArm(0, 0.50, 1.07, 1.6);
+                        arm_manipulator.moveArm(3.05, 0.1, 0.98, -1.17);
                         ROS_INFO("Teleop Action Server: arm raise finished");
                         break;
                     }

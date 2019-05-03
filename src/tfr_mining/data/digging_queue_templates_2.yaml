@@ -1,6 +1,6 @@
 # Holds all of the positions for the test client to travel to, in order
 positions: [
-  [[3.05, 0.1, 1.07, 1.62], ##1azero position
+  [[3.05, 0.1, 1.70, 1.62], ##1azero position
   [3.05, 0.9, 1.21, -0.88], #arm is hanging over digging spot
   [3.05, 1.03, 1.21, -0.88], #arm touches down
   [3.05, 0.96, 1.48, 1.06], #dig in
