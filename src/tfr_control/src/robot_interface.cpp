@@ -211,10 +211,12 @@ namespace tfr_control
 			/*
 			ROS_INFO_STREAM("arm_upper_position: read: encoder: " << upper_arm_encoder << std::endl);
             ROS_INFO_STREAM("arm_upper_position: read: " << position_values[static_cast<int>(Joint::UPPER_ARM)] << std::endl);
-
+			*/
+			
+			
 			ROS_INFO_STREAM("scoop_position: read: encoder: " << scoop_encoder << std::endl);
             ROS_INFO_STREAM("scoop_position: read: " << position_values[static_cast<int>(Joint::SCOOP)] << std::endl);
-			*/
+			
         }
  
         //BIN
@@ -275,7 +277,7 @@ namespace tfr_control
 		        );
 			std_msgs::Int32 turntable_position_msg;
 			turntable_position_msg.data = turntable_position;
-			//turntable_publisher.publish(turntable_position_msg);
+			turntable_publisher.publish(turntable_position_msg);
 
 
             //LOWER_ARM
@@ -312,7 +314,7 @@ namespace tfr_control
 		                0,
 		                0,
 		                1,
-						-1
+						1
 		            ), 1000.0), -1000.0)
 		        );
 
@@ -369,13 +371,13 @@ namespace tfr_control
 			ROS_INFO_STREAM("arm_upper_position: write: " << arm_upper_position << std::endl);
 			*/
 			
-			/*
+			
 			ROS_INFO_STREAM("scoop_position: position: write: " << position_values[static_cast<int>(Joint::SCOOP)] << std::endl);
 			ROS_INFO_STREAM("scoop_position: command: write: " << command_values[static_cast<int>(Joint::SCOOP)] << std::endl);
 			ROS_INFO_STREAM("scoop_position: effort: write: " << effort_values[static_cast<int>(Joint::SCOOP)] << std::endl);
 			ROS_INFO_STREAM("scoop_position: velocity: write: " << velocity_values[static_cast<int>(Joint::SCOOP)] << std::endl);
 			ROS_INFO_STREAM("scoop_position: write: " << scoop_position << std::endl);
-			*/
+			
         }
 		
         //LEFT_TREAD
