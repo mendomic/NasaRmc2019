@@ -386,7 +386,7 @@ namespace tfr_mission_control {
     {
         setAutonomy(false);
         while (!autonomy.getState().isDone()) autonomy.cancelAllGoals();
-        resetTurntable();
+        //resetTurntable();
         setTeleop(true);
         softwareStop();
         widget->setFocus();

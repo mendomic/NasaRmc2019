@@ -198,13 +198,17 @@ namespace tfr_control
             velocity_values[static_cast<int>(Joint::SCOOP)] = 0;
             effort_values[static_cast<int>(Joint::SCOOP)] = 0;
 
+			/*
 			ROS_INFO_STREAM("turntable_position: read: encoder: " << turntable_encoder << std::endl);
 			ROS_INFO_STREAM("turntable_position: read: " << position_values[static_cast<int>(Joint::TURNTABLE)] << std::endl);
+			*/
 			
 			/*
             ROS_INFO_STREAM("arm_lower_position: read: encoder: " << lower_arm_encoder << std::endl);
 			ROS_INFO_STREAM("arm_lower_position: read: " << position_values[static_cast<int>(Joint::LOWER_ARM)] << std::endl);
+			*/
 			
+			/*
 			ROS_INFO_STREAM("arm_upper_position: read: encoder: " << upper_arm_encoder << std::endl);
             ROS_INFO_STREAM("arm_upper_position: read: " << position_values[static_cast<int>(Joint::UPPER_ARM)] << std::endl);
 
@@ -292,7 +296,7 @@ namespace tfr_control
 							);
 			std_msgs::Int32 arm_lower_position_msg;
 			arm_lower_position_msg.data = arm_lower_position;
-			//lower_arm_publisher.publish(arm_lower_position_msg);
+			lower_arm_publisher.publish(arm_lower_position_msg);
 			
 
             //UPPER_ARM
@@ -314,7 +318,7 @@ namespace tfr_control
 
 			std_msgs::Int32 arm_upper_position_msg;
 			arm_upper_position_msg.data = arm_upper_position;
-			//upper_arm_publisher.publish(arm_upper_position_msg);
+			upper_arm_publisher.publish(arm_upper_position_msg);
 			
 
             //SCOOP
@@ -338,14 +342,15 @@ namespace tfr_control
 			        
 			std_msgs::Int32 scoop_position_msg;
 			scoop_position_msg.data = scoop_position;
-			//scoop_publisher.publish(scoop_position_msg);
+			scoop_publisher.publish(scoop_position_msg);
 			
-			
+			/*
 			ROS_INFO_STREAM("turntable_position: position: write: " << position_values[static_cast<int>(Joint::TURNTABLE)] << std::endl);
 			ROS_INFO_STREAM("turntable_position: command: write: " << command_values[static_cast<int>(Joint::TURNTABLE)] << std::endl);
 			ROS_INFO_STREAM("turntable_position: effort: write: " << effort_values[static_cast<int>(Joint::TURNTABLE)] << std::endl);
 			ROS_INFO_STREAM("turntable_position: velocity: write: " << velocity_values[static_cast<int>(Joint::TURNTABLE)] << std::endl);
 			ROS_INFO_STREAM("turntable_position: write: " << turntable_position << std::endl);
+			*/
 			
 			
 			/*
