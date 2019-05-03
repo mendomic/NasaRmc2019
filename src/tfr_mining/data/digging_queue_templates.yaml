@@ -1,4 +1,8 @@
-# Holds all of the positions for the test client to travel to, in order
+#OLD: queue from 2018
+#Failled on actual run
+#
+# 
+#Holds all of the positions for the test client to travel to, in order
 #
 # This contents of this file initializes the "positions" object on the ROS parameter server.
 # The "positions" object is accessed directly by new DiggingQueue instances.
