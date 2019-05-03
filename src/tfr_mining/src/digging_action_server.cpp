@@ -32,7 +32,7 @@ typedef actionlib::SimpleActionClient<tfr_msgs::ArmMoveAction> Client;
 class DiggingActionServer {
 public:
     DiggingActionServer(ros::NodeHandle &nh, ros::NodeHandle &p_nh) :
-        priv_nh{p_nh}, diggingQueue{priv_nh}, 
+        priv_nh{p_nh}, queue{priv_nh}, 
         drivebase_publisher{nh.advertise<geometry_msgs::Twist>("cmd_vel", 5)},
         server{nh, "dig", boost::bind(&DiggingActionServer::execute, this, _1),
             false},
@@ -69,10 +69,10 @@ private:
         client.waitForServer();
         ROS_DEBUG("Connected with arm action server");
 
-        while (!diggingQueue.isEmpty())
+        while (!queue.isEmpty())
         {
             ROS_INFO("Time remaining: %f", (endTime - ros::Time::now()).toSec());
-            tfr_mining::DiggingSet set = diggingQueue.popDiggingSet();
+            tfr_mining::DiggingSet set = queue.popDiggingSet();
             ros::Time now = ros::Time::now();
 
             ROS_INFO("starting set");
@@ -131,7 +131,7 @@ private:
                     ros::Duration(1.5).sleep(); // Setting this to 2 seconds works for sure
                 }
                 
-                if (std::abs(state[4]) > 1.05 )
+                /*if (std::abs(state[4]) > 1.05 )
                 {
                     geometry_msgs::Twist pulse;
                     pulse.linear.x = -0.2;
@@ -143,15 +143,15 @@ private:
                 else if (std::abs(state[4]) > 0.05)
                 {
                     ros::Duration(0.5).sleep(); 
-                }
+                }*/
             }
         }
-        ROS_WARN("Moving arm to final position, exiting.");
+        /*ROS_WARN("Moving arm to final position, exiting.");
         arm_manipulator.moveArm(0.0, 0.1, 1.07, -1.0);
         ros::Duration(3.0).sleep();
         arm_manipulator.moveArm(0.0, 0.1, 1.07, 1.6);
         ros::Duration(3.0).sleep();
-        arm_manipulator.moveArm(0, 0.50, 1.07, 1.6);
+        arm_manipulator.moveArm(0, 0.50, 1.07, 1.6);*/
 
         tfr_msgs::DiggingResult result;
         server.setSucceeded(result);
@@ -162,7 +162,7 @@ private:
     ros::Publisher drivebase_publisher;
  
     ArmManipulator arm_manipulator;
-    tfr_mining::DiggingQueue diggingQueue;
+    tfr_mining::DiggingQueue queue;
     Server server;
 };
 
