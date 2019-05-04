@@ -90,7 +90,7 @@ class Localizer
             while (true) {
 
                 ROS_INFO("Localization Action Server: iterating");
-                if (server.isPreemptRequested()) {
+                if (server.isPreemptRequested() || !server.isActive() || ! ros::ok()) {
                     ROS_INFO("Localization Action Server: preempt requested");
                     server.setPreempted(output);
                     success = false;
