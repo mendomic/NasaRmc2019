@@ -42,6 +42,7 @@
 #include <tfr_utilities/arm_manipulator.h>
 #include <trajectory_msgs/JointTrajectory.h>
 #include <geometry_msgs/Twist.h>
+#include <std_msgs/Int32.h>
 #include <std_msgs/Float64.h>
 #include <tfr_msgs/ArmMoveAction.h>
 #include <actionlib/server/simple_action_server.h>
@@ -74,6 +75,9 @@ class TeleopExecutive
             bin_publisher{n.advertise<std_msgs::Float64>("/bin_position_controller/command", 5)},
             digging_client{n, "dig"},
             arm_client{n, "move_arm"},
+            lower_arm_pub{n.advertise<std_msgs::Int32>("/device12/set_cmd_cango/cmd_cango_1", 1)},
+            upper_arm_pub{n.advertise<std_msgs::Int32>("/device4/set_cmd_cango/cmd_cango_3", 1)},
+            scoop_pub{n.advertise<std_msgs::Int32>("/device4/set_cmd_cango/cmd_cango_2", 1)},
             drive_stats{drive},
             frequency{f},
             use_digging{u_d}
@@ -192,6 +196,11 @@ class TeleopExecutive
                 case (tfr_utilities::TeleopCode::LOWER_ARM_EXTEND):
                     {
                         ROS_INFO("Teleop Action Server: Command Recieved, LOWER_ARM_EXTEND");
+                        int effort = 1;
+                        if (not ros::param::getCached("arm_effort", effort)) {effort = 1;}
+                        std_msgs::Int32 msg;
+                        msg.data = effort;
+                        lower_arm_pub.publish(msg);
                         break;
                     }
                     
@@ -199,18 +208,33 @@ class TeleopExecutive
                 case (tfr_utilities::TeleopCode::LOWER_ARM_RETRACT):
                     {
                         ROS_INFO("Teleop Action Server: Command Recieved, LOWER_ARM_RETRACT");
+                        int effort = 1;
+                        if (not ros::param::getCached("arm_effort", effort)) {effort = 1;}
+                        std_msgs::Int32 msg;
+                        msg.data = -effort;
+                        lower_arm_pub.publish(msg);
                         break;
                     }
                     
                 case (tfr_utilities::TeleopCode::UPPER_ARM_EXTEND):
                     {
                         ROS_INFO("Teleop Action Server: Command Recieved, UPPER_ARM_EXTEND");
+                        int effort = 1;
+                        if (not ros::param::getCached("arm_effort", effort)) {effort = 1;}
+                        std_msgs::Int32 msg;
+                        msg.data = -effort;
+                        upper_arm_pub.publish(msg);
                         break;
                     }
                     
                 case (tfr_utilities::TeleopCode::UPPER_ARM_RETRACT):
                     {
                         ROS_INFO("Teleop Action Server: Command Recieved, UPPER_ARM_RETRACT");
+                        int effort = 1;
+                        if (not ros::param::getCached("arm_effort", effort)) {effort = 1;}
+                        std_msgs::Int32 msg;
+                        msg.data = -effort;
+                        upper_arm_pub.publish(msg);
                         break;
                     }
                     
@@ -395,6 +419,9 @@ class TeleopExecutive
         actionlib::SimpleActionServer<tfr_msgs::TeleopAction> server;
         actionlib::SimpleActionClient<tfr_msgs::DiggingAction> digging_client;
         actionlib::SimpleActionClient<tfr_msgs::ArmMoveAction> arm_client;
+        ros::Publisher lower_arm_pub;
+        ros::Publisher upper_arm_pub;
+        ros::Publisher scoop_pub;
         ros::Publisher drivebase_publisher;
         ArmManipulator arm_manipulator;
         ros::Publisher bin_publisher;
