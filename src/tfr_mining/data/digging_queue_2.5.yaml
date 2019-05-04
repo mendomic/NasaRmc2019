@@ -1,7 +1,6 @@
 # Holds all of the positions for the test client to travel to, in order
-#sart of the new digging queue
-#queue is not finished for testing purpouses in the lab
-#It should not hit the groung when testing from the cart
+#continuation of the queue in digging_queue_templates_2.yaml
+#do not run in the lab, it will hit the ground
 positions: [
   [[3.05, 0.1, 1.70, 1.62], #1a- zero position
   [3.05, 0.9, 1.21, -0.88], #arm is hanging over digging spot

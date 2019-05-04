@@ -188,6 +188,54 @@ class TeleopExecutive
                                   query.response.states[3]);
                         break;
                     }
+                    
+                case (tfr_utilities::TeleopCode::LOWER_ARM_EXTEND):
+                    {
+                        ROS_INFO("Teleop Action Server: Command Recieved, LOWER_ARM_EXTEND");
+                        break;
+                    }
+                    
+                    
+                case (tfr_utilities::TeleopCode::LOWER_ARM_RETRACT):
+                    {
+                        ROS_INFO("Teleop Action Server: Command Recieved, LOWER_ARM_RETRACT");
+                        break;
+                    }
+                    
+                case (tfr_utilities::TeleopCode::UPPER_ARM_EXTEND):
+                    {
+                        ROS_INFO("Teleop Action Server: Command Recieved, UPPER_ARM_EXTEND");
+                        break;
+                    }
+                    
+                case (tfr_utilities::TeleopCode::UPPER_ARM_RETRACT):
+                    {
+                        ROS_INFO("Teleop Action Server: Command Recieved, UPPER_ARM_RETRACT");
+                        break;
+                    }
+                    
+                case (tfr_utilities::TeleopCode::SCOOP_EXTEND):
+                    {
+                        ROS_INFO("Teleop Action Server: Command Recieved, SCOOP_EXTEND");
+                        tfr_msgs::ArmStateSrv query;
+                        ros::service::call("arm_state", query);
+                        arm_manipulator.moveArm( query.response.states[0],
+                                  query.response.states[1],
+                                  query.response.states[2],
+                                  query.response.states[3] + 0.01);
+                        break;
+                    }
+                    
+                case (tfr_utilities::TeleopCode::SCOOP_RETRACT):
+                    {
+                        ROS_INFO("Teleop Action Server: Command Recieved, SCOOP_RETRACT");
+                        tfr_msgs::ArmStateSrv query;
+                        arm_manipulator.moveArm( query.response.states[0],
+                                  query.response.states[1],
+                                  query.response.states[2],
+                                  query.response.states[3] - 0.01);
+                        break;
+                    }
 
                 case (tfr_utilities::TeleopCode::DIG):
                     {
