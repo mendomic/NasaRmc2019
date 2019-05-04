@@ -158,12 +158,14 @@ class AutonomousExecutive
 
             if (LOCALIZATION_TO)
             {
+                ROS_INFO("Autonomous Action Server: commencing Localization To");
                 localize(true, 0.0);
+                ROS_INFO("Autonomous Action Server: finished Localization To");
             }
 
             if (NAVIGATION_TO)
             {
-                ROS_INFO("Autonomous Action Server: commencing navigation");
+                ROS_INFO("Autonomous Action Server: commencing navigation to");
  
                 tfr_msgs::NavigationGoal goal;
                 //messages can't support user defined types
@@ -233,7 +235,9 @@ class AutonomousExecutive
             }
             if (LOCALIZATION_FROM)
             {
+                ROS_INFO("Autonomous Action Server: commencing Localization From");
                 localize(false, 3.14);
+                ROS_INFO("Autonomous Action Server: finished Localization From");
             }
             if (NAVIGATION_FROM)
             {
@@ -241,7 +245,7 @@ class AutonomousExecutive
                 navigationClient.waitForServer();
                 ROS_INFO("Autonomous Action Server: Connected to navigation server");
 
-                ROS_INFO("Autonomous Action Server: commencing navigation");
+                ROS_INFO("Autonomous Action Server: commencing Navigation From");
  
                 tfr_msgs::NavigationGoal goal;
                 //messages can't support user defined types
@@ -268,11 +272,13 @@ class AutonomousExecutive
                     server.setAborted();
                     return;
                 }
-                ROS_INFO("Autonomous Action Server: navigation finished");
+                ROS_INFO("Autonomous Action Server: finished Navigation From");
             }
             if (LOCALIZATION_FINISH)
             {
+                ROS_INFO("Autonomous Action Server: commencing Localize Finish");
                 localize(false, 0.0);
+                ROS_INFO("Autonomous Action Server: finished Localize Finish");
             }
              if (DUMPING)
             {
