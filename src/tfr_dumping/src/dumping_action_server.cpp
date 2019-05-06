@@ -56,16 +56,20 @@ class Dumper
         
         Dumper(ros::NodeHandle &node, const std::string &service_name,
                 const DumpingConstraints &c) :
-            server{node, "dump", boost::bind(&Dumper::dump, this, _1), false},
+            server{node, "dump", boost::bind(&Dumper::dumpBinContents, this, _1), false},
             image_client{node.serviceClient<tfr_msgs::WrappedImage>(service_name)},
             velocity_publisher{node.advertise<geometry_msgs::Twist>("cmd_vel", 10)},
             bin_publisher{node.advertise<std_msgs::Float64>("/bin_position_controller/command", 10)},
+			can_bin_publisher_1{node.advertise<std_msgs::Int32>("/device12/set_cmd_cango/cmd_cango_1", 2)},
+			can_bin_publisher_2{node.advertise<std_msgs::Int32>("/device12/set_cmd_cango/cmd_cango_2", 2)},
             detector{"light_detection"},
             aruco{"aruco_action_server",true},
             constraints{c},
             arm_manipulator{node}
         {
             ROS_INFO("dumping action server initializing");
+			bin_command_extend.data = 1000;
+			bin_command_retract.data = -1000;
             detector.waitForServer();
             aruco.waitForServer();
             server.start();
@@ -77,7 +81,7 @@ class Dumper
         Dumper& operator=(const Dumper&) = delete;
         Dumper(Dumper&&) = delete;
         Dumper& operator=(Dumper&&) = delete;
-
+	
     private:
         actionlib::SimpleActionServer<tfr_msgs::EmptyAction> server;
         actionlib::SimpleActionClient<tfr_msgs::EmptyAction> detector;
@@ -86,10 +90,21 @@ class Dumper
         ros::ServiceClient image_client;
         ros::Publisher velocity_publisher;
         ros::Publisher bin_publisher;
+		ros::Publisher can_bin_publisher_1;
+		ros::Publisher can_bin_publisher_2;
+		
+		std_msgs::Int32 bin_command_extend;
+		std_msgs::Int32 bin_command_retract;
 
         ArmManipulator arm_manipulator;
 
         const DumpingConstraints &constraints; 
+		
+		void extendBin();
+		void retractBin();
+		void dumpBinContents();
+		void dumpBinContents(const tfr_msgs::EmptyGoalConstPtr &goal);
+		
 
 
         /*
@@ -162,15 +177,8 @@ class Dumper
             std_msgs::Float64 bin_cmd;
             bin_cmd.data = tfr_utilities::JointAngle::BIN_MAX;
             tfr_msgs::BinStateSrv query;
-            while (!server.isPreemptRequested() && ros::ok())
-            {
-                ros::service::call("bin_state", query);
-                using namespace tfr_utilities;
-                if (JointAngle::BIN_MAX -  query.response.state < 0.1)
-                    break;
-                bin_publisher.publish(bin_cmd);
-                ros::Duration(0.1).sleep();
-            }
+			
+			extendBin();
             if (server.isPreemptRequested())
             {
                 ROS_INFO("Teleop Action Server: DUMP preempted");
@@ -185,6 +193,58 @@ class Dumper
             }
              server.setSucceeded();
         }
+
+		void dumpBinContents(const tfr_msgs::EmptyGoalConstPtr &goal)
+		{
+			dumpBinContents();
+		}
+
+		void dumpBinContents()
+		{
+			extendBin();
+			
+			ros::Duration(10.0).sleep();
+			
+			retractBin();
+		}
+
+		void extendBin()
+		{
+			//const double dumping_extend_time = 20.0;
+			const int num_loop_iterations = 200; // 20 seconds
+			int cur_loop_iteration = 0;
+            while (!server.isPreemptRequested() && ros::ok() && cur_loop_iteration < num_loop_iterations)
+            {
+				/*
+                ros::service::call("bin_state", query);
+                using namespace tfr_utilities;
+                if (JointAngle::BIN_MAX - query.response.state < 0.1)
+                    break;
+                bin_publisher.publish(bin_cmd);
+                ros::Duration(0.1).sleep();
+				*/
+
+				can_bin_publisher_1.publish(bin_command_extend);
+				can_bin_publisher_2.publish(bin_command_extend);
+				cur_loop_iteration++;
+				ros::Duration(0.1).sleep();
+            }	
+		}
+		
+		void retractBin()
+		{
+			const int num_loop_iterations = 200; // 20 seconds
+			int cur_loop_iteration = 0;
+            while (!server.isPreemptRequested() && ros::ok() && cur_loop_iteration < num_loop_iterations)
+            {
+				
+				can_bin_publisher_1.publish(bin_command_retract);
+				can_bin_publisher_2.publish(bin_command_retract);
+				cur_loop_iteration++;
+				ros::Duration(0.1).sleep();
+				
+            }	
+		}
 
         /*
          *  Back up and turn slightly to match the orientation of the aruco board
