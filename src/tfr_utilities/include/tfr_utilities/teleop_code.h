@@ -26,6 +26,12 @@ namespace tfr_utilities
         RESET_STARTING = 10, 
         DRIVING_POSITION= 11,
         RAISE_ARM = 12,
+        LOWER_ARM_EXTEND = 13,
+        LOWER_ARM_RETRACT = 14,
+        UPPER_ARM_EXTEND = 15,
+        UPPER_ARM_RETRACT= 16,
+        SCOOP_EXTEND = 17,
+        SCOOP_RETRACT = 18,
 
     };
 }
