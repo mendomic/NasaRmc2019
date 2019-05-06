@@ -243,6 +243,12 @@ namespace tfr_mission_control {
         ui.autonomy_button->setEnabled(value);
         ui.dump_button->setEnabled(value);
         ui.dig_button->setEnabled(value);
+        ui.lower_arm_extend_button->setEnabled(value);
+        ui.lower_arm_retract_button->setEnabled(value);
+        ui.upper_arm_extend_button->setEnabled(value);
+        ui.upper_arm_retract_button->setEnabled(value);
+        ui.scoop_extend_button->setEnabled(value);
+        ui.scoop_retract_button->setEnabled(value);
         teleopEnabled = value;
     }
 
