@@ -105,8 +105,6 @@ class Dumper
 		void dumpBinContents();
 		void dumpBinContents(const tfr_msgs::EmptyGoalConstPtr &goal);
 		
-
-
         /*
          Action
             Verify position relative to the bin by signaling the ArUco system.
