@@ -25,7 +25,7 @@ const size_t num_devices_required = 1;
 
 const double loop_rate = 10; // [Hz]
 
-const IMU_NODE_ID = 120;
+const int IMU_NODE_ID = 120;
 
 void setupArmTopics(kaco::Device& device, kaco::Bridge& bridge, std::string& eds_files_path){
     // Roboteq SDC3260 in Closed Loop Count Position mode.
@@ -176,10 +176,10 @@ int main(int argc, char* argv[]) {
 			
 		}
 		
-		else if (deviceID == IMU_NODE_ID)
+		else if (deviceId == IMU_NODE_ID)
 		{
 			auto iosub_120_1 = std::make_shared<kaco::EntrySubscriber>(device, "cmd_cango/cmd_cango_1");
-    		bridge.add_subscriber(iosub_12_1_1);
+    		bridge.add_subscriber(iosub_120_1);
 		}
 	}
 	PRINT("About to call bridge.run()");

@@ -1,5 +1,6 @@
 #include <ros/ros.h>
 #include <geometry_msgs/Twist.h>
+#include <std_msgs/Int32.h>
 #include <std_msgs/Float64.h>
 #include <tfr_msgs/EmptyAction.h>
 #include <tfr_msgs/ArucoAction.h>
@@ -99,11 +100,6 @@ class Dumper
         ArmManipulator arm_manipulator;
 
         const DumpingConstraints &constraints; 
-		
-		void extendBin();
-		void retractBin();
-		void dumpBinContents();
-		void dumpBinContents(const tfr_msgs::EmptyGoalConstPtr &goal);
 		
         /*
          Action
