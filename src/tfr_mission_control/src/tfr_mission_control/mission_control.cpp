@@ -121,28 +121,52 @@ namespace tfr_mission_control {
 
         /* for commands which do the turntable/drivebase we want to kill the
          * motors after release*/
+        // arm buttons
+        //lower arm
+        connect(ui.lower_arm_extend_button,&QPushButton::clicked,
+                [this] () {performTeleop(tfr_utilities::TeleopCode::LOWER_ARM_EXTEND);}); 
+        connect(ui.lower_arm_retract_button,&QPushButton::clicked,
+                [this] () {performTeleop(tfr_utilities::TeleopCode::LOWER_ARM_RETRACT);});
+        //upper arm        
+        connect(ui.upper_arm_extend_button,&QPushButton::clicked,
+                [this] () {performTeleop(tfr_utilities::TeleopCode::UPPER_ARM_EXTEND);}); 
+        connect(ui.upper_arm_retract_button,&QPushButton::clicked,
+                [this] () {performTeleop(tfr_utilities::TeleopCode::UPPER_ARM_RETRACT);});
+        //scoop        
+        connect(ui.scoop_extend_button,&QPushButton::clicked,
+                [this] () {performTeleop(tfr_utilities::TeleopCode::SCOOP_EXTEND);}); 
+        connect(ui.scoop_retract_button,&QPushButton::clicked,
+                [this] () {performTeleop(tfr_utilities::TeleopCode::SCOOP_RETRACT);}); 
+        // raise arm to straight, neutral position above robot
+        connect(ui.raise_arm_button,&QPushButton::clicked,
+                [this] () {performTeleop(tfr_utilities::TeleopCode::RAISE_ARM);});
+        //turntable 
         connect(ui.cw_button,&QPushButton::clicked,
                 [this] () {performTeleop(tfr_utilities::TeleopCode::CLOCKWISE);});
         connect(ui.ccw_button,&QPushButton::clicked,
                 [this] () {performTeleop(tfr_utilities::TeleopCode::COUNTERCLOCKWISE);});
-        connect(ui.raise_arm_button,&QPushButton::clicked,
-                [this] () {performTeleop(tfr_utilities::TeleopCode::RAISE_ARM);});
+        //drivebase
+        //forward
         connect(ui.forward_button,&QPushButton::pressed,
                 [this] () {performTeleop(tfr_utilities::TeleopCode::FORWARD);});
         connect(ui.forward_button,&QPushButton::released,
                 [this] () {performTeleop(tfr_utilities::TeleopCode::STOP_DRIVEBASE);});
+        //backward
         connect(ui.backward_button,&QPushButton::pressed,
                 [this] () {performTeleop(tfr_utilities::TeleopCode::BACKWARD);});
         connect(ui.backward_button,&QPushButton::released,
                 [this] () {performTeleop(tfr_utilities::TeleopCode::STOP_DRIVEBASE);});
+        //left
         connect(ui.left_button,&QPushButton::pressed,
                 [this] () {performTeleop(tfr_utilities::TeleopCode::LEFT);});
         connect(ui.left_button,&QPushButton::released,
                 [this] () {performTeleop(tfr_utilities::TeleopCode::STOP_DRIVEBASE);});
+        //right
         connect(ui.right_button,&QPushButton::pressed,
                 [this] () {performTeleop(tfr_utilities::TeleopCode::RIGHT);});
         connect(ui.right_button,&QPushButton::released,
-                [this] () {performTeleop(tfr_utilities::TeleopCode::STOP_DRIVEBASE);});
+                [this] () {performTeleop(tfr_utilities::TeleopCode::STOP_DRIVEBASE);});    
+        
 
         //set upp our action servers
         ROS_INFO("Mission Control: connecting autonomy");

@@ -218,7 +218,7 @@
         </sizepolicy>
        </property>
        <property name="text">
-        <string>v</string>
+        <string>Extend Lower Arm</string>
        </property>
       </widget>
      </item>
@@ -234,7 +234,7 @@
         </sizepolicy>
        </property>
        <property name="text">
-        <string>v</string>
+        <string>Retract Lower Arm</string>
        </property>
       </widget>
      </item>
@@ -250,7 +250,7 @@
         </sizepolicy>
        </property>
        <property name="text">
-        <string>v</string>
+        <string>Extend Upper Arm</string>
        </property>
       </widget>
      </item>
@@ -266,7 +266,7 @@
         </sizepolicy>
        </property>
        <property name="text">
-        <string>v</string>
+        <string>Retract Upper Arm</string>
        </property>
       </widget>
      </item>
@@ -282,7 +282,7 @@
         </sizepolicy>
        </property>
        <property name="text">
-        <string>v</string>
+        <string>Extend Scoop</string>
        </property>
       </widget>
      </item>
@@ -298,7 +298,7 @@
         </sizepolicy>
        </property>
        <property name="text">
-        <string>v</string>
+        <string>Retract Scoop</string>
        </property>
       </widget>
      </item>
