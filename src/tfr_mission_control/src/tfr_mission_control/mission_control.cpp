@@ -331,6 +331,27 @@ namespace tfr_mission_control {
                     motorKill->start(MOTOR_INTERVAL);
                     performTeleop(tfr_utilities::TeleopCode::RIGHT);
                     break;
+                case (Qt::Key_Space):
+                    performTeleop(tfr_utilities::TeleopCode::STOP_DRIVEBASE);
+                    break;
+                case (Qt::Key_U):
+                    performTeleop(tfr_utilities::TeleopCode::STOP_DRIVEBASE);
+                    break;
+                case (Qt::Key_J):
+                    performTeleop(tfr_utilities::TeleopCode::STOP_DRIVEBASE);
+                    break;
+                case (Qt::Key_I):
+                    performTeleop(tfr_utilities::TeleopCode::STOP_DRIVEBASE);
+                    break;
+                case (Qt::Key_K):
+                    performTeleop(tfr_utilities::TeleopCode::STOP_DRIVEBASE);
+                    break;
+                case (Qt::Key_O):
+                    performTeleop(tfr_utilities::TeleopCode::SCOOP_EXTEND);
+                    break;
+                case (Qt::Key_L):
+                    performTeleop(tfr_utilities::TeleopCode::SCOOP_RETRACT);
+                    break;
             }
             //consume the key
             return true;
