@@ -24,6 +24,7 @@
             linear_velocity: 0.35
             angular_velocity: 0.8
             use_digging: true
+            arm_effort: 1000
         </rosparam>
     </node> 
 </launch>
