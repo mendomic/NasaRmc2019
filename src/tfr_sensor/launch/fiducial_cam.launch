@@ -3,7 +3,7 @@
         args="0.2 0.03 0.017 0 0 0 1 base_link front_cam_link"/>
     <node name="front_cam" pkg="cv_camera" type="cv_camera_node" output="screen">
         <rosparam>
-            file: "nvcamerasrc sensor-id=0 fpsRange=\"30.0 30.0\" ! nvvidconv flip-method=2 ! video/x-raw, format=(string)I420 ! videoconvert ! video/x-raw, format=(string)BGR !  appsink" 
+            file: "nvcamerasrc sensor-id=0 fpsRange=\"30.0 30.0\" ! nvvidconv ! video/x-raw, format=(string)I420 ! videoconvert ! video/x-raw, format=(string)BGR !  appsink" 
             frame_id: front_cam_link
             camera_info_url: file:///home/trickfire/NasaRmc2019/src/tfr_sensor/calib/front.yaml
             rate: 5
@@ -19,7 +19,7 @@
         args="-0.065 0.04 0.015 0 0 1 0 base_link rear_cam_link"/>
     <node name="rear_cam" pkg="cv_camera" type="cv_camera_node" output="screen">
         <rosparam>
-            file: "nvcamerasrc sensor-id=1 fpsRange=\"30.0 30.0\" ! nvvidconv flip-method=2 ! video/x-raw, format=(string)I420 ! videoconvert ! video/x-raw, format=(string)BGR !  appsink" 
+            file: "nvcamerasrc sensor-id=2 fpsRange=\"30.0 30.0\" ! nvvidconv flip-method=2 ! video/x-raw, format=(string)I420 ! videoconvert ! video/x-raw, format=(string)BGR !  appsink" 
             frame_id: rear_cam_link
             camera_info_url: file:///home/trickfire/NasaRmc2019/src/tfr_sensor/calib/rear.yaml
             rate: 5
