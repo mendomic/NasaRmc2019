@@ -7,6 +7,8 @@ ArmManipulator::ArmManipulator(ros::NodeHandle &n):
 
 void  ArmManipulator::moveArm(const double& turntable, const double& lower_arm ,const double& upper_arm,  const double& scoop )
 {
+	ROS_INFO_STREAM("Arm manipulator called by: " << ros::this_node::getName() << ". Parameters: " << turntable << ", " << lower_arm << ", " << upper_arm << ", " << scoop << std::endl);
+	
     trajectory_msgs::JointTrajectory trajectory;
     trajectory.header.stamp = ros::Time::now();
     trajectory.joint_names.resize(3);
