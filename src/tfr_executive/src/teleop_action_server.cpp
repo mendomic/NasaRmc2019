@@ -149,6 +149,7 @@ class TeleopExecutive
 					lower_arm_encoder_msg.data = lower_arm_encoder_starting_count;
 					upper_arm_encoder_msg.data = upper_arm_encoder_starting_count;
 					scoop_encoder_msg.data = scoop_encoder_starting_count;
+					break;
 					
 				}
                 case (tfr_utilities::TeleopCode::STOP_DRIVEBASE):
