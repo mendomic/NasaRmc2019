@@ -15,7 +15,7 @@ void ArmManipulator::moveArm(const double& turntable, const double& lower_arm ,c
     trajectory.header.stamp = ros::Time::now();
     trajectory.joint_names.resize(4);
     trajectory.points.resize(1);
-    trajectory.points[0].positions.resize(3);
+    trajectory.points[0].positions.resize(4);
     trajectory.joint_names[0]="turntable_joint";
     trajectory.joint_names[1]="lower_arm_joint";
     trajectory.joint_names[2]="upper_arm_joint";
