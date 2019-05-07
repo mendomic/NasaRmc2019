@@ -25,6 +25,7 @@
 #include <urdf/model.h>
 #include <sstream>
 #include <controller_manager/controller_manager.h>
+#include <tfr_utilities/joints.h>
 #include "robot_interface.h"
 #include "bin_control_server.h"
 
@@ -38,8 +39,8 @@ namespace control_test
     // If we're faking the inputs, we need to know the model constraints on
     // the arm: load them here.
     // If not, just use zeroes, the limits don't matter. TEST code
-    double lower_limits[tfr_control::RobotInterface::JOINT_COUNT] = {};
-    double upper_limits[tfr_control::RobotInterface::JOINT_COUNT] = {};
+    double lower_limits[tfr_utilities::Joint::JOINT_COUNT] = {};
+    double upper_limits[tfr_utilities::Joint::JOINT_COUNT] = {};
 }
 
 using namespace control_test;
@@ -63,21 +64,21 @@ void initializeTestCode(ros::NodeHandle& n)
     }
 
     ROS_INFO("Model loaded successfully, loading joint limits.");
-    lower_limits[static_cast<int>(tfr_control::Joint::BIN)] 
+    lower_limits[static_cast<int>(tfr_utilities::Joint::BIN)] 
         = model.getJoint("bin_joint")->limits->lower;
-    upper_limits[static_cast<int>(tfr_control::Joint::BIN)] 
+    upper_limits[static_cast<int>(tfr_utilities::Joint::BIN)] 
         = model.getJoint("bin_joint")->limits->upper;
-    lower_limits[static_cast<int>(tfr_control::Joint::LOWER_ARM)] 
+    lower_limits[static_cast<int>(tfr_utilities::Joint::LOWER_ARM)] 
         = model.getJoint("lower_arm_joint")->limits->lower;
-    upper_limits[static_cast<int>(tfr_control::Joint::LOWER_ARM)] 
+    upper_limits[static_cast<int>(tfr_utilities::Joint::LOWER_ARM)] 
         = model.getJoint("lower_arm_joint")->limits->upper;
-    lower_limits[static_cast<int>(tfr_control::Joint::UPPER_ARM)] 
+    lower_limits[static_cast<int>(tfr_utilities::Joint::UPPER_ARM)] 
         = model.getJoint("upper_arm_joint")->limits->lower;
-    upper_limits[static_cast<int>(tfr_control::Joint::UPPER_ARM)] 
+    upper_limits[static_cast<int>(tfr_utilities::Joint::UPPER_ARM)] 
         = model.getJoint("upper_arm_joint")->limits->upper;
-    lower_limits[static_cast<int>(tfr_control::Joint::SCOOP)] 
+    lower_limits[static_cast<int>(tfr_utilities::Joint::SCOOP)] 
         = model.getJoint("scoop_joint")->limits->lower;
-    upper_limits[static_cast<int>(tfr_control::Joint::SCOOP)] 
+    upper_limits[static_cast<int>(tfr_utilities::Joint::SCOOP)] 
         = model.getJoint("scoop_joint")->limits->upper;
 }
 //END TEST CODE

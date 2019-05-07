@@ -4,6 +4,7 @@
  * the robot itself, and is started by the controller_launcher node.
  */
 #include "robot_interface.h"
+#include <tfr_utilities/joints.h>
 
 using hardware_interface::JointStateHandle;
 using hardware_interface::JointHandle;
@@ -84,23 +85,23 @@ namespace tfr_control
 
         // Connect and register each joint with appropriate interfaces at our
         // layer
-        registerJointEffortInterface("left_tread_joint", Joint::LEFT_TREAD);
-        registerJointEffortInterface("right_tread_joint", Joint::RIGHT_TREAD);
-        registerJointEffortInterface("bin_joint", Joint::BIN); 
-        registerJointEffortInterface("turntable_joint", Joint::TURNTABLE);
-        registerJointEffortInterface("lower_arm_joint", Joint::LOWER_ARM);
-        registerJointEffortInterface("upper_arm_joint", Joint::UPPER_ARM);
-        registerJointEffortInterface("scoop_joint", Joint::SCOOP);
+        registerJointEffortInterface("left_tread_joint", tfr_utilities::Joint::LEFT_TREAD);
+        registerJointEffortInterface("right_tread_joint", tfr_utilities::Joint::RIGHT_TREAD);
+        registerJointEffortInterface("bin_joint", tfr_utilities::Joint::BIN); 
+        registerJointEffortInterface("turntable_joint", tfr_utilities::Joint::TURNTABLE);
+        registerJointEffortInterface("lower_arm_joint", tfr_utilities::Joint::LOWER_ARM);
+        registerJointEffortInterface("upper_arm_joint", tfr_utilities::Joint::UPPER_ARM);
+        registerJointEffortInterface("scoop_joint", tfr_utilities::Joint::SCOOP);
         //register the interfaces with the controller layer
         registerInterface(&joint_state_interface);
         registerInterface(&joint_effort_interface);
         registerInterface(&joint_position_interface);
 		
 		
-        for (int joint = 0; joint < JOINT_COUNT; joint++)
+        for (int joint = 0; joint < tfr_utilities::Joint::JOINT_COUNT; joint++)
 		{
-			velocity_values[static_cast<int>(Joint::RIGHT_TREAD)] = 0;
-			effort_values[static_cast<int>(Joint::RIGHT_TREAD)] = 0;
+			velocity_values[static_cast<int>(tfr_utilities::Joint::RIGHT_TREAD)] = 0;
+			effort_values[static_cast<int>(tfr_utilities::Joint::RIGHT_TREAD)] = 0;
 		}
 		
     }
@@ -129,14 +130,14 @@ namespace tfr_control
 		*/
 
         //LEFT_TREAD
-        position_values[static_cast<int>(Joint::LEFT_TREAD)] = 0;
-        velocity_values[static_cast<int>(Joint::LEFT_TREAD)] = readBrushlessRightVel();
-        effort_values[static_cast<int>(Joint::LEFT_TREAD)] = 0;
+        position_values[static_cast<int>(tfr_utilities::Joint::LEFT_TREAD)] = 0;
+        velocity_values[static_cast<int>(tfr_utilities::Joint::LEFT_TREAD)] = readBrushlessRightVel();
+        effort_values[static_cast<int>(tfr_utilities::Joint::LEFT_TREAD)] = 0;
 
         //RIGHT_TREAD
-        position_values[static_cast<int>(Joint::RIGHT_TREAD)] = 0;
-        velocity_values[static_cast<int>(Joint::RIGHT_TREAD)] = readBrushlessLeftVel();
-        effort_values[static_cast<int>(Joint::RIGHT_TREAD)] = 0;
+        position_values[static_cast<int>(tfr_utilities::Joint::RIGHT_TREAD)] = 0;
+        velocity_values[static_cast<int>(tfr_utilities::Joint::RIGHT_TREAD)] = readBrushlessLeftVel();
+        effort_values[static_cast<int>(tfr_utilities::Joint::RIGHT_TREAD)] = 0;
 
         if (!use_fake_values)
         {
@@ -150,13 +151,13 @@ namespace tfr_control
 		            turntable_joint_max
 		            );
 			
-			position_values[static_cast<int>(Joint::TURNTABLE)] = turntable_position_double;
+			position_values[static_cast<int>(tfr_utilities::Joint::TURNTABLE)] = turntable_position_double;
                 //reading_a.arm_turntable_pos + turntable_offset;
-            velocity_values[static_cast<int>(Joint::TURNTABLE)] = 0; 
-            effort_values[static_cast<int>(Joint::TURNTABLE)] = 0;
+            velocity_values[static_cast<int>(tfr_utilities::Joint::TURNTABLE)] = 0; 
+            effort_values[static_cast<int>(tfr_utilities::Joint::TURNTABLE)] = 0;
 
             //LOWER_ARM
-            //position_values[static_cast<int>(Joint::LOWER_ARM)] = reading_a.arm_lower_pos;
+            //position_values[static_cast<int>(tfr_utilities::Joint::LOWER_ARM)] = reading_a.arm_lower_pos;
             double lower_arm_position_double = 
 	            linear_interp_double(
 		            static_cast<double>(lower_arm_encoder),
@@ -184,47 +185,47 @@ namespace tfr_control
 		            arm_end_joint_max
 		            );
 
-            position_values[static_cast<int>(Joint::LOWER_ARM)] = lower_arm_position_double;
-            velocity_values[static_cast<int>(Joint::LOWER_ARM)] = 0;
-            effort_values[static_cast<int>(Joint::LOWER_ARM)] = 0;
+            position_values[static_cast<int>(tfr_utilities::Joint::LOWER_ARM)] = lower_arm_position_double;
+            velocity_values[static_cast<int>(tfr_utilities::Joint::LOWER_ARM)] = 0;
+            effort_values[static_cast<int>(tfr_utilities::Joint::LOWER_ARM)] = 0;
 
             //UPPER_ARM
-            position_values[static_cast<int>(Joint::UPPER_ARM)] = upper_arm_position_double; //reading_a.arm_upper_pos;
-            velocity_values[static_cast<int>(Joint::UPPER_ARM)] = 0;
-            effort_values[static_cast<int>(Joint::UPPER_ARM)] = 0;
+            position_values[static_cast<int>(tfr_utilities::Joint::UPPER_ARM)] = upper_arm_position_double; //reading_a.arm_upper_pos;
+            velocity_values[static_cast<int>(tfr_utilities::Joint::UPPER_ARM)] = 0;
+            effort_values[static_cast<int>(tfr_utilities::Joint::UPPER_ARM)] = 0;
 
             //SCOOP
-            position_values[static_cast<int>(Joint::SCOOP)] = scoop_position_double; //reading_a.arm_scoop_pos;
-            velocity_values[static_cast<int>(Joint::SCOOP)] = 0;
-            effort_values[static_cast<int>(Joint::SCOOP)] = 0;
+            position_values[static_cast<int>(tfr_utilities::Joint::SCOOP)] = scoop_position_double; //reading_a.arm_scoop_pos;
+            velocity_values[static_cast<int>(tfr_utilities::Joint::SCOOP)] = 0;
+            effort_values[static_cast<int>(tfr_utilities::Joint::SCOOP)] = 0;
 
 			/*
 			ROS_INFO_STREAM("turntable_position: read: encoder: " << turntable_encoder << std::endl);
-			ROS_INFO_STREAM("turntable_position: read: " << position_values[static_cast<int>(Joint::TURNTABLE)] << std::endl);
+			ROS_INFO_STREAM("turntable_position: read: " << position_values[static_cast<int>(tfr_utilities::Joint::TURNTABLE)] << std::endl);
 			*/
 			
 			/*
             ROS_INFO_STREAM("arm_lower_position: read: encoder: " << lower_arm_encoder << std::endl);
-			ROS_INFO_STREAM("arm_lower_position: read: " << position_values[static_cast<int>(Joint::LOWER_ARM)] << std::endl);
+			ROS_INFO_STREAM("arm_lower_position: read: " << position_values[static_cast<int>(tfr_utilities::Joint::LOWER_ARM)] << std::endl);
 			*/
 			
 			/*
 			ROS_INFO_STREAM("arm_upper_position: read: encoder: " << upper_arm_encoder << std::endl);
-            ROS_INFO_STREAM("arm_upper_position: read: " << position_values[static_cast<int>(Joint::UPPER_ARM)] << std::endl);
+            ROS_INFO_STREAM("arm_upper_position: read: " << position_values[static_cast<int>(tfr_utilities::Joint::UPPER_ARM)] << std::endl);
 			*/
 			
 			/*
 			ROS_INFO_STREAM("scoop_position: read: encoder: " << scoop_encoder << std::endl);
-            ROS_INFO_STREAM("scoop_position: read: " << position_values[static_cast<int>(Joint::SCOOP)] << std::endl);
+            ROS_INFO_STREAM("scoop_position: read: " << position_values[static_cast<int>(tfr_utilities::Joint::SCOOP)] << std::endl);
 			*/
 			
         }
  
         //BIN
-        position_values[static_cast<int>(Joint::BIN)] = 0; 
+        position_values[static_cast<int>(tfr_utilities::Joint::BIN)] = 0; 
             //(reading_a.bin_left_pos + reading_a.bin_right_pos)/2;
-        velocity_values[static_cast<int>(Joint::BIN)] = 0;
-        effort_values[static_cast<int>(Joint::BIN)] = 0;
+        velocity_values[static_cast<int>(tfr_utilities::Joint::BIN)] = 0;
+        effort_values[static_cast<int>(tfr_utilities::Joint::BIN)] = 0;
 
     }
 
@@ -254,10 +255,10 @@ namespace tfr_control
         double signal;
         if (use_fake_values) //test code  for working with rviz simulator
         {
-            adjustFakeJoint(Joint::TURNTABLE);
-            adjustFakeJoint(Joint::LOWER_ARM);
-            adjustFakeJoint(Joint::UPPER_ARM);
-            adjustFakeJoint(Joint::SCOOP);
+            adjustFakeJoint(tfr_utilities::Joint::TURNTABLE);
+            adjustFakeJoint(tfr_utilities::Joint::LOWER_ARM);
+            adjustFakeJoint(tfr_utilities::Joint::UPPER_ARM);
+            adjustFakeJoint(tfr_utilities::Joint::SCOOP);
         }
         else  // we are working with the real arm
         {
@@ -269,7 +270,7 @@ namespace tfr_control
 					std::min(
 			        linear_interp_double
 			        (
-			            command_values[static_cast<int>(Joint::TURNTABLE)],
+			            command_values[static_cast<int>(tfr_utilities::Joint::TURNTABLE)],
 		                0,
 		                0,
 		                1,
@@ -283,14 +284,14 @@ namespace tfr_control
 
             //LOWER_ARM
             //NOTE we reverse these because actuator is mounted backwards
-			int32_t arm_lower_position = // command_values[static_cast<int>(Joint::LOWER_ARM)];
+			int32_t arm_lower_position = // command_values[static_cast<int>(tfr_utilities::Joint::LOWER_ARM)];
 			static_cast<int32_t>
                             (
 								std::max(
 								std::min(
                                 linear_interp_double
                                 (
-                                    command_values[static_cast<int>(Joint::LOWER_ARM)],
+                                    command_values[static_cast<int>(tfr_utilities::Joint::LOWER_ARM)],
                                 0,
                                 0,
                                 1,
@@ -303,7 +304,7 @@ namespace tfr_control
 			
 
             //UPPER_ARM
-			int32_t arm_upper_position = // command_values[static_cast<int>(Joint::UPPER_ARM)];
+			int32_t arm_upper_position = // command_values[static_cast<int>(tfr_utilities::Joint::UPPER_ARM)];
 			
 				static_cast<int32_t>
 			    (
@@ -311,7 +312,7 @@ namespace tfr_control
 					std::min(
 			        linear_interp_double
 			        (
-			            command_values[static_cast<int>(Joint::UPPER_ARM)],
+			            command_values[static_cast<int>(tfr_utilities::Joint::UPPER_ARM)],
 		                0,
 		                0,
 		                1,
@@ -325,14 +326,14 @@ namespace tfr_control
 			
 
             //SCOOP
-			int32_t scoop_position = // static_cast<int32_t>(command_values[static_cast<int>(Joint::SCOOP)]); //command_values[static_cast<int>(Joint::SCOOP)];
+			int32_t scoop_position = // static_cast<int32_t>(command_values[static_cast<int>(tfr_utilities::Joint::SCOOP)]); //command_values[static_cast<int>(tfr_utilities::Joint::SCOOP)];
 			    static_cast<int32_t>
 			    (
 					std::max(
 					std::min(
 			        linear_interp_double
 			        (
-			            command_values[static_cast<int>(Joint::SCOOP)],
+			            command_values[static_cast<int>(tfr_utilities::Joint::SCOOP)],
 		                0,
 		                0,
 		                1,
@@ -345,35 +346,35 @@ namespace tfr_control
 			scoop_publisher.publish(scoop_position_msg);
 			
 			/*
-			ROS_INFO_STREAM("turntable_position: position: write: " << position_values[static_cast<int>(Joint::TURNTABLE)] << std::endl);
-			ROS_INFO_STREAM("turntable_position: command: write: " << command_values[static_cast<int>(Joint::TURNTABLE)] << std::endl);
-			ROS_INFO_STREAM("turntable_position: effort: write: " << effort_values[static_cast<int>(Joint::TURNTABLE)] << std::endl);
-			ROS_INFO_STREAM("turntable_position: velocity: write: " << velocity_values[static_cast<int>(Joint::TURNTABLE)] << std::endl);
+			ROS_INFO_STREAM("turntable_position: position: write: " << position_values[static_cast<int>(tfr_utilities::Joint::TURNTABLE)] << std::endl);
+			ROS_INFO_STREAM("turntable_position: command: write: " << command_values[static_cast<int>(tfr_utilities::Joint::TURNTABLE)] << std::endl);
+			ROS_INFO_STREAM("turntable_position: effort: write: " << effort_values[static_cast<int>(tfr_utilities::Joint::TURNTABLE)] << std::endl);
+			ROS_INFO_STREAM("turntable_position: velocity: write: " << velocity_values[static_cast<int>(tfr_utilities::Joint::TURNTABLE)] << std::endl);
 			ROS_INFO_STREAM("turntable_position: write: " << turntable_position << std::endl);
 			*/
 			
 			
 			/*
-			ROS_INFO_STREAM("arm_lower_position: position: write: " << position_values[static_cast<int>(Joint::LOWER_ARM)] << std::endl);
-			ROS_INFO_STREAM("arm_lower_position: command: write: " << command_values[static_cast<int>(Joint::LOWER_ARM)] << std::endl);
-			ROS_INFO_STREAM("arm_lower_position: effort: write: " << effort_values[static_cast<int>(Joint::LOWER_ARM)] << std::endl);
-			ROS_INFO_STREAM("arm_lower_position: velocity: write: " << velocity_values[static_cast<int>(Joint::LOWER_ARM)] << std::endl);
+			ROS_INFO_STREAM("arm_lower_position: position: write: " << position_values[static_cast<int>(tfr_utilities::Joint::LOWER_ARM)] << std::endl);
+			ROS_INFO_STREAM("arm_lower_position: command: write: " << command_values[static_cast<int>(tfr_utilities::Joint::LOWER_ARM)] << std::endl);
+			ROS_INFO_STREAM("arm_lower_position: effort: write: " << effort_values[static_cast<int>(tfr_utilities::Joint::LOWER_ARM)] << std::endl);
+			ROS_INFO_STREAM("arm_lower_position: velocity: write: " << velocity_values[static_cast<int>(tfr_utilities::Joint::LOWER_ARM)] << std::endl);
 			ROS_INFO_STREAM("arm_lower_position: write: " << arm_lower_position << std::endl);
 			*/
 			
 			/*
-			ROS_INFO_STREAM("arm_upper_position: position: write: " << position_values[static_cast<int>(Joint::UPPER_ARM)] << std::endl);
-			ROS_INFO_STREAM("arm_upper_position: command: write: " << command_values[static_cast<int>(Joint::UPPER_ARM)] << std::endl);
-			ROS_INFO_STREAM("arm_upper_position: effort: write: " << effort_values[static_cast<int>(Joint::UPPER_ARM)] << std::endl);
-			ROS_INFO_STREAM("arm_upper_position: velocity: write: " << velocity_values[static_cast<int>(Joint::UPPER_ARM)] << std::endl);
+			ROS_INFO_STREAM("arm_upper_position: position: write: " << position_values[static_cast<int>(tfr_utilities::Joint::UPPER_ARM)] << std::endl);
+			ROS_INFO_STREAM("arm_upper_position: command: write: " << command_values[static_cast<int>(tfr_utilities::Joint::UPPER_ARM)] << std::endl);
+			ROS_INFO_STREAM("arm_upper_position: effort: write: " << effort_values[static_cast<int>(tfr_utilities::Joint::UPPER_ARM)] << std::endl);
+			ROS_INFO_STREAM("arm_upper_position: velocity: write: " << velocity_values[static_cast<int>(tfr_utilities::Joint::UPPER_ARM)] << std::endl);
 			ROS_INFO_STREAM("arm_upper_position: write: " << arm_upper_position << std::endl);
 			*/
 			
 			/*
-			ROS_INFO_STREAM("scoop_position: position: write: " << position_values[static_cast<int>(Joint::SCOOP)] << std::endl);
-			ROS_INFO_STREAM("scoop_position: command: write: " << command_values[static_cast<int>(Joint::SCOOP)] << std::endl);
-			ROS_INFO_STREAM("scoop_position: effort: write: " << effort_values[static_cast<int>(Joint::SCOOP)] << std::endl);
-			ROS_INFO_STREAM("scoop_position: velocity: write: " << velocity_values[static_cast<int>(Joint::SCOOP)] << std::endl);
+			ROS_INFO_STREAM("scoop_position: position: write: " << position_values[static_cast<int>(tfr_utilities::Joint::SCOOP)] << std::endl);
+			ROS_INFO_STREAM("scoop_position: command: write: " << command_values[static_cast<int>(tfr_utilities::Joint::SCOOP)] << std::endl);
+			ROS_INFO_STREAM("scoop_position: effort: write: " << effort_values[static_cast<int>(tfr_utilities::Joint::SCOOP)] << std::endl);
+			ROS_INFO_STREAM("scoop_position: velocity: write: " << velocity_values[static_cast<int>(tfr_utilities::Joint::SCOOP)] << std::endl);
 			ROS_INFO_STREAM("scoop_position: write: " << scoop_position << std::endl);
 			*/
         }
@@ -382,7 +383,7 @@ namespace tfr_control
 	int left_tread_scale = 1;
 	ros::param::getCached("left_tread_scale", left_tread_scale);
 	//ROS_INFO("Left tread scale %d", left_tread_scale);
-        double left_tread_command = command_values[static_cast<int32_t>(Joint::LEFT_TREAD)];
+        double left_tread_command = command_values[static_cast<int32_t>(tfr_utilities::Joint::LEFT_TREAD)];
 		//left_tread_command = linear_interp_double(left_tread_command, 0.0, 0.0, 1.0, 1000.0);
 		std_msgs::Int32 left_tread_msg;
 		left_tread_msg.data = static_cast<int32_t>(left_tread_command * left_tread_scale);
@@ -391,7 +392,7 @@ namespace tfr_control
         //RIGHT_TREAD
 	int right_tread_scale = 1;
 	ros::param::getCached("right_tread_scale", right_tread_scale);
-        double right_tread_command = command_values[static_cast<int32_t>(Joint::RIGHT_TREAD)];
+        double right_tread_command = command_values[static_cast<int32_t>(tfr_utilities::Joint::RIGHT_TREAD)];
 		//right_tread_command = linear_interp_double(right_tread_command, 0.0, 0.0, 1.0, 1000.0);
 		std_msgs::Int32 right_tread_msg;
 		right_tread_msg.data = static_cast<int32_t>(right_tread_command * right_tread_scale);
@@ -402,7 +403,7 @@ namespace tfr_control
 
         //BIN
 		/*
-        auto twin_signal = twinAngleToPWM(command_values[static_cast<int>(Joint::BIN)], 0, 0);
+        auto twin_signal = twinAngleToPWM(command_values[static_cast<int>(tfr_utilities::Joint::BIN)], 0, 0);
 					//reading_a.bin_left_pos,
                     //reading_a.bin_right_pos);
 					
@@ -416,8 +417,8 @@ namespace tfr_control
         
         //UPKEEP
         last_update = ros::Time::now();
-        drivebase_v0.first = velocity_values[static_cast<int>(Joint::LEFT_TREAD)];
-        drivebase_v0.second = velocity_values[static_cast<int>(Joint::RIGHT_TREAD)];
+        drivebase_v0.first = velocity_values[static_cast<int>(tfr_utilities::Joint::LEFT_TREAD)];
+        drivebase_v0.second = velocity_values[static_cast<int>(tfr_utilities::Joint::RIGHT_TREAD)];
     }
 
 	double RobotInterface::linear_interp_double(double x, double x1, double y1, double x2, double y2)
@@ -466,7 +467,7 @@ namespace tfr_control
         enabled = val;
     }
 
-    void RobotInterface::adjustFakeJoint(const Joint &j)
+    void RobotInterface::adjustFakeJoint(const tfr_utilities::Joint &j)
     {
         int i = static_cast<int>(j);
         position_values[i] = command_values[i];
@@ -486,23 +487,23 @@ namespace tfr_control
     void RobotInterface::clearCommands()
     {
         //LEFT_TREAD
-        command_values[static_cast<int>(Joint::LEFT_TREAD)] = 0;
+        command_values[static_cast<int>(tfr_utilities::Joint::LEFT_TREAD)] = 0;
 
         //RIGHT_TREAD
-        command_values[static_cast<int>(Joint::RIGHT_TREAD)] = 0;
+        command_values[static_cast<int>(tfr_utilities::Joint::RIGHT_TREAD)] = 0;
 
         //TURNTABLE
-        command_values[static_cast<int>(Joint::TURNTABLE)] = 0;
+        command_values[static_cast<int>(tfr_utilities::Joint::TURNTABLE)] = 0;
 
         //LOWER_ARM
-        command_values[static_cast<int>(Joint::LOWER_ARM)] = 0;
+        command_values[static_cast<int>(tfr_utilities::Joint::LOWER_ARM)] = 0;
 		
         //UPPER_ARM
-        command_values[static_cast<int>(Joint::UPPER_ARM)] = 0;
+        command_values[static_cast<int>(tfr_utilities::Joint::UPPER_ARM)] = 0;
         //SCOOP
-        command_values[static_cast<int>(Joint::SCOOP)] = 0;
+        command_values[static_cast<int>(tfr_utilities::Joint::SCOOP)] = 0;
         //BIN
-        command_values[static_cast<int>(Joint::BIN)] = 0;
+        command_values[static_cast<int>(tfr_utilities::Joint::BIN)] = 0;
     }
 
     /*
@@ -510,7 +511,7 @@ namespace tfr_control
      * */
     double RobotInterface::getBinState()
     {
-        return position_values[static_cast<int>(Joint::BIN)];
+        return position_values[static_cast<int>(tfr_utilities::Joint::BIN)];
     }
 
     /*
@@ -518,10 +519,10 @@ namespace tfr_control
      * */
     void RobotInterface::getArmState(std::vector<double> &position)
     {
-        position.push_back(position_values[static_cast<int>(Joint::TURNTABLE)]);
-        position.push_back(position_values[static_cast<int>(Joint::LOWER_ARM)]);
-        position.push_back(position_values[static_cast<int>(Joint::UPPER_ARM)]);
-        position.push_back(position_values[static_cast<int>(Joint::SCOOP)]);
+        position.push_back(position_values[static_cast<int>(tfr_utilities::Joint::TURNTABLE)]);
+        position.push_back(position_values[static_cast<int>(tfr_utilities::Joint::LOWER_ARM)]);
+        position.push_back(position_values[static_cast<int>(tfr_utilities::Joint::UPPER_ARM)]);
+        position.push_back(position_values[static_cast<int>(tfr_utilities::Joint::SCOOP)]);
     }
 
 	void RobotInterface::readTurntableEncoder(const std_msgs::Int32 &msg)
@@ -552,8 +553,8 @@ namespace tfr_control
 	void RobotInterface::readLowerArmAmps(const std_msgs::Float64 &msg)
 	{
 		lower_arm_amps = msg.data;
-		//position_values[static_cast<int>(Joint::LOWER_ARM)] = msg.data;
-		//ROS_INFO_STREAM("lower_arm_ams: " << position_values[static_cast<int>(Joint::LOWER_ARM)] << std::endl);
+		//position_values[static_cast<int>(tfr_utilities::Joint::LOWER_ARM)] = msg.data;
+		//ROS_INFO_STREAM("lower_arm_ams: " << position_values[static_cast<int>(tfr_utilities::Joint::LOWER_ARM)] << std::endl);
 	}
 	
 	
@@ -570,8 +571,8 @@ namespace tfr_control
 	void RobotInterface::readUpperArmAmps(const std_msgs::Float64 &msg)
 	{
 		upper_arm_amps = msg.data;
-		//position_values[static_cast<int>(Joint::UPPER_ARM)] = msg.data;
-		//ROS_INFO_STREAM("lower_arm_ams: " << position_values[static_cast<int>(Joint::UPPER_ARM)] << std::endl);
+		//position_values[static_cast<int>(tfr_utilities::Joint::UPPER_ARM)] = msg.data;
+		//ROS_INFO_STREAM("lower_arm_ams: " << position_values[static_cast<int>(tfr_utilities::Joint::UPPER_ARM)] << std::endl);
 	}
 	
 	
@@ -588,14 +589,14 @@ namespace tfr_control
 	void RobotInterface::readScoopAmps(const std_msgs::Float64 &msg)
 	{
 		scoop_amps = msg.data;
-		//position_values[static_cast<int>(Joint::LOWER_ARM)] = msg.data;
-		//ROS_INFO_STREAM("lower_arm_ams: " << position_values[static_cast<int>(Joint::LOWER_ARM)] << std::endl);
+		//position_values[static_cast<int>(tfr_utilities::Joint::LOWER_ARM)] = msg.data;
+		//ROS_INFO_STREAM("lower_arm_ams: " << position_values[static_cast<int>(tfr_utilities::Joint::LOWER_ARM)] << std::endl);
 	}
 
     /*
      * Register this joint with each neccessary hardware interface
      * */
-    void RobotInterface::registerJointEffortInterface(std::string name, Joint joint) 
+    void RobotInterface::registerJointEffortInterface(std::string name, tfr_utilities::Joint joint) 
     {
         auto idx = static_cast<int>(joint);
         //give the joint a state
@@ -630,7 +631,7 @@ namespace tfr_control
     /*
      * Register this joint with each neccessary hardware interface
      * */
-    void RobotInterface::registerJointPositionInterface(std::string name, Joint joint) 
+    void RobotInterface::registerJointPositionInterface(std::string name, tfr_utilities::Joint joint) 
     {
         auto idx = static_cast<int>(joint);
         //give the joint a state

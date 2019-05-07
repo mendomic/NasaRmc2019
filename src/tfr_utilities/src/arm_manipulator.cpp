@@ -32,7 +32,7 @@ void ArmManipulator::initializeJointLimits()
 {
 	// Get the model description 
     std::string desc;
-    n.param<std::string>("robot_description", desc, "");
+    if (!ros::param::get("/robot_description", desc)) {desc = "";}
 
     if (desc.length() == 0) 
     {
@@ -46,21 +46,21 @@ void ArmManipulator::initializeJointLimits()
     }
 
     ROS_INFO("Model loaded successfully, loading joint limits.");
-    lower_limits[static_cast<int>(tfr_control::Joint::BIN)] 
+    lower_limits[static_cast<int>(tfr_utilities::Joint::BIN)] 
         = model.getJoint("bin_joint")->limits->lower;
-    upper_limits[static_cast<int>(tfr_control::Joint::BIN)] 
+    upper_limits[static_cast<int>(tfr_utilities::Joint::BIN)] 
         = model.getJoint("bin_joint")->limits->upper;
-    lower_limits[static_cast<int>(tfr_control::Joint::LOWER_ARM)] 
+    lower_limits[static_cast<int>(tfr_utilities::Joint::LOWER_ARM)] 
         = model.getJoint("lower_arm_joint")->limits->lower;
-    upper_limits[static_cast<int>(tfr_control::Joint::LOWER_ARM)] 
+    upper_limits[static_cast<int>(tfr_utilities::Joint::LOWER_ARM)] 
         = model.getJoint("lower_arm_joint")->limits->upper;
-    lower_limits[static_cast<int>(tfr_control::Joint::UPPER_ARM)] 
+    lower_limits[static_cast<int>(tfr_utilities::Joint::UPPER_ARM)] 
         = model.getJoint("upper_arm_joint")->limits->lower;
-    upper_limits[static_cast<int>(tfr_control::Joint::UPPER_ARM)] 
+    upper_limits[static_cast<int>(tfr_utilities::Joint::UPPER_ARM)] 
         = model.getJoint("upper_arm_joint")->limits->upper;
-    lower_limits[static_cast<int>(tfr_control::Joint::SCOOP)] 
+    lower_limits[static_cast<int>(tfr_utilities::Joint::SCOOP)] 
         = model.getJoint("scoop_joint")->limits->lower;
-    upper_limits[static_cast<int>(tfr_control::Joint::SCOOP)] 
+    upper_limits[static_cast<int>(tfr_utilities::Joint::SCOOP)] 
         = model.getJoint("scoop_joint")->limits->upper;
 }
 
@@ -89,16 +89,16 @@ void ArmManipulator::moveArmWithLimits(const double& turntable, const double& lo
 	double clamp_turntable = turntable; // no joint limits on turntable
 	
 	double clamp_lower_arm = clamp(lower_arm, 
-				lower_limits[static_cast<int>(tfr_control::Joint::LOWER_ARM)], 
-				upper_limits[static_cast<int>(tfr_control::Joint::LOWER_ARM)]); 
+				lower_limits[static_cast<int>(tfr_utilities::Joint::LOWER_ARM)], 
+				upper_limits[static_cast<int>(tfr_utilities::Joint::LOWER_ARM)]); 
 				
 	double clamp_upper_arm = clamp(upper_arm, 
-				lower_limits[static_cast<int>(tfr_control::Joint::UPPER_ARM)], 
-				upper_limits[static_cast<int>(tfr_control::Joint::UPPER_ARM)]); 
+				lower_limits[static_cast<int>(tfr_utilities::Joint::UPPER_ARM)], 
+				upper_limits[static_cast<int>(tfr_utilities::Joint::UPPER_ARM)]); 
 				
 	double clamp_scoop = clamp(scoop, 
-				lower_limits[static_cast<int>(tfr_control::Joint::SCOOP)], 
-				upper_limits[static_cast<int>(tfr_control::Joint::SCOOP)]); 
+				lower_limits[static_cast<int>(tfr_utilities::Joint::SCOOP)], 
+				upper_limits[static_cast<int>(tfr_utilities::Joint::SCOOP)]); 
 				
 	moveArm(clamp_turntable, clamp_lower_arm, clamp_upper_arm, clamp_scoop);
 }

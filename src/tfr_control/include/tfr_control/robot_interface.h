@@ -26,25 +26,12 @@
 #include <tfr_msgs/ArduinoBReading.h>
 #include <tfr_msgs/PwmCommand.h>
 #include <tfr_utilities/control_code.h>
+#include <tfr_utilities/joints.h>
 #include <vector>
 #include <mutex>
 #include <limits>
 
 namespace tfr_control {
-
-    /*
-     * All of the joints on the robot
-     * */
-    enum class Joint 
-    {
-        LEFT_TREAD, 
-        RIGHT_TREAD, 
-        BIN, 
-        TURNTABLE, 
-        LOWER_ARM,
-        UPPER_ARM, 
-        SCOOP 
-    };
 
     /**
      * Contains the lower level interface inbetween user commands coming
@@ -54,13 +41,9 @@ namespace tfr_control {
     class RobotInterface : public hardware_interface::RobotHW
     {
     public:
-        
-        //Number of joints we need to control in our layer
-        static const int JOINT_COUNT = 7;
 
-
-        RobotInterface(ros::NodeHandle &n, bool fakes, const double lower_lim[JOINT_COUNT],
-                const double upper_lim[JOINT_COUNT]);
+        RobotInterface(ros::NodeHandle &n, bool fakes, const double lower_lim[tfr_utilities::Joint::JOINT_COUNT],
+                const double upper_lim[tfr_utilities::Joint::JOINT_COUNT]);
 	
         
         /*
@@ -233,21 +216,21 @@ namespace tfr_control {
 		int32_t linear_interp_int(int32_t x, int32_t x1, int32_t y1, int32_t x2, int32_t y2);
 
         // Populated by controller layer for us to use
-        double command_values[JOINT_COUNT]{};
+        double command_values[tfr_utilities::Joint::JOINT_COUNT]{};
 
         // Populated by us for controller layer to use
-        double position_values[JOINT_COUNT]{};
+        double position_values[tfr_utilities::Joint::JOINT_COUNT]{};
         // Populated by us for controller layer to use
-        double velocity_values[JOINT_COUNT]{};
+        double velocity_values[tfr_utilities::Joint::JOINT_COUNT]{};
         // Populated by us for controller layer to use
-        double effort_values[JOINT_COUNT]{};
+        double effort_values[tfr_utilities::Joint::JOINT_COUNT]{};
         //used to limit acceleration pull on the drivebase
         std::pair<double, double> drivebase_v0;
         ros::Time last_update;
 
         
-        void registerJointEffortInterface(std::string name, Joint joint);
-        void registerJointPositionInterface(std::string name, Joint joint);
+        void registerJointEffortInterface(std::string name, tfr_utilities::Joint joint);
+        void registerJointPositionInterface(std::string name, tfr_utilities::Joint joint);
         //void registerBinJoint(std::string name, Joint joint);
 
 		/*
@@ -286,7 +269,7 @@ namespace tfr_control {
          * */
         //double scalePWM(const double &pwm_1, const double &pwm_0);
 
-        void adjustFakeJoint(const Joint &joint);
+        void adjustFakeJoint(const tfr_utilities::Joint &joint);
 
         // THESE DATA MEMBERS ARE FOR SIMULATION ONLY
         // Holds the lower and upper limits of the URDF model joint
