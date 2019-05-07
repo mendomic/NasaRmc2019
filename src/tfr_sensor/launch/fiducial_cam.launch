@@ -16,7 +16,7 @@
         </rosparam>
     </node>
     <node name="rear_cam_tf_broadcaster" pkg="tf2_ros" type="static_transform_publisher"
-        args="-0.065 0.04 0.015 0 0 1 0 base_link rear_cam_link"/>
+        args="-0.65 0.04 0.15 0 0 1 0 base_link rear_cam_link"/>
     <node name="rear_cam" pkg="cv_camera" type="cv_camera_node" output="screen">
         <rosparam>
             file: "nvcamerasrc sensor-id=2 fpsRange=\"30.0 30.0\" ! nvvidconv flip-method=2 ! video/x-raw, format=(string)I420 ! videoconvert ! video/x-raw, format=(string)BGR !  appsink" 

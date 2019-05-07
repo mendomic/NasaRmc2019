@@ -323,9 +323,9 @@ class TeleopExecutive
                         drivebase_publisher.publish(move_cmd);
                         ROS_INFO("Teleop Action Server: Command Recieved, DUMP");
                         //all zeros by default
-                        arm_manipulator.moveArm(0.0, 0.1, 1.07, 1.5);
+                        //arm_manipulator.moveArm(0.0, 0.1, 1.07, 1.5);
                         ros::Duration(3.0).sleep();
-                        arm_manipulator.moveArm(0.87, 0.1, 1.07, 1.5);
+                        //arm_manipulator.moveArm(0.87, 0.1, 1.07, 1.5);
                         ros::Duration(3.0).sleep();
                         std_msgs::Float64 bin_cmd;
                         bin_cmd.data = tfr_utilities::JointAngle::BIN_MAX;
@@ -381,7 +381,7 @@ class TeleopExecutive
                 case (tfr_utilities::TeleopCode::RESET_STARTING):
                     {
                         ROS_INFO("Teleop Action Server: Command Recieved, RESET_STARTING");
-                        //all zeros by default
+                        /*//all zeros by default
                         drivebase_publisher.publish(move_cmd);
                         //first grab the current state of the arm
                         tfr_msgs::ArmStateSrv query;
@@ -401,7 +401,7 @@ class TeleopExecutive
                         arm_manipulator.moveArm(0, 0.85, 1.0, 1.6);
                         ros::Duration(2.0).sleep();
                         arm_manipulator.moveArm(0, 0.90, 1.0, 1.6);
-                        ros::Duration(2.0).sleep();
+                        ros::Duration(2.0).sleep();*/
 
                         ROS_INFO("Teleop Action Server: arm reset finished");
                         break;
@@ -413,7 +413,7 @@ class TeleopExecutive
                         drivebase_publisher.publish(move_cmd);
                         //first grab the current state of the arm
                         //arm_manipulator.moveArm(0, 0.50, 1.07, 1.6);
-                        arm_manipulator.moveArm(3.05, 0.1, 0.98, -1.17);
+                        //arm_manipulator.moveArm(3.05, 0.1, 0.98, -1.17);
                         ROS_INFO("Teleop Action Server: arm raise finished");
                         break;
                     }
@@ -425,7 +425,7 @@ class TeleopExecutive
                         //all zeros by default
                         drivebase_publisher.publish(move_cmd);
                         //first grab the current state of the arm
-                        arm_manipulator.moveArm(query.response.states[0], 0.10, 1.07, 1.6);
+                        //arm_manipulator.moveArm(query.response.states[0], 0.10, 1.07, 1.6);
                         ros::Duration(5.0).sleep();
                         ROS_INFO("Teleop Action Server: arm raise finished");
                         break;

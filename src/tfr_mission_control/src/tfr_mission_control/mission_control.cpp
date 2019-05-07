@@ -226,7 +226,7 @@ namespace tfr_mission_control {
         while(!ros::service::call("/zero_turntable", req, res))
             ros::Duration{0.1}.sleep();
 
-	performTeleop(tfr_utilities::TeleopCode::DRIVING_POSITION);
+	    performTeleop(tfr_utilities::TeleopCode::DRIVING_POSITION);
         toggleMotors(true);
 
     }
@@ -432,7 +432,7 @@ namespace tfr_mission_control {
 
     }
 
-    //triggers state change into from teleop into autonomy
+    //triggers state change into teleop from autonomy
     void MissionControl::goTeleopMode()
     {
         setAutonomy(false);
