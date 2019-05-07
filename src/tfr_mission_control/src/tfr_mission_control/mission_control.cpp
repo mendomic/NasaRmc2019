@@ -341,16 +341,16 @@ namespace tfr_mission_control {
                     performTeleop(tfr_utilities::TeleopCode::STOP_DRIVEBASE);
                     break;
                 case (Qt::Key_U):
-                    performTeleop(tfr_utilities::TeleopCode::STOP_DRIVEBASE);
+                    performTeleop(tfr_utilities::TeleopCode::LOWER_ARM_EXTEND);
                     break;
                 case (Qt::Key_J):
-                    performTeleop(tfr_utilities::TeleopCode::STOP_DRIVEBASE);
+                    performTeleop(tfr_utilities::TeleopCode::LOWER_ARM_RETRACT);
                     break;
                 case (Qt::Key_I):
-                    performTeleop(tfr_utilities::TeleopCode::STOP_DRIVEBASE);
+                    performTeleop(tfr_utilities::TeleopCode::UPPER_ARM_EXTEND);
                     break;
                 case (Qt::Key_K):
-                    performTeleop(tfr_utilities::TeleopCode::STOP_DRIVEBASE);
+                    performTeleop(tfr_utilities::TeleopCode::UPPER_ARM_EXTEND);
                     break;
                 case (Qt::Key_O):
                     performTeleop(tfr_utilities::TeleopCode::SCOOP_EXTEND);
