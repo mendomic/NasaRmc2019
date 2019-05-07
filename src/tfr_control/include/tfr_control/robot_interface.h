@@ -194,8 +194,8 @@ namespace tfr_control {
 				encoder: 149
 				joint position: 1.55
 		*/
-		 int32_t arm_lower_encoder_min = 888;
-		 int32_t arm_lower_encoder_max = 0;
+		 int32_t arm_lower_encoder_min = 0;
+		 int32_t arm_lower_encoder_max = 888;
 		 double arm_lower_joint_min = 0.104; // lower arm UP
 		 double arm_lower_joint_max = 1.55;
 		
