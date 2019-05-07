@@ -219,12 +219,20 @@ class TeleopExecutive
                 case (tfr_utilities::TeleopCode::LOWER_ARM_EXTEND):
                     {
                         ROS_INFO("Teleop Action Server: Command Recieved, LOWER_ARM_EXTEND");
-                        int effort = 1;
+						int effort = 1;
                         if (not ros::param::getCached("~arm_effort", effort)) {effort = 1;}
-                        ROS_INFO("Writing effort: %d", effort);
+                        /*
+						ROS_INFO("Writing effort: %d", effort);
                         std_msgs::Int32 msg;
                         msg.data = effort;
                         lower_arm_pub.publish(msg);
+                        break;
+						*/
+						tfr_msgs::ArmStateSrv query;
+                        arm_manipulator.moveArm( query.response.states[0],
+                                  query.response.states[1] - 0.05,
+                                  query.response.states[2],
+                                  query.response.states[3]);
                         break;
                     }
                     
@@ -232,33 +240,58 @@ class TeleopExecutive
                 case (tfr_utilities::TeleopCode::LOWER_ARM_RETRACT):
                     {
                         ROS_INFO("Teleop Action Server: Command Recieved, LOWER_ARM_RETRACT");
-                        int effort = 1;
-                        if (not ros::param::getCached("~arm_effort", effort)) {effort = 1;}
-                        std_msgs::Int32 msg;
+						int effort = 1;
+						if (not ros::param::getCached("~arm_effort", effort)) {effort = 1;}
+                        /*
+						std_msgs::Int32 msg;
                         msg.data = -effort;
                         lower_arm_pub.publish(msg);
+                        break;
+						*/
+						tfr_msgs::ArmStateSrv query;
+                        arm_manipulator.moveArm( query.response.states[0],
+                                  query.response.states[1] + 0.05,
+                                  query.response.states[2],
+                                  query.response.states[3]);
                         break;
                     }
                     
                 case (tfr_utilities::TeleopCode::UPPER_ARM_EXTEND):
                     {
                         ROS_INFO("Teleop Action Server: Command Recieved, UPPER_ARM_EXTEND");
-                        int effort = 1;
+                        
+						int effort = 1;
                         if (not ros::param::getCached("~arm_effort", effort)) {effort = 1;}
-                        std_msgs::Int32 msg;
+                        /*
+						std_msgs::Int32 msg;
                         msg.data = -effort;
                         upper_arm_pub.publish(msg);
+                        break;
+						*/
+						tfr_msgs::ArmStateSrv query;
+                        arm_manipulator.moveArm( query.response.states[0],
+                                  query.response.states[1],
+                                  query.response.states[2] + 0.5,
+                                  query.response.states[3]);
                         break;
                     }
                     
                 case (tfr_utilities::TeleopCode::UPPER_ARM_RETRACT):
                     {
                         ROS_INFO("Teleop Action Server: Command Recieved, UPPER_ARM_RETRACT");
-                        int effort = 1;
+						int effort = 1;
                         if (not ros::param::getCached("~arm_effort", effort)) {effort = 1;}
-                        std_msgs::Int32 msg;
+                        /*
+						std_msgs::Int32 msg;
                         msg.data = -effort;
                         upper_arm_pub.publish(msg);
+                        break;
+						*/
+						tfr_msgs::ArmStateSrv query;
+                        arm_manipulator.moveArm( query.response.states[0],
+                                  query.response.states[1],
+                                  query.response.states[2] - 0.5,
+                                  query.response.states[3]);
                         break;
                     }
                     
