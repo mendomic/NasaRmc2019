@@ -2,11 +2,11 @@
 #define ARM_MANIPULATOR_H
 #include <ros/ros.h>
 #include <tfr_msgs/ArmMoveAction.h>
-#include <tfr_msgs/ArmMoveAction.h>
 #include <actionlib/server/simple_action_server.h>
 #include <trajectory_msgs/JointTrajectory.h>
 #include <joints.h>
 #include <urdf/model.h>
+#include <actionlib/client/simple_action_client.h>
 
 /**
  * Provides a simple method for moving the arm without MoveIt.
@@ -40,6 +40,7 @@ class ArmManipulator
     private:
         ros::Publisher trajectory_publisher;
         ros::Publisher scoop_trajectory_publisher;
+        actionlib::SimpleActionClient<tfr_msgs::ArmMoveAction> arm_action_client;
 		
 		void initializeJointLimits();
 		
