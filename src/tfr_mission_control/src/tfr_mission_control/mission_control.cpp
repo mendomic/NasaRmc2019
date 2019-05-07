@@ -252,7 +252,6 @@ namespace tfr_mission_control {
         ui.upper_arm_retract_button->setEnabled(value);
         ui.scoop_extend_button->setEnabled(value);
         ui.scoop_retract_button->setEnabled(value);
-        ui.set_encoders->setEnabled(value);
         teleopEnabled = value;
     }
 
@@ -287,7 +286,7 @@ namespace tfr_mission_control {
      * */
     void MissionControl::softwareStop()
     {
-        performTeleop(tfr_utilities::TeleopCode::STOP_DRIVEBASE);
+        //performTeleop(tfr_utilities::TeleopCode::STOP_DRIVEBASE);
         teleop.waitForResult();
     }
 
@@ -418,8 +417,8 @@ namespace tfr_mission_control {
     {
         startTimeService();
         goTeleopMode();
-        toggleControl(true);
-        toggleMotors(true);
+        //toggleControl(true);
+        //toggleMotors(true);
     }
 
     //triggers state change into autonomous mode from teleop
