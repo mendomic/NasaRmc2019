@@ -32,7 +32,7 @@ namespace tfr_utilities
         UPPER_ARM_RETRACT= 16,
         SCOOP_EXTEND = 17,
         SCOOP_RETRACT = 18,
-
+        RESET_ENCODER_COUNTS_TO_START = 19,
     };
 }
 #endif

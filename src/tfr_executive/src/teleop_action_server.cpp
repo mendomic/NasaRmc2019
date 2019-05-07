@@ -78,6 +78,10 @@ class TeleopExecutive
             lower_arm_pub{n.advertise<std_msgs::Int32>("/device12/set_cmd_cango/cmd_cango_1", 1)},
             upper_arm_pub{n.advertise<std_msgs::Int32>("/device4/set_cmd_cango/cmd_cango_3", 1)},
             scoop_pub{n.advertise<std_msgs::Int32>("/device4/set_cmd_cango/cmd_cango_2", 1)},
+            turntable_encoder_publisher{n.advertise<std_msgs::Int32>("/device4/set_cmd_sencntr/channel_1", 1)},
+			lower_arm_encoder_publisher{n.advertise<std_msgs::Int32>("/device12/set_cmd_sencntr/channel_2", 1)},
+			upper_arm_encoder_publisher{n.advertise<std_msgs::Int32>("/device4/set_cmd_sencntr/channel_3", 1)},
+			scoop_encoder_publisher{n.advertise<std_msgs::Int32>("/device4/set_cmd_sencntr/channel_2", 1)},
             drive_stats{drive},
             frequency{f},
             use_digging{u_d}
@@ -130,12 +134,7 @@ class TeleopExecutive
             switch(code)
             {
 				case (tfr_utilities::TeleopCode::RESET_ENCODER_COUNTS_TO_START):
-				{
-					ros::Publisher turntable_encoder_publisher{n.advertise<std_msgs::Int32>("/device4/set_cmd_sencntr/channel_1", 1)};
-					ros::Publisher lower_arm_encoder_publisher{n.advertise<std_msgs::Int32>("/device12/set_cmd_sencntr/channel_2", 1)};
-					ros::Publisher upper_arm_encoder_publisher{n.advertise<std_msgs::Int32>("/device4/set_cmd_sencntr/channel_3", 1)};
-					ros::Publisher scoop_encoder_publisher{n.advertise<std_msgs::Int32>("/device4/set_cmd_sencntr/channel_2", 1)};
-					
+				{	
 					std_msgs::Int32 turntable_encoder_msg;
 					std_msgs::Int32 lower_arm_encoder_msg;
 					std_msgs::Int32 upper_arm_encoder_msg;
@@ -451,6 +450,10 @@ class TeleopExecutive
         ros::Publisher lower_arm_pub;
         ros::Publisher upper_arm_pub;
         ros::Publisher scoop_pub;
+        ros::Publisher turntable_encoder_publisher;
+		ros::Publisher lower_arm_encoder_publisher;
+		ros::Publisher upper_arm_encoder_publisher;
+		ros::Publisher scoop_encoder_publisher;
         ros::Publisher drivebase_publisher;
         ArmManipulator arm_manipulator;
         ros::Publisher bin_publisher;

@@ -40,7 +40,7 @@ void setupDevice4Topics(kaco::Device& device, kaco::Bridge& bridge, std::string&
 	bridge.add_publisher(iopub_4_1_3, loop_rate);
 	
 	auto iopub_4_1_4 = std::make_shared<kaco::EntrySubscriber>(device, "cmd_sencntr/channel_1");
-	bridge.add_subscriber(iosub_4_1_4);
+	bridge.add_subscriber(iopub_4_1_4);
 	
 	
 	auto iosub_4_2_1 = std::make_shared<kaco::EntrySubscriber>(device, "cmd_cango/cmd_cango_2");
@@ -53,7 +53,7 @@ void setupDevice4Topics(kaco::Device& device, kaco::Bridge& bridge, std::string&
 	bridge.add_publisher(iopub_4_2_3, loop_rate);
 	
 	auto iopub_4_2_4 = std::make_shared<kaco::EntrySubscriber>(device, "cmd_sencntr/channel_2");
-	bridge.add_subscriber(iosub_4_2_4);
+	bridge.add_subscriber(iopub_4_2_4);
 	
 	
 	auto iosub_4_3_1 = std::make_shared<kaco::EntrySubscriber>(device, "cmd_cango/cmd_cango_3");
@@ -66,7 +66,7 @@ void setupDevice4Topics(kaco::Device& device, kaco::Bridge& bridge, std::string&
 	bridge.add_publisher(iopub_4_3_3, loop_rate);
 	
 	auto iopub_4_3_4 = std::make_shared<kaco::EntrySubscriber>(device, "cmd_sencntr/channel_3");
-	bridge.add_subscriber(iosub_4_3_4);
+	bridge.add_subscriber(iopub_4_3_4);
 }
 
 int main(int argc, char* argv[]) {
@@ -164,7 +164,7 @@ int main(int argc, char* argv[]) {
     		bridge.add_publisher(iopub_12_1_3, loop_rate);
 			
 			auto iopub_12_1_4 = std::make_shared<kaco::EntrySubscriber>(device, "cmd_sencntr/channel_1");
-			bridge.add_subscriber(iosub_12_1_4);
+			bridge.add_subscriber(iopub_12_1_4);
 			
 			
 			auto iosub_12_2_1 = std::make_shared<kaco::EntrySubscriber>(device, "cmd_cango/cmd_cango_2");
@@ -177,7 +177,7 @@ int main(int argc, char* argv[]) {
     		bridge.add_publisher(iopub_12_2_3, loop_rate);
 			
 			auto iopub_12_2_4 = std::make_shared<kaco::EntrySubscriber>(device, "cmd_sencntr/channel_2");
-			bridge.add_subscriber(iosub_12_2_4);
+			bridge.add_subscriber(iopub_12_2_4);
 			
 			
 			auto iosub_12_3_1 = std::make_shared<kaco::EntrySubscriber>(device, "cmd_cango/cmd_cango_3");
@@ -190,7 +190,7 @@ int main(int argc, char* argv[]) {
     		bridge.add_publisher(iopub_12_3_3, loop_rate);
 			
 			auto iopub_12_3_4 = std::make_shared<kaco::EntrySubscriber>(device, "cmd_sencntr/channel_3");
-			bridge.add_subscriber(iosub_12_3_4);
+			bridge.add_subscriber(iopub_12_3_4);
 			
 		}
 		
