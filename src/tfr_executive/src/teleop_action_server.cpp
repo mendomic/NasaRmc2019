@@ -242,6 +242,11 @@ class TeleopExecutive
                 case (tfr_utilities::TeleopCode::SCOOP_EXTEND):
                     {
                         ROS_INFO("Teleop Action Server: Command Recieved, SCOOP_EXTEND");
+                        ROS_INFO("Joint state %f, %f, %f, %f",
+                            query.response.states[0],
+                            query.response.states[1],
+                            query.response.states[2],
+                            query.response.states[3]) 
                         tfr_msgs::ArmStateSrv query;
                         ros::service::call("arm_state", query);
                         arm_manipulator.moveArm( query.response.states[0],
