@@ -305,7 +305,7 @@ class TeleopExecutive
                             query.response.states[1],
                             query.response.states[2],
                             query.response.states[3]);
-                        arm_manipulator.moveArm( query.response.states[0],
+                        arm_manipulator.moveArmWithLimits( query.response.states[0],
                                   query.response.states[1],
                                   query.response.states[2],
                                   query.response.states[3] + 0.5);
@@ -316,7 +316,12 @@ class TeleopExecutive
                     {
                         ROS_INFO("Teleop Action Server: Command Recieved, SCOOP_RETRACT");
                         tfr_msgs::ArmStateSrv query;
-                        arm_manipulator.moveArm( query.response.states[0],
+                        ROS_INFO("Joint state %f, %f, %f, %f",
+                            query.response.states[0],
+                            query.response.states[1],
+                            query.response.states[2],
+                            query.response.states[3]);
+                        arm_manipulator.moveArmWithLimits( query.response.states[0],
                                   query.response.states[1],
                                   query.response.states[2],
                                   query.response.states[3] - 0.5);
