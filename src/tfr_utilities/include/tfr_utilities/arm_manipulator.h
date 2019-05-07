@@ -30,9 +30,22 @@ class ArmManipulator
 		 *    See digging_action_server.cpp for example.
          * */
         void moveArm( const double& turntable, const double& lower_arm, const double& upper_arm, const double& scoop);
+		
+		/*
+		 * Same as moveArm but clamps trajectories to be within the URDF model's joint limits.
+		 */
+		void ArmManipulator::moveArmWithLimits(const double& turntable, const double& lower_arm ,const double& upper_arm,  const double& scoop )
     private:
         ros::Publisher trajectory_publisher;
         ros::Publisher scoop_trajectory_publisher;
+		
+		void initializeJointLimits();
+		
+		// Return input, restricted to be within the two bounds (inclusive).
+		double clamp(double input, double bound_1, double bound_2);
+		
+		double lower_limits[tfr_control::RobotInterface::JOINT_COUNT];
+		double upper_limits[tfr_control::RobotInterface::JOINT_COUNT];
  };
 
 #endif
