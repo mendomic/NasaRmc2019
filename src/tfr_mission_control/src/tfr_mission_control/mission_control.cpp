@@ -350,7 +350,7 @@ namespace tfr_mission_control {
                     performTeleop(tfr_utilities::TeleopCode::UPPER_ARM_EXTEND);
                     break;
                 case (Qt::Key_K):
-                    performTeleop(tfr_utilities::TeleopCode::UPPER_ARM_EXTEND);
+                    performTeleop(tfr_utilities::TeleopCode::UPPER_ARM_RETRACT);
                     break;
                 case (Qt::Key_O):
                     performTeleop(tfr_utilities::TeleopCode::SCOOP_EXTEND);
