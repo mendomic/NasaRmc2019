@@ -275,7 +275,7 @@ class TeleopExecutive
                         arm_manipulator.moveArm( query.response.states[0],
                                   query.response.states[1],
                                   query.response.states[2],
-                                  query.response.states[3] + 0.01);
+                                  query.response.states[3] + 0.5);
                         break;
                     }
                     
@@ -286,7 +286,7 @@ class TeleopExecutive
                         arm_manipulator.moveArm( query.response.states[0],
                                   query.response.states[1],
                                   query.response.states[2],
-                                  query.response.states[3] - 0.01);
+                                  query.response.states[3] - 0.5);
                         break;
                     }
 
