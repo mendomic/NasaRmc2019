@@ -113,6 +113,8 @@ int main(int argc, char* argv[]) {
 		{
 			ROS_DEBUG_STREAM("tfr_can: case: Device 4" << std::endl);
 			
+			device.print_dictionary();
+			
 			setupDevice4Topics(device, bridge, eds_files_path);
 		}
 		
