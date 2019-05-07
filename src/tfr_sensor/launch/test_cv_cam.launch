@@ -3,9 +3,9 @@
         <rosparam>
             file: "nvcamerasrc sensor-id=0 fpsRange=\"30.0 30.0\" ! nvvidconv flip-method=2 ! video/x-raw, format=(string)I420 ! videoconvert ! video/x-raw, format=(string)BGR !  appsink" 
             frame_id: front_cam_link
-            camera_info_url: file:///home/trickfire/NasaRmc2019/src/tfr_sensor/calib/front.yaml
             rate: 5 
         </rosparam>
+        <param name="camera_info_url" value="file://$(find tfr_sensor)/calib/front.yaml"/>
     </node>
     <node name="front_cam_wrapper" pkg="tfr_sensor" type="image_topic_wrapper">
         <rosparam>
