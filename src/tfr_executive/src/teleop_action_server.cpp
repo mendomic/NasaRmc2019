@@ -198,6 +198,7 @@ class TeleopExecutive
                         ROS_INFO("Teleop Action Server: Command Recieved, LOWER_ARM_EXTEND");
                         int effort = 1;
                         if (not ros::param::getCached("arm_effort", effort)) {effort = 1;}
+                        ROS_INFO("Writing effort: %d", effort);
                         std_msgs::Int32 msg;
                         msg.data = effort;
                         lower_arm_pub.publish(msg);
