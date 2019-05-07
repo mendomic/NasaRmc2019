@@ -80,5 +80,11 @@ target_link_libraries(arm_action_server
   ${catkin_LIBRARIES}
 )
 
+#install shared headers
+install(DIRECTORY include/${PROJECT_NAME}/
+    DESTINATION ${CATKIN_PACKAGE_INCLUDE_DESTINATION}
+    FILES_MATCHING PATTERN "*.h"
+)
+
 # This call is sometimes needed and sometimes not and I'm not really clear why
 SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread")
