@@ -129,6 +129,29 @@ class TeleopExecutive
             auto code = static_cast<tfr_utilities::TeleopCode>(goal->code);
             switch(code)
             {
+				case (tfr_utilities::TeleopCode::RESET_ENCODER_COUNTS_TO_START):
+				{
+					ros::Publisher turntable_encoder_publisher{n.advertise<std_msgs::Int32>("/device4/set_cmd_sencntr/channel_1", 1)};
+					ros::Publisher lower_arm_encoder_publisher{n.advertise<std_msgs::Int32>("/device12/set_cmd_sencntr/channel_2", 1)};
+					ros::Publisher upper_arm_encoder_publisher{n.advertise<std_msgs::Int32>("/device4/set_cmd_sencntr/channel_3", 1)};
+					ros::Publisher scoop_encoder_publisher{n.advertise<std_msgs::Int32>("/device4/set_cmd_sencntr/channel_2", 1)};
+					
+					std_msgs::Int32 turntable_encoder_msg;
+					std_msgs::Int32 lower_arm_encoder_msg;
+					std_msgs::Int32 upper_arm_encoder_msg;
+					std_msgs::Int32 scoop_encoder_msg;
+					
+					const int32_t turntable_encoder_starting_count = 12880;
+					const int32_t lower_arm_encoder_starting_count = 0;
+					const int32_t upper_arm_encoder_starting_count = 836;
+					const int32_t scoop_encoder_starting_count = 1721;
+					
+					turntable_encoder_msg.data = turntable_encoder_starting_count;
+					lower_arm_encoder_msg.data = lower_arm_encoder_starting_count;
+					upper_arm_encoder_msg.data = upper_arm_encoder_starting_count;
+					scoop_encoder_msg.data = scoop_encoder_starting_count;
+					
+				}
                 case (tfr_utilities::TeleopCode::STOP_DRIVEBASE):
                     {
                         ROS_INFO("Teleop Action Server: Command Recieved, STOP_DRIVEBASE");

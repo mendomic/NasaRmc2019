@@ -35,7 +35,7 @@ namespace tfr_control
 		turntable_publisher{n.advertise<std_msgs::Int32>("/device4/set_cmd_cango/cmd_cango_1", 1)},
 		
 		
-		lower_arm_subscriber_encoder{n.subscribe("/device12/get_qry_abcntr/channel_1", 5,
+		lower_arm_subscriber_encoder{n.subscribe("/device12/get_qry_abcntr/channel_2", 5, // "channel_2" is correct.
                 &RobotInterface::readLowerArmEncoder, this)},
 		lower_arm_subscriber_amps{n.subscribe("/device12/get_qry_batamps/channel_1", 1,
                 &RobotInterface::readLowerArmAmps, this)},
@@ -326,7 +326,6 @@ namespace tfr_control
 
             //SCOOP
 			int32_t scoop_position = // static_cast<int32_t>(command_values[static_cast<int>(Joint::SCOOP)]); //command_values[static_cast<int>(Joint::SCOOP)];
-			    
 			    static_cast<int32_t>
 			    (
 					std::max(
@@ -340,8 +339,6 @@ namespace tfr_control
 						1
 		            ), 1000.0), -1000.0)
 		        );
-				
-		        
 			        
 			std_msgs::Int32 scoop_position_msg;
 			scoop_position_msg.data = scoop_position;
