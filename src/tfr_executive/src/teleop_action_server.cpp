@@ -135,6 +135,7 @@ class TeleopExecutive
             {
 				case (tfr_utilities::TeleopCode::RESET_ENCODER_COUNTS_TO_START):
 				{	
+				    ROS_INFO("Teleop Action Server: Command Recieved, RESET ENCODERS");
 					std_msgs::Int32 turntable_encoder_msg;
 					std_msgs::Int32 lower_arm_encoder_msg;
 					std_msgs::Int32 upper_arm_encoder_msg;
@@ -149,6 +150,12 @@ class TeleopExecutive
 					lower_arm_encoder_msg.data = lower_arm_encoder_starting_count;
 					upper_arm_encoder_msg.data = upper_arm_encoder_starting_count;
 					scoop_encoder_msg.data = scoop_encoder_starting_count;
+					
+					turntable_encoder_publisher.publish(turntable_encoder_msg);
+		            lower_arm_encoder_publisher.publish(lower_arm_encoder_msg);
+		            upper_arm_encoder_publisher.publish(upper_arm_encoder_msg);
+		            scoop_encoder_publisher.publish(scoop_encoder_msg);
+					
 					break;
 					
 				}

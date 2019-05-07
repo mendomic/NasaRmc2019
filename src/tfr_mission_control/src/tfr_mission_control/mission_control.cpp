@@ -136,7 +136,7 @@ namespace tfr_mission_control {
         connect(ui.scoop_extend_button,&QPushButton::clicked,
                 [this] () {performTeleop(tfr_utilities::TeleopCode::SCOOP_EXTEND);}); 
         connect(ui.scoop_retract_button,&QPushButton::clicked,
-                [this] () {performTeleop(tfr_utilities::TeleopCode::SCOOP_RETRACT);}); 
+                [this] () {performTeleop(tfr_utilities::TeleopCode::SCOOP_RETRACT);});
         // raise arm to straight, neutral position above robot
         connect(ui.raise_arm_button,&QPushButton::clicked,
                 [this] () {performTeleop(tfr_utilities::TeleopCode::RAISE_ARM);});
@@ -145,6 +145,9 @@ namespace tfr_mission_control {
                 [this] () {performTeleop(tfr_utilities::TeleopCode::CLOCKWISE);});
         connect(ui.ccw_button,&QPushButton::clicked,
                 [this] () {performTeleop(tfr_utilities::TeleopCode::COUNTERCLOCKWISE);});
+        //reset encoders
+        connect(ui.set_encoders,&QPushButton::clicked,
+                [this] () {performTeleop(tfr_utilities::TeleopCode::RESET_ENCODER_COUNTS_TO_START);}); 
         //drivebase
         //forward
         connect(ui.forward_button,&QPushButton::pressed,
@@ -249,6 +252,7 @@ namespace tfr_mission_control {
         ui.upper_arm_retract_button->setEnabled(value);
         ui.scoop_extend_button->setEnabled(value);
         ui.scoop_retract_button->setEnabled(value);
+        ui.set_encoders->setEnabled(value);
         teleopEnabled = value;
     }
 
