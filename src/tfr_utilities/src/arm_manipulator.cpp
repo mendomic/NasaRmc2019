@@ -26,7 +26,7 @@ void ArmManipulator::moveArm(const double& turntable, const double& lower_arm ,c
         if (! ros::ok())
         {
             arm_action_client.cancelAllGoals();
-            ROS_INFO("Arm Manip: exiting);
+            ROS_INFO("Arm Manip: exiting");
             return;
         }
     }
