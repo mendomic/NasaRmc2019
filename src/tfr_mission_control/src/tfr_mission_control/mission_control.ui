@@ -302,6 +302,19 @@
        </property>
       </widget>
      </item>
+     <item row="0" column="3">
+      <widget class="QPushButton" name="set_encoders">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="text">
+        <string>Set Encoders</string>
+       </property>
+      </widget>
+     </item>
     </layout>
    </item>
    <item>
