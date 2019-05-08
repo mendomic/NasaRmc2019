@@ -56,7 +56,11 @@ namespace tfr_control
                 &RobotInterface::readScoopAmps, this)},
 		scoop_publisher{n.advertise<std_msgs::Int32>("/device4/set_cmd_cango/cmd_cango_2", 1)},
 		
-        //pwm_publisher{n.advertise<tfr_msgs::PwmCommand>("/motor_output", 15)},
+		right_bin_potentiometer_sub{n.subscribe("/device12/Qry_FEEDBACK/Qry_FEEDBACK 3",  &RobotInterface::readLeftBin, this)};
+        right_bin_cmd_pub{n.advertise<std_msgs::Int32>("/device12/set_cmd_cango/cmd_cango_3", 1)};
+        left_bin_potentiometer_sub{n.subscribe("/device12/Qry_FEEDBACK/Qry_FEEDBACK 2")};
+        left_bin_cmd_pub{n.advertise<std_msgs::Int32>("/device12/set_cmd_cango/cmd_cango_2", 1)};
+		
         use_fake_values{fakes}, lower_limits{lower_lim},
         upper_limits{upper_lim}, drivebase_v0{std::make_pair(0,0)},
         last_update{ros::Time::now()},
@@ -221,11 +225,15 @@ namespace tfr_control
 			
         }
  
-        //BIN
-        position_values[static_cast<int>(tfr_utilities::Joint::BIN)] = 0; 
-            //(reading_a.bin_left_pos + reading_a.bin_right_pos)/2;
-        velocity_values[static_cast<int>(tfr_utilities::Joint::BIN)] = 0;
-        effort_values[static_cast<int>(tfr_utilities::Joint::BIN)] = 0;
+        //Left Bin
+        position_values[static_cast<int>(tfr_utilities::Joint::LEFT_BIN)] = left_bin_val; 
+        velocity_values[static_cast<int>(tfr_utilities::Joint::LEFT_BIN)] = 0;
+        effort_values[static_cast<int>(tfr_utilities::Joint::LEFT_BIN)] = 0;
+        
+        //Right bin
+        position_values[static_cast<int>(tfr_utilities::Joint::RIGHT_BIN)] = right_bin_val; 
+        velocity_values[static_cast<int>(tfr_utilities::Joint::RIGHT_BIN)] = 0;
+        effort_values[static_cast<int>(tfr_utilities::Joint::RIGHT_BIN)] = 0;
 
     }
 
@@ -352,39 +360,6 @@ namespace tfr_control
 			} else {
 			    //ROS_INFO("Robot Interface: not writeing arm values");
 		    }
-			
-			/*
-			ROS_INFO_STREAM("turntable_position: position: write: " << position_values[static_cast<int>(tfr_utilities::Joint::TURNTABLE)] << std::endl);
-			ROS_INFO_STREAM("turntable_position: command: write: " << command_values[static_cast<int>(tfr_utilities::Joint::TURNTABLE)] << std::endl);
-			ROS_INFO_STREAM("turntable_position: effort: write: " << effort_values[static_cast<int>(tfr_utilities::Joint::TURNTABLE)] << std::endl);
-			ROS_INFO_STREAM("turntable_position: velocity: write: " << velocity_values[static_cast<int>(tfr_utilities::Joint::TURNTABLE)] << std::endl);
-			ROS_INFO_STREAM("turntable_position: write: " << turntable_position << std::endl);
-			*/
-			
-			
-			/*
-			ROS_INFO_STREAM("arm_lower_position: position: write: " << position_values[static_cast<int>(tfr_utilities::Joint::LOWER_ARM)] << std::endl);
-			ROS_INFO_STREAM("arm_lower_position: command: write: " << command_values[static_cast<int>(tfr_utilities::Joint::LOWER_ARM)] << std::endl);
-			ROS_INFO_STREAM("arm_lower_position: effort: write: " << effort_values[static_cast<int>(tfr_utilities::Joint::LOWER_ARM)] << std::endl);
-			ROS_INFO_STREAM("arm_lower_position: velocity: write: " << velocity_values[static_cast<int>(tfr_utilities::Joint::LOWER_ARM)] << std::endl);
-			ROS_INFO_STREAM("arm_lower_position: write: " << arm_lower_position << std::endl);
-			*/
-			
-			/*
-			ROS_INFO_STREAM("arm_upper_position: position: write: " << position_values[static_cast<int>(tfr_utilities::Joint::UPPER_ARM)] << std::endl);
-			ROS_INFO_STREAM("arm_upper_position: command: write: " << command_values[static_cast<int>(tfr_utilities::Joint::UPPER_ARM)] << std::endl);
-			ROS_INFO_STREAM("arm_upper_position: effort: write: " << effort_values[static_cast<int>(tfr_utilities::Joint::UPPER_ARM)] << std::endl);
-			ROS_INFO_STREAM("arm_upper_position: velocity: write: " << velocity_values[static_cast<int>(tfr_utilities::Joint::UPPER_ARM)] << std::endl);
-			ROS_INFO_STREAM("arm_upper_position: write: " << arm_upper_position << std::endl);
-			*/
-			
-			/*
-			ROS_INFO_STREAM("scoop_position: position: write: " << position_values[static_cast<int>(tfr_utilities::Joint::SCOOP)] << std::endl);
-			ROS_INFO_STREAM("scoop_position: command: write: " << command_values[static_cast<int>(tfr_utilities::Joint::SCOOP)] << std::endl);
-			ROS_INFO_STREAM("scoop_position: effort: write: " << effort_values[static_cast<int>(tfr_utilities::Joint::SCOOP)] << std::endl);
-			ROS_INFO_STREAM("scoop_position: velocity: write: " << velocity_values[static_cast<int>(tfr_utilities::Joint::SCOOP)] << std::endl);
-			ROS_INFO_STREAM("scoop_position: write: " << scoop_position << std::endl);
-			*/
         }
 		
         //LEFT_TREAD
@@ -398,8 +373,8 @@ namespace tfr_control
         brushless_left_tread_vel_publisher.publish(left_tread_msg);
 
         //RIGHT_TREAD
-	int right_tread_scale = 1;
-	ros::param::getCached("right_tread_scale", right_tread_scale);
+        int right_tread_scale = 1;
+        ros::param::getCached("right_tread_scale", right_tread_scale);
         double right_tread_command = command_values[static_cast<int32_t>(tfr_utilities::Joint::RIGHT_TREAD)];
 		//right_tread_command = linear_interp_double(right_tread_command, 0.0, 0.0, 1.0, 1000.0);
 		std_msgs::Int32 right_tread_msg;
@@ -408,20 +383,27 @@ namespace tfr_control
 
 		//ROS_INFO_STREAM("left_tread_scale: " << left_tread_msg.data << std::endl);
 		//ROS_INFO_STREAM("right_tread_scale: " << right_tread_msg.data << std::endl);
-
-        //BIN
-		/*
-        auto twin_signal = twinAngleToPWM(command_values[static_cast<int>(tfr_utilities::Joint::BIN)], 0, 0);
-					//reading_a.bin_left_pos,
-                    //reading_a.bin_right_pos);
-					
-        command.bin_left = twin_signal.first;
-        command.bin_right = twin_signal.second;
-		*/
-		
-
-        //command.enabled = enabled;
-        //pwm_publisher.publish(command);
+        
+        //Bin
+        bool use_right = true, use_left = true;
+        if(abs(right_bin_val - left_bin_val)  > 20){
+            use_right = right_bin_val > left_bin_val;
+            use_left = !use_right;
+        } 
+        
+        int right_bin_scale = 1;
+        ros::param::getCached("right_bin_scale", right_bin_scale);
+        double right_bin_command = command_values[static_cast<int32_t>(tfr_utilities::Joint::RIGHT_BIN)];
+		std_msgs::Int32 right_bin_msg;
+		right_bin_msg.data = static_cast<int32_t>(right_bin_command * right_bin_scale * use_right);
+        right_bin_cmd_pub.publish(right_tread_msg);
+        
+        int left_bin_scale = 1;
+        ros::param::getCached("left_bin_scale", right_bin_scale);
+        double left_bin_command = command_values[static_cast<int32_t>(tfr_utilities::Joint::LEFT_BIN)];
+		std_msgs::Int32 left_bin_msg;
+		left_bin_msg.data = static_cast<int32_t>(left_bin_command * left_bin_scale * use_left);
+        left_bin_cmd_pub.publish(left_tread_msg);
         
         //UPKEEP
         last_update = ros::Time::now();
@@ -511,7 +493,8 @@ namespace tfr_control
         //SCOOP
         command_values[static_cast<int>(tfr_utilities::Joint::SCOOP)] = 0;
         //BIN
-        command_values[static_cast<int>(tfr_utilities::Joint::BIN)] = 0;
+        command_values[static_cast<int>(tfr_utilities::Joint::LEFT_BIN)] = 0;
+        command_values[static_cast<int>(tfr_utilities::Joint::RIGHT_BIN)] = 0;
     }
 
     /*
@@ -565,6 +548,17 @@ namespace tfr_control
 		//ROS_INFO_STREAM("lower_arm_ams: " << position_values[static_cast<int>(tfr_utilities::Joint::LOWER_ARM)] << std::endl);
 	}
 	
+	void RobotInterface::readRightBin(const std_msgs::Int32 &msg){
+	    right_bin_mutex.lock();
+	    right_bin_val = msg.data;
+	    right_bin_mutex.unlock();
+	}
+	
+	void RobotInterface::readLeftBin(const std_msgs::Int32 &msg){
+	    left_bin_mutex.lock();
+	    left_bin_val = msg.data;
+	    left_bin_mutex.unlock();
+	}
 	
 	void RobotInterface::readUpperArmEncoder(const std_msgs::Int32 &msg)
 	{
@@ -867,6 +861,8 @@ namespace tfr_control
 		
 		return brushlessEncoderCountToRadians(encoder_count) / accumulated_brushless_left_tread_vel_end_time.toSec();
 	}
+	
+	
 	
 	
     void RobotInterface::zeroTurntable()

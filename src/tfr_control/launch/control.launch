@@ -30,6 +30,8 @@
 	
 	<param name="left_tread_scale" value="3000" type="int"/>
 	<param name="right_tread_scale" value="3000" type="int"/>
+	<param name="left_bin_scale" value="10" type="int"/>
+	<param name="right_bin_scale" value="10" type="int"/>
 	<param name="/write_arm_values" value="true" type="bool"/>
 
     <!-- Launch all the MoveIt! nodes -->

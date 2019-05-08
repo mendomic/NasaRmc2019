@@ -15,9 +15,8 @@ namespace tfr_utilities
     {
         LEFT_TREAD, 
         RIGHT_TREAD, 
-        BIN, 
-        TURNTABLE, 
-        LOWER_ARM,
+        LEFT_BIN,
+        RIGHT_BIN,
         UPPER_ARM, 
         SCOOP,
         JOINT_COUNT,

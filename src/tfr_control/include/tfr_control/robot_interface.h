@@ -91,99 +91,110 @@ namespace tfr_control {
 
         //reads from arduino encoder publisher
         /*
-		ros::Subscriber arduino_a;
+        ros::Subscriber arduino_a;
         ros::Subscriber arduino_b;
         ros::Publisher pwm_publisher;
-		*/
+        */
         bool enabled;
-        
-		/*
-		tfr_msgs::ArduinoAReadingConstPtr latest_arduino_a;
+
+        /*
+        tfr_msgs::ArduinoAReadingConstPtr latest_arduino_a;
         tfr_msgs::ArduinoBReadingConstPtr latest_arduino_b;
-		*/
+        */
         double turntable_offset;
 
-		// Read the relative velocity counters from the brushless motor controller
-		ros::Subscriber brushless_right_tread_vel;
-		ros::Subscriber brushless_left_tread_vel;
-		
-		volatile ros::Subscriber turntable_subscriber_encoder;
-		volatile ros::Subscriber turntable_subscriber_amps;
-		ros::Publisher  turntable_publisher;
-		volatile int32_t turntable_encoder = 0;
-		volatile double turntable_amps = 0.0;
-		std::mutex turntable_mutex;
-		
-		volatile ros::Subscriber lower_arm_subscriber_encoder;
-		volatile ros::Subscriber lower_arm_subscriber_amps;
-		ros::Publisher  lower_arm_publisher;
-		volatile int32_t lower_arm_encoder = 0;
-		volatile double lower_arm_amps = 0.0;
-		std::mutex lower_arm_mutex;
-		
-		volatile ros::Subscriber upper_arm_subscriber_encoder;
-		volatile ros::Subscriber upper_arm_subscriber_amps;
-		ros::Publisher  upper_arm_publisher;
-		volatile int32_t upper_arm_encoder = 0;
-		volatile double upper_arm_amps = 0.0;
-		std::mutex upper_arm_mutex;
-		
-		volatile ros::Subscriber scoop_subscriber_encoder;
-		volatile ros::Subscriber scoop_subscriber_amps;
-		ros::Publisher  scoop_publisher;
-		volatile int32_t scoop_encoder = 0;
-		volatile double scoop_amps = 0.0;
-		std::mutex scoop_mutex;
-		
-		void readTurntableEncoder(const std_msgs::Int32 &msg);
-		void readTurntableAmps(const std_msgs::Float64 &msg);
-		
-		void readLowerArmEncoder(const std_msgs::Int32 &msg);
-		void readLowerArmAmps(const std_msgs::Float64 &msg);
-		
-		void readUpperArmEncoder(const std_msgs::Int32 &msg);
-		void readUpperArmAmps(const std_msgs::Float64 &msg);
-		
-		void readScoopEncoder(const std_msgs::Int32 &msg);
-		void readScoopAmps(const std_msgs::Float64 &msg);
-		
-		ros::Publisher brushless_right_tread_vel_publisher;
-		ros::Publisher brushless_left_tread_vel_publisher;
-		
-		
-		std::mutex brushless_right_tread_mutex;
-		int32_t accumulated_brushless_right_tread_vel = 0;
-		int32_t accumulated_brushless_right_tread_vel_num_updates = 0;
-		ros::Time accumulated_brushless_right_tread_vel_start_time;
-		ros::Time accumulated_brushless_right_tread_vel_end_time;
-		
-		
-		std::mutex brushless_left_tread_mutex;
-		int32_t accumulated_brushless_left_tread_vel = 0;
-		int32_t accumulated_brushless_left_tread_vel_num_updates = 0;
-		ros::Time accumulated_brushless_left_tread_vel_start_time;
-		ros::Time accumulated_brushless_left_tread_vel_end_time;
-		
-		
-		void accumulateBrushlessRightVel(const std_msgs::Int32 &msg);
-		void accumulateBrushlessLeftVel(const std_msgs::Int32 &msg);
-		
-		
-		double readBrushlessRightVel();
-		double readBrushlessLeftVel();
-		
-		const int32_t brushless_encoder_count_per_revolution = 1280;
-		double brushlessEncoderCountToRadians(int32_t encoder_count);
-		
-		 int32_t bin_encoder_min = 0;
-		 int32_t bin_encoder_max = 1000;
-		 double bin_joint_min = 0.0;
-		 double bin_joint_max = 0.0;
-		
-		 int32_t turntable_encoder_min = -25760;
-		 int32_t turntable_encoder_max = 25760;
-		 double turntable_joint_min = -2 * 3.14159265358979;
-		 double turntable_joint_max = 2 * 3.14159265358979;
+        // Read the relative velocity counters from the brushless motor controller
+        ros::Subscriber brushless_right_tread_vel;
+        ros::Subscriber brushless_left_tread_vel;
+
+        volatile ros::Subscriber turntable_subscriber_encoder;
+        volatile ros::Subscriber turntable_subscriber_amps;
+        ros::Publisher  turntable_publisher;
+        volatile int32_t turntable_encoder = 0;
+        volatile double turntable_amps = 0.0;
+        std::mutex turntable_mutex;
+
+        volatile ros::Subscriber lower_arm_subscriber_encoder;
+        volatile ros::Subscriber lower_arm_subscriber_amps;
+        ros::Publisher  lower_arm_publisher;
+        volatile int32_t lower_arm_encoder = 0;
+        volatile double lower_arm_amps = 0.0;
+        std::mutex lower_arm_mutex;
+
+        volatile ros::Subscriber upper_arm_subscriber_encoder;
+        volatile ros::Subscriber upper_arm_subscriber_amps;
+        ros::Publisher  upper_arm_publisher;
+        volatile int32_t upper_arm_encoder = 0;
+        volatile double upper_arm_amps = 0.0;
+        std::mutex upper_arm_mutex;
+
+        volatile ros::Subscriber scoop_subscriber_encoder;
+        volatile ros::Subscriber scoop_subscriber_amps;
+        ros::Publisher  scoop_publisher;
+        volatile int32_t scoop_encoder = 0;
+        volatile double scoop_amps = 0.0;
+        std::mutex scoop_mutex;
+        
+        //Bin
+        ros::Subscriber right_bin_potentiometer_sub;
+        ros::Publisher right_bin_cmd_pub;
+        std::mutex right_bin_mutex;
+        int32_t right_bin_val = 0;
+        ros::Subscriber left_bin_potentiometer_sub;
+        ros::Publisher left_bin_cmd_pub;
+        std::mutex left_bin_mutex;
+        int32_t left_bin_val = 0;
+        
+
+        void readTurntableEncoder(const std_msgs::Int32 &msg);
+        void readTurntableAmps(const std_msgs::Float64 &msg);
+
+        void readLowerArmEncoder(const std_msgs::Int32 &msg);
+        void readLowerArmAmps(const std_msgs::Float64 &msg);
+
+        void readUpperArmEncoder(const std_msgs::Int32 &msg);
+        void readUpperArmAmps(const std_msgs::Float64 &msg);
+
+        void readScoopEncoder(const std_msgs::Int32 &msg);
+        void readScoopAmps(const std_msgs::Float64 &msg);
+
+        ros::Publisher brushless_right_tread_vel_publisher;
+        ros::Publisher brushless_left_tread_vel_publisher;
+
+
+        std::mutex brushless_right_tread_mutex;
+        int32_t accumulated_brushless_right_tread_vel = 0;
+        int32_t accumulated_brushless_right_tread_vel_num_updates = 0;
+        ros::Time accumulated_brushless_right_tread_vel_start_time;
+        ros::Time accumulated_brushless_right_tread_vel_end_time;
+
+
+        std::mutex brushless_left_tread_mutex;
+        int32_t accumulated_brushless_left_tread_vel = 0;
+        int32_t accumulated_brushless_left_tread_vel_num_updates = 0;
+        ros::Time accumulated_brushless_left_tread_vel_start_time;
+        ros::Time accumulated_brushless_left_tread_vel_end_time;
+
+
+        void accumulateBrushlessRightVel(const std_msgs::Int32 &msg);
+        void accumulateBrushlessLeftVel(const std_msgs::Int32 &msg);
+
+
+        double readBrushlessRightVel();
+        double readBrushlessLeftVel();
+
+        const int32_t brushless_encoder_count_per_revolution = 1280;
+        double brushlessEncoderCountToRadians(int32_t encoder_count);
+
+        int32_t bin_encoder_min = 0;
+        int32_t bin_encoder_max = 1000;
+        double bin_joint_min = 0.0;
+        double bin_joint_max = 0.0;
+
+        int32_t turntable_encoder_min = -25760;
+        int32_t turntable_encoder_max = 25760;
+        double turntable_joint_min = -2 * 3.14159265358979;
+        double turntable_joint_max = 2 * 3.14159265358979;
 		
 		
 		/* 
