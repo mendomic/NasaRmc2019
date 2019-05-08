@@ -75,6 +75,8 @@ class TeleopExecutive
             bin_publisher{n.advertise<std_msgs::Float64>("/bin_position_controller/command", 5)},
             digging_client{n, "dig"},
             arm_client{n, "move_arm"},
+            right_bin_pub{n.advertise<std_msgs::Int32>("/device12/set_cmd_cango/cmd_cango_3", 1)},
+            left_bin_pub{n.advertise<std_msgs::Int32>("/device12/set_cmd_cango/cmd_cango_2", 1)},
             turntable_pub{n.advertise<std_msgs::Int32>("/device4/set_cmd_cango/cmd_cango_1", 1)},
             lower_arm_pub{n.advertise<std_msgs::Int32>("/device12/set_cmd_cango/cmd_cango_1", 1)},
             upper_arm_pub{n.advertise<std_msgs::Int32>("/device4/set_cmd_cango/cmd_cango_3", 1)},
@@ -338,9 +340,17 @@ class TeleopExecutive
 
                 case (tfr_utilities::TeleopCode::DUMP):
                     {
-                        drivebase_publisher.publish(move_cmd);
+                        
+                        
+                        //drivebase_publisher.publish(move_cmd);
                         ROS_INFO("Teleop Action Server: Command Recieved, DUMP");
-                        //all zeros by default
+                        int effort = 1;
+                        if (not ros::param::getCached("~arm_effort", effort)) {effort = 1;}
+						std_msgs::Int32 msg;
+                        msg.data = effort;
+                        right_bin_pub(msg);
+                        left_bin_pub(msg);
+                        /*//all zeros by default
                         //arm_manipulator.moveArm(0.0, 0.1, 1.07, 1.5);
                         ros::Duration(3.0).sleep();
                         //arm_manipulator.moveArm(0.87, 0.1, 1.07, 1.5);
@@ -363,16 +373,22 @@ class TeleopExecutive
                             ROS_INFO("Teleop Action Server: DUMP preempted");
                             server.setPreempted();
                             return;
-                        }
+                        }*/
                         ROS_INFO("Teleop Action Server: DUMP finished");
                         break;
                     }
 
                 case (tfr_utilities::TeleopCode::RESET_DUMPING):
                     {
-                        drivebase_publisher.publish(move_cmd);
+                        //drivebase_publisher.publish(move_cmd);
                         ROS_INFO("Teleop Action Server: Command Recieved, RESET_DUMPING");
-                        //all zeros by default
+                        int effort = 1;
+                        if (not ros::param::getCached("~arm_effort", effort)) {effort = 1;}
+						std_msgs::Int32 msg;
+                        msg.data = -effort;
+                        right_bin_pub(msg);
+                        left_bin_pub(msg);
+                       /* //all zeros by default
                         std_msgs::Float64 bin_cmd;
                         bin_cmd.data = tfr_utilities::JointAngle::BIN_MIN;
                         tfr_msgs::BinStateSrv query;
@@ -391,7 +407,7 @@ class TeleopExecutive
                             ROS_INFO("Teleop Action Server: DUMPING_RESET preempted");
                             server.setPreempted();
                             return;
-                        }
+                        }*/
                         ROS_INFO("Teleop Action Server: DUMPING_RESET finished");
                         break;
                     }
@@ -466,6 +482,8 @@ class TeleopExecutive
         actionlib::SimpleActionServer<tfr_msgs::TeleopAction> server;
         actionlib::SimpleActionClient<tfr_msgs::DiggingAction> digging_client;
         actionlib::SimpleActionClient<tfr_msgs::ArmMoveAction> arm_client;
+        ros::Publisher right_bin_pub;
+        ros::Publisher left_bin_pub;
         ros::Publisher turntable_pub;
         ros::Publisher lower_arm_pub;
         ros::Publisher upper_arm_pub;
