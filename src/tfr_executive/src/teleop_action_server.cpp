@@ -255,7 +255,7 @@ class TeleopExecutive
 						int effort = 1;
                         if (not ros::param::getCached("~arm_effort", effort)) {effort = 1;}
 						std_msgs::Int32 msg;
-                        msg.data = effort;
+                        msg.data = -effort;
                         upper_arm_pub.publish(msg);
                         break;
                     }
@@ -266,7 +266,7 @@ class TeleopExecutive
 						int effort = 1;
                         if (not ros::param::getCached("~arm_effort", effort)) {effort = 1;}
 						std_msgs::Int32 msg;
-                        msg.data = -effort;
+                        msg.data = effort;
                         upper_arm_pub.publish(msg);
                         break;
                     }
