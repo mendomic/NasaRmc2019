@@ -350,7 +350,7 @@ namespace tfr_control
 			    scoop_publisher.publish(scoop_position_msg);
 			
 			} else {
-			    ROS_INFO("Robot Interface: not writeing arm values");
+			    //ROS_INFO("Robot Interface: not writeing arm values");
 		    }
 			
 			/*
