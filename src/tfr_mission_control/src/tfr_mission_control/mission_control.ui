@@ -559,7 +559,7 @@
        </property>
       </widget>
      </item>
-     <item row="0" column="6">
+     <item row="0" column="8">
       <widget class="QPushButton" name="arm_pid_enable_button">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
@@ -572,7 +572,7 @@
        </property>
       </widget>
      </item>
-     <item row="1" column="6">
+     <item row="1" column="8">
       <widget class="QPushButton" name="arm_pid_disable_button">
        <property name="enabled">
         <bool>false</bool>
