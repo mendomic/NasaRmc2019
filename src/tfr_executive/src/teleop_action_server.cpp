@@ -75,7 +75,7 @@ class TeleopExecutive
             bin_publisher{n.advertise<std_msgs::Float64>("/bin_position_controller/command", 5)},
             digging_client{n, "dig"},
             arm_client{n, "move_arm"},
-            turntable_pub{n.advertise<std_msgs::Int32>("/device4/set_cmd_cango/cmd_cango_1", 1)},
+            //turntable_pub{n.advertise<std_msgs::Int32>("/device4/set_cmd_cango/cmd_cango_1", 1)},
             lower_arm_pub{n.advertise<std_msgs::Int32>("/device12/set_cmd_cango/cmd_cango_1", 1)},
             upper_arm_pub{n.advertise<std_msgs::Int32>("/device4/set_cmd_cango/cmd_cango_3", 1)},
             scoop_pub{n.advertise<std_msgs::Int32>("/device4/set_cmd_cango/cmd_cango_2", 1)},
