@@ -108,6 +108,14 @@ class TeleopExecutive
         TeleopExecutive& operator=(TeleopExecutive&&) = delete;
 
     private:
+    
+        void stop_arm_movement(){
+            std_msgs::Int32 msg;
+            msg.data = 0;
+            turntable_pub.publish(msg);
+            upper_arm_pub.publish(msg);
+            scoop_pub.publish(msg);   
+        }
 
         /*
          *The main callback for processing user commands
@@ -203,6 +211,7 @@ class TeleopExecutive
                 case (tfr_utilities::TeleopCode::CLOCKWISE):
                     {
                         ROS_INFO("Teleop Action Server: Command Recieved, CLOCKWISE");
+                        stop_arm_movement();
                         int effort = 1;
                         if (not ros::param::getCached("~turntable_effort", effort)) {effort = 1;}
 						ROS_INFO("Writing effort: %d", effort);
@@ -215,6 +224,7 @@ class TeleopExecutive
                 case (tfr_utilities::TeleopCode::COUNTERCLOCKWISE):
                     {
                         ROS_INFO("Teleop Action Server: Command Recieved, COUNTERCLOCKWISE");
+                        stop_arm_movement();
                         int effort = 1;
                         if (not ros::param::getCached("~turntable_effort", effort)) {effort = 1;}
 						ROS_INFO("Writing effort: %d", effort);
@@ -227,6 +237,7 @@ class TeleopExecutive
                 case (tfr_utilities::TeleopCode::LOWER_ARM_EXTEND):
                     {
                         ROS_INFO("Teleop Action Server: Command Recieved, LOWER_ARM_EXTEND");
+                        stop_arm_movement();
 						int effort = 1;
                         if (not ros::param::getCached("~arm_effort", effort)) {effort = 1;}
 						ROS_INFO("Writing effort: %d", effort);
@@ -240,6 +251,7 @@ class TeleopExecutive
                 case (tfr_utilities::TeleopCode::LOWER_ARM_RETRACT):
                     {
                         ROS_INFO("Teleop Action Server: Command Recieved, LOWER_ARM_RETRACT");
+                        stop_arm_movement();
 						int effort = 1;
 						if (not ros::param::getCached("~arm_effort", effort)) {effort = 1;}
 						std_msgs::Int32 msg;
@@ -251,7 +263,7 @@ class TeleopExecutive
                 case (tfr_utilities::TeleopCode::UPPER_ARM_EXTEND):
                     {
                         ROS_INFO("Teleop Action Server: Command Recieved, UPPER_ARM_EXTEND");
-                        
+                        stop_arm_movement();
 						int effort = 1;
                         if (not ros::param::getCached("~arm_effort", effort)) {effort = 1;}
 						std_msgs::Int32 msg;
@@ -263,6 +275,7 @@ class TeleopExecutive
                 case (tfr_utilities::TeleopCode::UPPER_ARM_RETRACT):
                     {
                         ROS_INFO("Teleop Action Server: Command Recieved, UPPER_ARM_RETRACT");
+                        stop_arm_movement();
 						int effort = 1;
                         if (not ros::param::getCached("~arm_effort", effort)) {effort = 1;}
 						std_msgs::Int32 msg;
@@ -274,6 +287,7 @@ class TeleopExecutive
                 case (tfr_utilities::TeleopCode::SCOOP_EXTEND):
                     {
                         ROS_INFO("Teleop Action Server: Command Recieved, SCOOP_EXTEND");
+                        stop_arm_movement();
                         int effort = 1;
                         if (not ros::param::getCached("~arm_effort", effort)) {effort = 1;}
 						std_msgs::Int32 msg;
@@ -285,6 +299,7 @@ class TeleopExecutive
                 case (tfr_utilities::TeleopCode::SCOOP_RETRACT):
                     {
                         ROS_INFO("Teleop Action Server: Command Recieved, SCOOP_RETRACT");
+                        stop_arm_movement();
                         int effort = 1;
                         if (not ros::param::getCached("~arm_effort", effort)) {effort = 1;}
 						std_msgs::Int32 msg;
@@ -468,6 +483,7 @@ class TeleopExecutive
         bool use_digging;
 
 };
+
 
 
 int main(int argc, char** argv)
