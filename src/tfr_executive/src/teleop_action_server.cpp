@@ -348,8 +348,8 @@ class TeleopExecutive
                         if (not ros::param::getCached("~arm_effort", effort)) {effort = 1;}
 						std_msgs::Int32 msg;
                         msg.data = effort;
-                        right_bin_pub(msg);
-                        left_bin_pub(msg);
+                        right_bin_pub.publish(msg);
+                        left_bin_pub.publish(msg);
                         /*//all zeros by default
                         //arm_manipulator.moveArm(0.0, 0.1, 1.07, 1.5);
                         ros::Duration(3.0).sleep();
@@ -386,8 +386,8 @@ class TeleopExecutive
                         if (not ros::param::getCached("~arm_effort", effort)) {effort = 1;}
 						std_msgs::Int32 msg;
                         msg.data = -effort;
-                        right_bin_pub(msg);
-                        left_bin_pub(msg);
+                        right_bin_pub.publish(msg);
+                        left_bin_pub.publish(msg);
                        /* //all zeros by default
                         std_msgs::Float64 bin_cmd;
                         bin_cmd.data = tfr_utilities::JointAngle::BIN_MIN;
