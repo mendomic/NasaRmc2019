@@ -262,88 +262,96 @@ namespace tfr_control
         }
         else  // we are working with the real arm
         {
-            //TURNTABLE
-			int32_t turntable_position = 
-				static_cast<int32_t>
-			    (
-					std::max(
-					std::min(
-			        linear_interp_double
+            bool write_arm_values;
+            if (ros::param::getCached("/write_arm_values", write_arm_values)) {write_arm_values = false;}
+            if (write_arm_values){
+                
+                //TURNTABLE
+			    int32_t turntable_position = 
+				    static_cast<int32_t>
 			        (
-			            command_values[static_cast<int>(tfr_utilities::Joint::TURNTABLE)],
-		                0,
-		                0,
-		                1,
-						-1 // This value of -1 is really important. Otherwise the turntable may accelerate when it ought to decelerate and vice versa.
-		            ), 1000.0), -1000.0)
-		        );
-			std_msgs::Int32 turntable_position_msg;
-			turntable_position_msg.data = turntable_position;
-			turntable_publisher.publish(turntable_position_msg);
+					    std::max(
+					    std::min(
+			            linear_interp_double
+			            (
+			                command_values[static_cast<int>(tfr_utilities::Joint::TURNTABLE)],
+		                    0,
+		                    0,
+		                    1,
+						    -1 // This value of -1 is really important. Otherwise the turntable may accelerate when it ought to decelerate and vice versa.
+		                ), 1000.0), -1000.0)
+		            );
+			    std_msgs::Int32 turntable_position_msg;
+			    turntable_position_msg.data = turntable_position;
+			    turntable_publisher.publish(turntable_position_msg);
 
 
-            //LOWER_ARM
-            //NOTE we reverse these because actuator is mounted backwards
-			int32_t arm_lower_position = // command_values[static_cast<int>(tfr_utilities::Joint::LOWER_ARM)];
-			static_cast<int32_t>
-                            (
-								std::max(
-								std::min(
-                                linear_interp_double
-                                (
-                                    command_values[static_cast<int>(tfr_utilities::Joint::LOWER_ARM)],
-                                0,
-                                0,
-                                1,
-                                -1
-								), 1000.0), -1000.0)
-							);
-			std_msgs::Int32 arm_lower_position_msg;
-			arm_lower_position_msg.data = arm_lower_position;
-			lower_arm_publisher.publish(arm_lower_position_msg);
-			
-
-            //UPPER_ARM
-			int32_t arm_upper_position = // command_values[static_cast<int>(tfr_utilities::Joint::UPPER_ARM)];
-			
-				static_cast<int32_t>
-			    (
-					std::max(
-					std::min(
-			        linear_interp_double
-			        (
-			            command_values[static_cast<int>(tfr_utilities::Joint::UPPER_ARM)],
-		                0,
-		                0,
-		                1,
-						1
-		            ), 1000.0), -1000.0)
-		        );
-
-			std_msgs::Int32 arm_upper_position_msg;
-			arm_upper_position_msg.data = arm_upper_position;
-			upper_arm_publisher.publish(arm_upper_position_msg);
-			
-
-            //SCOOP
-			int32_t scoop_position = // static_cast<int32_t>(command_values[static_cast<int>(tfr_utilities::Joint::SCOOP)]); //command_values[static_cast<int>(tfr_utilities::Joint::SCOOP)];
+                //LOWER_ARM
+                //NOTE we reverse these because actuator is mounted backwards
+			    int32_t arm_lower_position = // command_values[static_cast<int>(tfr_utilities::Joint::LOWER_ARM)];
 			    static_cast<int32_t>
-			    (
-					std::max(
-					std::min(
-			        linear_interp_double
+                                (
+								    std::max(
+								    std::min(
+                                    linear_interp_double
+                                    (
+                                        command_values[static_cast<int>(tfr_utilities::Joint::LOWER_ARM)],
+                                    0,
+                                    0,
+                                    1,
+                                    -1
+								    ), 1000.0), -1000.0)
+							    );
+			    std_msgs::Int32 arm_lower_position_msg;
+			    arm_lower_position_msg.data = arm_lower_position;
+			    lower_arm_publisher.publish(arm_lower_position_msg);
+			
+
+                //UPPER_ARM
+			    int32_t arm_upper_position = // command_values[static_cast<int>(tfr_utilities::Joint::UPPER_ARM)];
+			
+				    static_cast<int32_t>
 			        (
-			            command_values[static_cast<int>(tfr_utilities::Joint::SCOOP)],
-		                0,
-		                0,
-		                1,
-						1
-		            ), 1000.0), -1000.0)
-		        );
-			        
-			std_msgs::Int32 scoop_position_msg;
-			scoop_position_msg.data = scoop_position;
-			scoop_publisher.publish(scoop_position_msg);
+					    std::max(
+					    std::min(
+			            linear_interp_double
+			            (
+			                command_values[static_cast<int>(tfr_utilities::Joint::UPPER_ARM)],
+		                    0,
+		                    0,
+		                    1,
+						    1
+		                ), 1000.0), -1000.0)
+		            );
+
+			    std_msgs::Int32 arm_upper_position_msg;
+			    arm_upper_position_msg.data = arm_upper_position;
+			    upper_arm_publisher.publish(arm_upper_position_msg);
+			
+
+                //SCOOP
+			    int32_t scoop_position = // static_cast<int32_t>(command_values[static_cast<int>(tfr_utilities::Joint::SCOOP)]); //command_values[static_cast<int>(tfr_utilities::Joint::SCOOP)];
+			        static_cast<int32_t>
+			        (
+					    std::max(
+					    std::min(
+			            linear_interp_double
+			            (
+			                command_values[static_cast<int>(tfr_utilities::Joint::SCOOP)],
+		                    0,
+		                    0,
+		                    1,
+						    1
+		                ), 1000.0), -1000.0)
+		            );
+			            
+			    std_msgs::Int32 scoop_position_msg;
+			    scoop_position_msg.data = scoop_position;
+			    scoop_publisher.publish(scoop_position_msg);
+			
+			} else {
+			    ROS_INFO("Robot Interface: not writeing arm values");
+		    }
 			
 			/*
 			ROS_INFO_STREAM("turntable_position: position: write: " << position_values[static_cast<int>(tfr_utilities::Joint::TURNTABLE)] << std::endl);
@@ -380,9 +388,9 @@ namespace tfr_control
         }
 		
         //LEFT_TREAD
-	int left_tread_scale = 1;
-	ros::param::getCached("left_tread_scale", left_tread_scale);
-	//ROS_INFO("Left tread scale %d", left_tread_scale);
+	    int left_tread_scale = 1;
+	    ros::param::getCached("left_tread_scale", left_tread_scale);
+	    //ROS_INFO("Left tread scale %d", left_tread_scale);
         double left_tread_command = command_values[static_cast<int32_t>(tfr_utilities::Joint::LEFT_TREAD)];
 		//left_tread_command = linear_interp_double(left_tread_command, 0.0, 0.0, 1.0, 1000.0);
 		std_msgs::Int32 left_tread_msg;

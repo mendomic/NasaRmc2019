@@ -124,6 +124,8 @@ namespace tfr_mission_control {
 
             //sets control system to output commands
             void setMotors(bool value);
+            
+            void setArmPID(bool value);
 
             void resetTurntable();
 

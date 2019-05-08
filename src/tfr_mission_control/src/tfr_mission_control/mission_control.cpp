@@ -92,10 +92,16 @@ namespace tfr_mission_control {
         connect(ui.autonomy_button, &QPushButton::clicked, this,  &MissionControl::goAutonomousMode);
         connect(ui.teleop_button, &QPushButton::clicked, this,  &MissionControl::goTeleopMode);
 
+        //Control
         connect(ui.control_enable_button,&QPushButton::clicked, [this] () {toggleControl(true);});
         connect(ui.control_disable_button,&QPushButton::clicked, [this] () {toggleControl(false);});
+        //Motor
         connect(ui.motor_enable_button,&QPushButton::clicked, [this] () {toggleMotors(true);});
         connect(ui.motor_disable_button,&QPushButton::clicked, [this] () {toggleMotors(false);});
+        //PID
+        connect(ui.arm_pid_enable_button,&QPushButton::clicked, [this] () {setArmPID(true);});
+        connect(ui.arm_pid_disable_button,&QPushButton::clicked, [this] () {setArmPID(false);});
+        
         connect(countdownClock, &QTimer::timeout, this,  &MissionControl::renderClock);
         connect(this, &MissionControl::emitStatus, ui.status_log, &QPlainTextEdit::appendPlainText);
         connect(ui.status_log, &QPlainTextEdit::textChanged, this,  &MissionControl::renderStatus);
@@ -279,6 +285,12 @@ namespace tfr_mission_control {
     {
         ui.motor_enable_button->setEnabled(!value);
         ui.motor_disable_button->setEnabled(value);
+    }
+    
+    void MissionControl::setArmPID(bool value){
+        ros::param::set("/write_arm_values", value);
+        ui.arm_pid_enable_button->setEnabled(!value);
+        ui.arm_pid_disable_button->setEnabled(value);
     }
     
     /*

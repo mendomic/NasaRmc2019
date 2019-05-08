@@ -269,17 +269,9 @@ class TeleopExecutive
                         
 						int effort = 1;
                         if (not ros::param::getCached("~arm_effort", effort)) {effort = 1;}
-                        /*
 						std_msgs::Int32 msg;
                         msg.data = -effort;
                         upper_arm_pub.publish(msg);
-                        break;
-						*/
-						tfr_msgs::ArmStateSrv query;
-                        arm_manipulator.moveArm( query.response.states[0],
-                                  query.response.states[1],
-                                  query.response.states[2] + 0.5,
-                                  query.response.states[3]);
                         break;
                     }
                     
@@ -288,17 +280,9 @@ class TeleopExecutive
                         ROS_INFO("Teleop Action Server: Command Recieved, UPPER_ARM_RETRACT");
 						int effort = 1;
                         if (not ros::param::getCached("~arm_effort", effort)) {effort = 1;}
-                        /*
 						std_msgs::Int32 msg;
                         msg.data = -effort;
                         upper_arm_pub.publish(msg);
-                        break;
-						*/
-						tfr_msgs::ArmStateSrv query;
-                        arm_manipulator.moveArm( query.response.states[0],
-                                  query.response.states[1],
-                                  query.response.states[2] - 0.5,
-                                  query.response.states[3]);
                         break;
                     }
                     
