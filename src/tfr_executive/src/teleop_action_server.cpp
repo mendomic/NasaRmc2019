@@ -111,12 +111,22 @@ class TeleopExecutive
 
     private:
     
+        //dev 4
         void stop_arm_movement(){
             std_msgs::Int32 msg;
             msg.data = 0;
             turntable_pub.publish(msg);
             upper_arm_pub.publish(msg);
             scoop_pub.publish(msg);   
+        }
+        
+        //dev 12
+        void stop_bin_movement(){
+            std_msgs::Int32 msg;
+            msg.data = 0;
+            right_bin_pub.publish(msg);
+            left_bin_pub.publish(msg);
+            lower_arm_pub.publish(msg);   
         }
 
         /*
