@@ -56,10 +56,10 @@ namespace tfr_control
                 &RobotInterface::readScoopAmps, this)},
 		scoop_publisher{n.advertise<std_msgs::Int32>("/device4/set_cmd_cango/cmd_cango_2", 1)},
 		
-		right_bin_potentiometer_sub{n.subscribe("/device12/Qry_FEEDBACK/Qry_FEEDBACK 3",  &RobotInterface::readLeftBin, this)};
-        right_bin_cmd_pub{n.advertise<std_msgs::Int32>("/device12/set_cmd_cango/cmd_cango_3", 1)};
-        left_bin_potentiometer_sub{n.subscribe("/device12/Qry_FEEDBACK/Qry_FEEDBACK 2")};
-        left_bin_cmd_pub{n.advertise<std_msgs::Int32>("/device12/set_cmd_cango/cmd_cango_2", 1)};
+		right_bin_potentiometer_sub{n.subscribe("/device12/Qry_FEEDBACK/Qry_FEEDBACK 3", 1, &RobotInterface::readRightBin, this)},
+        right_bin_cmd_pub{n.advertise<std_msgs::Int32>("/device12/set_cmd_cango/cmd_cango_3", 1)},
+        left_bin_potentiometer_sub{n.subscribe("/device12/Qry_FEEDBACK/Qry_FEEDBACK 2", 1, &RobotInterface::readLeftBin, this)},
+        left_bin_cmd_pub{n.advertise<std_msgs::Int32>("/device12/set_cmd_cango/cmd_cango_2", 1)},
 		
         use_fake_values{fakes}, lower_limits{lower_lim},
         upper_limits{upper_lim}, drivebase_v0{std::make_pair(0,0)},
@@ -91,7 +91,8 @@ namespace tfr_control
         // layer
         registerJointEffortInterface("left_tread_joint", tfr_utilities::Joint::LEFT_TREAD);
         registerJointEffortInterface("right_tread_joint", tfr_utilities::Joint::RIGHT_TREAD);
-        registerJointEffortInterface("bin_joint", tfr_utilities::Joint::BIN); 
+        registerJointEffortInterface("bin_joint", tfr_utilities::Joint::RIGHT_BIN);
+        registerJointEffortInterface("bin_joint", tfr_utilities::Joint::LEFT_BIN); 
         registerJointEffortInterface("turntable_joint", tfr_utilities::Joint::TURNTABLE);
         registerJointEffortInterface("lower_arm_joint", tfr_utilities::Joint::LOWER_ARM);
         registerJointEffortInterface("upper_arm_joint", tfr_utilities::Joint::UPPER_ARM);
@@ -502,7 +503,23 @@ namespace tfr_control
      * */
     double RobotInterface::getBinState()
     {
-        return position_values[static_cast<int>(tfr_utilities::Joint::BIN)];
+        return (getLeftBinState() + getRightBinState()) / 2;
+    }
+    
+    /*
+     * Retrieves the state of the bin
+     * */
+    double RobotInterface::getLeftBinState()
+    {
+        return position_values[static_cast<int>(tfr_utilities::Joint::LEFT_BIN)];
+    }
+    
+    /*
+     * Retrieves the state of the bin
+     * */
+    double RobotInterface::getRightBinState()
+    {
+        return position_values[static_cast<int>(tfr_utilities::Joint::RIGHT_BIN)];
     }
 
     /*

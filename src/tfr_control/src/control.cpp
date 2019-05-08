@@ -64,9 +64,13 @@ void initializeTestCode(ros::NodeHandle& n)
     }
 
     ROS_INFO("Model loaded successfully, loading joint limits.");
-    lower_limits[static_cast<int>(tfr_utilities::Joint::BIN)] 
+    lower_limits[static_cast<int>(tfr_utilities::Joint::LEFT_BIN)] 
         = model.getJoint("bin_joint")->limits->lower;
-    upper_limits[static_cast<int>(tfr_utilities::Joint::BIN)] 
+    upper_limits[static_cast<int>(tfr_utilities::Joint::LEFT_BIN)] 
+        = model.getJoint("bin_joint")->limits->upper;
+    lower_limits[static_cast<int>(tfr_utilities::Joint::RIGHT_BIN)] 
+        = model.getJoint("bin_joint")->limits->lower;
+    upper_limits[static_cast<int>(tfr_utilities::Joint::RIGHT_BIN)] 
         = model.getJoint("bin_joint")->limits->upper;
     lower_limits[static_cast<int>(tfr_utilities::Joint::LOWER_ARM)] 
         = model.getJoint("lower_arm_joint")->limits->lower;

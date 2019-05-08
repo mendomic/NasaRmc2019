@@ -63,6 +63,9 @@ namespace tfr_control {
          * retrieves the state of the bin
          * */
         double getBinState();
+        
+        double getLeftBinState();
+        double getRightBinState();
 	
         /*
          * retrieves the state of the arm
@@ -157,7 +160,10 @@ namespace tfr_control {
 
         void readScoopEncoder(const std_msgs::Int32 &msg);
         void readScoopAmps(const std_msgs::Float64 &msg);
-
+        
+        void readLeftBin(const std_msgs::Int32 &msg);
+        void readRightBin(const std_msgs::Int32 &msg);
+        
         ros::Publisher brushless_right_tread_vel_publisher;
         ros::Publisher brushless_left_tread_vel_publisher;
 

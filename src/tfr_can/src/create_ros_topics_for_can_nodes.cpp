@@ -28,9 +28,9 @@ const double loop_rate = 10; // [Hz]
 const int IMU_NODE_ID = 120;
 
 template <class t>
-t* setEntry<t>(const kaco::Device& device, const & std::string entry_name){
-    if device.has_entry(entry_name){
-        return std::make_shared<t>(device, "cmd_cango/cmd_cango_1");
+std::shared_ptr<t> setEntry(kaco::Device& device, const std::string& entry_name){
+    if (device.has_entry(entry_name)){
+        return std::make_shared<t>(device, entry_name);
     }
     ROS_INFO("CAN Setup Error: Device dict has no entry for %s", entry_name.c_str());
     return nullptr;
@@ -209,7 +209,7 @@ int main(int argc, char* argv[]) {
 			auto iopub_12_3_4 = setEntry<kaco::EntrySubscriber>(device, "cmd_sencntr/counter_3");
 			bridge.add_subscriber(iopub_12_3_4);
 			
-			auto iopub_12_2_5 = setEntry<kaco::EntryPublisher>(device, "Qry_FEEDBACK/Qry_FEEDBACK 3");
+			auto iopub_12_3_5 = setEntry<kaco::EntryPublisher>(device, "Qry_FEEDBACK/Qry_FEEDBACK 3");
 			bridge.add_publisher(iopub_12_3_5);
 			
 			
