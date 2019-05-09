@@ -40,8 +40,9 @@ namespace tfr_mining
          * states).
          **/
         double getTimeEstimate();
-    private:
         std::queue<std::vector<double> > states;
+    private:
+        
         double time_estimate;
     };
 }

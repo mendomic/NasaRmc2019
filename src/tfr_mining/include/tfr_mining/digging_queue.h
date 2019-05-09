@@ -35,8 +35,9 @@ namespace tfr_mining
          * Returns the next set in the queue and removes it.
          **/
         DiggingSet popDiggingSet();
-    private:
         std::queue<DiggingSet> sets;
+    private:
+        
 
         /**
          * Helper method to generate a single dig, without any side dumping.

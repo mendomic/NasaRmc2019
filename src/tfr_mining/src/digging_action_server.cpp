@@ -17,7 +17,7 @@
  ***************************************************************************************/
 
 #include <actionlib/server/simple_action_server.h>
-#include <actionlib/client/simple_action_client.h>
+#include <actionlib/client/simple_action_client.h>  
 #include <tfr_msgs/DiggingAction.h>  // Note: "Action" is appended
 #include <tfr_msgs/ArmMoveAction.h>  // Note: "Action" is appended
 #include <tfr_utilities/arm_manipulator.h>
@@ -68,11 +68,14 @@ private:
         ROS_DEBUG("Waiting for arm action server...");
         client.waitForServer();
         ROS_DEBUG("Connected with arm action server");
+        
+        std::queue<tfr_mining::DiggingSet> current_queue{queue.sets};
 
-        while (!queue.isEmpty())
+        while (!current_queue.empty())
         {
             ROS_INFO("Time remaining: %f", (endTime - ros::Time::now()).toSec());
-            tfr_mining::DiggingSet set = queue.popDiggingSet();
+            tfr_mining::DiggingSet set = current_queue.front();
+            current_queue.pop();
             ros::Time now = ros::Time::now();
 
             ROS_INFO("starting set");
@@ -83,10 +86,13 @@ private:
                         set.getTimeEstimate(), (endTime - now).toSec() );
                 break;
             }
+            
+            std::queue<std::vector<double> > current_set{set.states};
 
-            while (!set.isEmpty())
+            while (!current_set.empty())
             {
-                std::vector<double> state = set.popState();
+                std::vector<double> state = current_set.front();
+                current_set.pop();
                 tfr_msgs::ArmMoveGoal goal;
                 goal.pose.resize(5);
                 goal.pose[0] = state[0];
