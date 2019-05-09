@@ -265,6 +265,7 @@ namespace tfr_control
             bool write_arm_values;
             if (ros::param::getCached("/write_arm_values", write_arm_values)) {write_arm_values = false;}
             if (write_arm_values){
+                ROS_INFO("Write_arm");
                 
                 //TURNTABLE
 			    int32_t turntable_position = 
