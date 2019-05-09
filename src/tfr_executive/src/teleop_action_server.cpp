@@ -163,7 +163,7 @@ class TeleopExecutive
 					std_msgs::Int32 scoop_encoder_msg;
 					
 					const int32_t turntable_encoder_starting_count = 12880;
-					const int32_t lower_arm_encoder_starting_count = 0;
+					const int32_t lower_arm_encoder_starting_count = 887;
 					const int32_t upper_arm_encoder_starting_count = 836;
 					const int32_t scoop_encoder_starting_count = 1721;
 					
