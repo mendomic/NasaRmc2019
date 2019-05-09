@@ -251,7 +251,7 @@ class TeleopExecutive
                         ROS_INFO("Teleop Action Server: Command Recieved, LOWER_ARM_EXTEND");
                         stop_arm_movement();
 						int effort = 1;
-                        if (not ros::param::getCached("~arm_effort", effort)) {effort = 1;}
+                        if (not ros::param::getCached("~arm_lower_effort", effort)) {effort = 1;}
 						ROS_INFO("Writing effort: %d", effort);
                         std_msgs::Int32 msg;
                         msg.data = effort;
@@ -265,7 +265,7 @@ class TeleopExecutive
                         ROS_INFO("Teleop Action Server: Command Recieved, LOWER_ARM_RETRACT");
                         stop_arm_movement();
 						int effort = 1;
-						if (not ros::param::getCached("~arm_effort", effort)) {effort = 1;}
+						if (not ros::param::getCached("~arm_lower_effort", effort)) {effort = 1;}
 						std_msgs::Int32 msg;
                         msg.data = -effort;
                         lower_arm_pub.publish(msg);
@@ -277,7 +277,7 @@ class TeleopExecutive
                         ROS_INFO("Teleop Action Server: Command Recieved, UPPER_ARM_EXTEND");
                         stop_arm_movement();
 						int effort = 1;
-                        if (not ros::param::getCached("~arm_effort", effort)) {effort = 1;}
+                        if (not ros::param::getCached("~arm_upper_effort", effort)) {effort = 1;}
 						std_msgs::Int32 msg;
                         msg.data = -effort;
                         upper_arm_pub.publish(msg);
@@ -289,7 +289,7 @@ class TeleopExecutive
                         ROS_INFO("Teleop Action Server: Command Recieved, UPPER_ARM_RETRACT");
                         stop_arm_movement();
 						int effort = 1;
-                        if (not ros::param::getCached("~arm_effort", effort)) {effort = 1;}
+                        if (not ros::param::getCached("~arm_upper_effort", effort)) {effort = 1;}
 						std_msgs::Int32 msg;
                         msg.data = effort;
                         upper_arm_pub.publish(msg);
@@ -301,7 +301,7 @@ class TeleopExecutive
                         ROS_INFO("Teleop Action Server: Command Recieved, SCOOP_EXTEND");
                         stop_arm_movement();
                         int effort = 1;
-                        if (not ros::param::getCached("~arm_effort", effort)) {effort = 1;}
+                        if (not ros::param::getCached("~arm_scoop_effort", effort)) {effort = 1;}
 						std_msgs::Int32 msg;
                         msg.data = -effort;
                         scoop_pub.publish(msg);
@@ -313,7 +313,7 @@ class TeleopExecutive
                         ROS_INFO("Teleop Action Server: Command Recieved, SCOOP_RETRACT");
                         stop_arm_movement();
                         int effort = 1;
-                        if (not ros::param::getCached("~arm_effort", effort)) {effort = 1;}
+                        if (not ros::param::getCached("~arm_scoop_effort", effort)) {effort = 1;}
 						std_msgs::Int32 msg;
                         msg.data = effort;
                         scoop_pub.publish(msg);
@@ -355,7 +355,7 @@ class TeleopExecutive
                         //drivebase_publisher.publish(move_cmd);
                         ROS_INFO("Teleop Action Server: Command Recieved, DUMP");
                         int effort = 1;
-                        if (not ros::param::getCached("~arm_effort", effort)) {effort = 1;}
+                        if (not ros::param::getCached("~dump_effort", effort)) {effort = 1;}
 						std_msgs::Int32 msg;
                         msg.data = effort;
                         right_bin_pub.publish(msg);
@@ -393,7 +393,7 @@ class TeleopExecutive
                         //drivebase_publisher.publish(move_cmd);
                         ROS_INFO("Teleop Action Server: Command Recieved, RESET_DUMPING");
                         int effort = 1;
-                        if (not ros::param::getCached("~arm_effort", effort)) {effort = 1;}
+                        if (not ros::param::getCached("~dump_effort", effort)) {effort = 1;}
 						std_msgs::Int32 msg;
                         msg.data = -effort;
                         right_bin_pub.publish(msg);
