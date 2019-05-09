@@ -13,7 +13,7 @@
 #include "generatedMarker.h"
 #include <iostream>
 
-#define DRAW_MARKERS 1
+#define DRAW_MARKERS 0
 
 typedef actionlib::SimpleActionServer<tfr_msgs::ArucoAction> Server;
 
