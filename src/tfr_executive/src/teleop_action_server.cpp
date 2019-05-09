@@ -74,7 +74,7 @@ class TeleopExecutive
             arm_manipulator{n},
             bin_publisher{n.advertise<std_msgs::Float64>("/bin_position_controller/command", 5)},
             digging_client{n, "dig"},
-            arm_client{n, "move_arm"},
+            arm_client{n, "move_arm", true},
             right_bin_pub{n.advertise<std_msgs::Int32>("/device12/set_cmd_cango/cmd_cango_3", 1)},
             left_bin_pub{n.advertise<std_msgs::Int32>("/device12/set_cmd_cango/cmd_cango_2", 1)},
             turntable_pub{n.advertise<std_msgs::Int32>("/device4/set_cmd_cango/cmd_cango_1", 1)},
@@ -176,6 +176,33 @@ class TeleopExecutive
 		            lower_arm_encoder_publisher.publish(lower_arm_encoder_msg);
 		            upper_arm_encoder_publisher.publish(upper_arm_encoder_msg);
 		            scoop_encoder_publisher.publish(scoop_encoder_msg);
+		           
+		            tfr_msgs::ArmMoveGoal goal;
+		            goal.pose = std::vector<double> {3.05, 0.1, 1.70, 1.62, 0};
+		            
+		            arm_client.sendGoal(goal);
+                    ros::Rate rate(10.0);
+
+                    while (!arm_client.getState().isDone() && ros::ok())
+                    {
+                        if (server.isPreemptRequested() || !ros::ok())
+                        {
+                            ROS_INFO("Preempting digging action server");
+                            arm_client.cancelAllGoals();
+                            tfr_msgs::TeleopResult result;
+                            server.setPreempted(result);
+                            ROS_WARN("Moving arm to final position, exiting.");
+                            arm_manipulator.moveArm(0.0, 0.1, 1.07, -1.0);
+                            ros::Duration(8.0).sleep();
+                            arm_manipulator.moveArm(0.0, 0.1, 1.07, 1.6);
+                            ros::Duration(3.0).sleep();
+                            arm_manipulator.moveArm(0, 0.50, 1.07, 1.6);
+                            return;
+                        }
+
+
+                        rate.sleep();
+                    }
 					
 					break;
 					
