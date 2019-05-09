@@ -80,7 +80,7 @@ class TeleopExecutive
             turntable_pub{n.advertise<std_msgs::Int32>("/device4/set_cmd_cango/cmd_cango_1", 1)},
             lower_arm_pub{n.advertise<std_msgs::Int32>("/device12/set_cmd_cango/cmd_cango_1", 1)},
             upper_arm_pub{n.advertise<std_msgs::Int32>("/device4/set_cmd_cango/cmd_cango_3", 1)},
-            scoop_pub{n.advertise<std_msgs::Int32>("/device4/set_cmd_cango/cmd_cango_2", 1)},
+            scoop_pub{n.advertise<std_msgs::Int32>("/device4/set_cmd_mposrel/cmd_mposrel_2", 1)},
             turntable_encoder_publisher{n.advertise<std_msgs::Int32>("/device4/set_cmd_sencntr/channel_1", 1)},
 			lower_arm_encoder_publisher{n.advertise<std_msgs::Int32>("/device12/set_cmd_sencntr/channel_2", 1)},
 			upper_arm_encoder_publisher{n.advertise<std_msgs::Int32>("/device4/set_cmd_sencntr/channel_3", 1)},
