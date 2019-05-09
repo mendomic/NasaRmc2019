@@ -51,6 +51,9 @@ void setupDevice4Topics(kaco::Device& device, kaco::Bridge& bridge, std::string&
 	auto iosub_4_1_4 = setEntry<kaco::EntrySubscriber>(device, "Cmd_SENCNTR/Counter 1");
 	bridge.add_subscriber(iosub_4_1_4);
 	
+	auto iosub_4_1_6 = std::make_shared<kaco::EntrySubscriber>(device, "cmd_mposrel/cmd_mposrel_1");
+	bridge.add_subscriber(iosub_4_1_6);
+	
 	
 	auto iosub_4_2_1 = std::make_shared<kaco::EntrySubscriber>(device, "cmd_cango/cmd_cango_2");
 	bridge.add_subscriber(iosub_4_2_1);
@@ -64,6 +67,9 @@ void setupDevice4Topics(kaco::Device& device, kaco::Bridge& bridge, std::string&
 	auto iosub_4_2_4 = std::make_shared<kaco::EntrySubscriber>(device, "cmd_sencntr/counter_2");
 	bridge.add_subscriber(iosub_4_2_4);
 	
+	auto iosub_4_2_6 = std::make_shared<kaco::EntrySubscriber>(device, "cmd_mposrel/cmd_mposrel_2");
+	bridge.add_subscriber(iosub_4_2_6);
+	
 	
 	auto iosub_4_3_1 = std::make_shared<kaco::EntrySubscriber>(device, "cmd_cango/cmd_cango_3");
 	bridge.add_subscriber(iosub_4_3_1);
@@ -76,6 +82,9 @@ void setupDevice4Topics(kaco::Device& device, kaco::Bridge& bridge, std::string&
 	
 	auto iosub_4_3_4 = std::make_shared<kaco::EntrySubscriber>(device, "cmd_sencntr/counter_3");
 	bridge.add_subscriber(iosub_4_3_4);
+	
+	auto iosub_4_3_6 = std::make_shared<kaco::EntrySubscriber>(device, "cmd_mposrel/cmd_mposrel_3");
+	bridge.add_subscriber(iosub_4_3_6);
 }
 
 int main(int argc, char* argv[]) {
@@ -180,6 +189,9 @@ int main(int argc, char* argv[]) {
 			auto iopub_12_1_5 = setEntry<kaco::EntryPublisher>(device, "Qry_FEEDBACK/Qry_FEEDBACK 1");
 			bridge.add_publisher(iopub_12_1_5);
 			
+			auto iosub_12_1_6 = std::make_shared<kaco::EntrySubscriber>(device, "cmd_mposrel/cmd_mposrel_1");
+			bridge.add_subscriber(iosub_12_1_6);
+			
 			//left bin
 			auto iosub_12_2_1 = std::make_shared<kaco::EntrySubscriber>(device, "cmd_cango/cmd_cango_2");
     		bridge.add_subscriber(iosub_12_2_1);
@@ -192,10 +204,13 @@ int main(int argc, char* argv[]) {
 			
 			auto iopub_12_2_4 = std::make_shared<kaco::EntrySubscriber>(device, "cmd_sencntr/counter_2");
 			bridge.add_subscriber(iopub_12_2_4);
-			
+
 			auto iopub_12_2_5 = setEntry<kaco::EntryPublisher>(device, "Qry_FEEDBACK/Qry_FEEDBACK 2");
 			bridge.add_publisher(iopub_12_2_5);
-			
+
+			auto iosub_12_2_6= std::make_shared<kaco::EntrySubscriber>(device, "cmd_mposrel/cmd_mposrel_2");
+			bridge.add_subscriber(iosub_12_2_6);
+
 		    //right bin
 			auto iosub_12_3_1 = std::make_shared<kaco::EntrySubscriber>(device, "cmd_cango/cmd_cango_3");
     		bridge.add_subscriber(iosub_12_3_1);
@@ -212,7 +227,8 @@ int main(int argc, char* argv[]) {
 			auto iopub_12_3_5 = setEntry<kaco::EntryPublisher>(device, "Qry_FEEDBACK/Qry_FEEDBACK 3");
 			bridge.add_publisher(iopub_12_3_5);
 			
-			
+			auto iosub_12_3_6 = std::make_shared<kaco::EntrySubscriber>(device, "cmd_mposrel/cmd_mposrel_3");
+			bridge.add_subscriber(iosub_12_3_6);
 		}
 		
 		else if (deviceId == IMU_NODE_ID)
