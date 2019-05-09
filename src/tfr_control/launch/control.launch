@@ -30,7 +30,7 @@
 	
 	<param name="left_tread_scale" value="3000" type="int"/>
 	<param name="right_tread_scale" value="3000" type="int"/>
-	<param name="/write_arm_values" value="true" type="bool"/>
+	<param name="/write_arm_values" value="false" type="bool"/>
 
     <!-- Launch all the MoveIt! nodes -->
     <include file="$(find tfr_moveit)/launch/move_group.launch"/>

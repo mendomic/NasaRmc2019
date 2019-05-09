@@ -263,7 +263,7 @@ namespace tfr_control
         else  // we are working with the real arm
         {
             bool write_arm_values;
-            if (ros::param::getCached("/write_arm_values", write_arm_values)) {write_arm_values = false;}
+            if (not ros::param::getCached("/write_arm_values", write_arm_values)) {write_arm_values = false;}
             if (write_arm_values){
                 ROS_INFO("Write_arm");
                 
