@@ -3,13 +3,13 @@
         args="0.655 0 0.15 0 0 0 1 base_link camera_link"/>
     <include file="$(find realsense2_camera)/launch/rs_camera.launch">
         <arg name="align_depth" value="false"/>
-        <arg name="enable_infra1" value="false"/>
-        <arg name="enable_infra2" value="false"/>
+        <arg name="enable_infra1" value="true"/>
+        <arg name="enable_infra2" value="true"/>
         <arg name="initial_reset" value="true"/>
-        <arg name="depth_fps"     value="4"/>
+        <arg name="depth_fps"     value="30"/>
         <arg name="enable_fisheye" value="false"/>
         <arg name="enable_color"  value="true"/>
-        <arg name="color_fps"  value="4"/>
+        <arg name="color_fps"  value="30"/>
         <arg name="filters" value="pointcloud"/>
     </include>
 </launch>
