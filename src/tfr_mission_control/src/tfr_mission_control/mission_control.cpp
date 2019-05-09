@@ -391,7 +391,7 @@ namespace tfr_mission_control {
         }
         else if (event->type()==QEvent::KeyRelease && teleopEnabled) {
             performTeleop(tfr_utilities::TeleopCode::STOP_DRIVEBASE);
-            break;
+        }
         else {
             //unrecognized event type, pass it on
             return QObject::eventFilter(obj, event);
