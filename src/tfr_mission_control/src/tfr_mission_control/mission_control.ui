@@ -206,7 +206,20 @@
    </item>
    <item>
     <layout class="QGridLayout" name="arm_linear_control">
-     <item row="0" column="0">
+     <!--item row="1" column="0">
+      <widget class="QSlider" name="lower_arm_slider">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="text">
+        <string>Lower Arm Power</string>
+       </property>
+      </widget>
+     </item-->
+     <item row="1" column="0">
       <widget class="QPushButton" name="lower_arm_extend_button">
        <property name="enabled">
         <bool>false</bool>
@@ -222,7 +235,7 @@
        </property>
       </widget>
      </item>
-     <item row="1" column="0">
+     <item row="2" column="0">
       <widget class="QPushButton" name="lower_arm_retract_button">
        <property name="enabled">
         <bool>false</bool>
@@ -238,7 +251,7 @@
        </property>
       </widget>
      </item>
-     <item row="0" column="1">
+     <item row="1" column="1">
       <widget class="QPushButton" name="upper_arm_extend_button">
        <property name="enabled">
         <bool>false</bool>
@@ -254,7 +267,7 @@
        </property>
       </widget>
      </item>
-     <item row="1" column="1">
+     <item row="2" column="1">
       <widget class="QPushButton" name="upper_arm_retract_button">
        <property name="enabled">
         <bool>false</bool>
@@ -270,7 +283,7 @@
        </property>
       </widget>
      </item>
-     <item row="0" column="2">
+     <item row="1" column="2">
       <widget class="QPushButton" name="scoop_extend_button">
        <property name="enabled">
         <bool>false</bool>
@@ -286,7 +299,7 @@
        </property>
       </widget>
      </item>
-     <item row="1" column="2">
+     <item row="2" column="2">
       <widget class="QPushButton" name="scoop_retract_button">
        <property name="enabled">
         <bool>false</bool>
@@ -302,7 +315,7 @@
        </property>
       </widget>
      </item>
-     <item row="0" column="3">
+     <item row="1" column="3">
       <widget class="QPushButton" name="set_encoders">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
