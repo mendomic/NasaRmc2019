@@ -13,9 +13,9 @@
             localization_to: true 
             navigation_to: true 
             digging: false 
-            localization_from: true
-            navigation_from: true
-            localization_finish: true
+            localization_from: false
+            navigation_from: false
+            localization_finish: false
             dumping: false 
         </rosparam>
     </node>
