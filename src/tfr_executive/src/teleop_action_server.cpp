@@ -251,7 +251,7 @@ class TeleopExecutive
                 case (tfr_utilities::TeleopCode::LOWER_ARM_EXTEND):
                     {
                         ROS_INFO("Teleop Action Server: Command Recieved, LOWER_ARM_EXTEND");
-                        stop_arm_movement();
+                        stop_bin_movement();
 						int effort = 1;
                         if (not ros::param::getCached("~arm_lower_effort", effort)) {effort = 1;}
 						ROS_INFO("Writing effort: %d", effort);
@@ -265,7 +265,7 @@ class TeleopExecutive
                 case (tfr_utilities::TeleopCode::LOWER_ARM_RETRACT):
                     {
                         ROS_INFO("Teleop Action Server: Command Recieved, LOWER_ARM_RETRACT");
-                        stop_arm_movement();
+                        stop_bin_movement();
 						int effort = 1;
 						if (not ros::param::getCached("~arm_lower_effort", effort)) {effort = 1;}
 						std_msgs::Int32 msg;
@@ -356,6 +356,7 @@ class TeleopExecutive
                         
                         //drivebase_publisher.publish(move_cmd);
                         ROS_INFO("Teleop Action Server: Command Recieved, DUMP");
+                        stop_bin_movement();
                         int effort = 1;
                         if (not ros::param::getCached("~dump_effort", effort)) {effort = 1;}
 						std_msgs::Int32 msg;
@@ -394,6 +395,7 @@ class TeleopExecutive
                     {
                         //drivebase_publisher.publish(move_cmd);
                         ROS_INFO("Teleop Action Server: Command Recieved, RESET_DUMPING");
+                        stop_bin_movement();
                         int effort = 1;
                         if (not ros::param::getCached("~dump_effort", effort)) {effort = 1;}
 						std_msgs::Int32 msg;
