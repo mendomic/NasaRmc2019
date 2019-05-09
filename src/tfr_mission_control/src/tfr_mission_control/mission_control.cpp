@@ -356,33 +356,43 @@ namespace tfr_mission_control {
                     performTeleop(tfr_utilities::TeleopCode::STOP_DRIVEBASE);
                     break;
                 case (Qt::Key_U):
+                    motorKill->start(MOTOR_INTERVAL);
                     performTeleop(tfr_utilities::TeleopCode::LOWER_ARM_EXTEND);
                     break;
                 case (Qt::Key_J):
+                    motorKill->start(MOTOR_INTERVAL);
                     performTeleop(tfr_utilities::TeleopCode::LOWER_ARM_RETRACT);
                     break;
                 case (Qt::Key_I):
+                    motorKill->start(MOTOR_INTERVAL);
                     performTeleop(tfr_utilities::TeleopCode::UPPER_ARM_EXTEND);
                     break;
                 case (Qt::Key_K):
+                    motorKill->start(MOTOR_INTERVAL);
                     performTeleop(tfr_utilities::TeleopCode::UPPER_ARM_RETRACT);
                     break;
                 case (Qt::Key_O):
+                    motorKill->start(MOTOR_INTERVAL);
                     performTeleop(tfr_utilities::TeleopCode::SCOOP_EXTEND);
                     break;
                 case (Qt::Key_L):
+                    motorKill->start(MOTOR_INTERVAL);
                     performTeleop(tfr_utilities::TeleopCode::SCOOP_RETRACT);
                     break;
                 case (Qt::Key_P):
+                    motorKill->start(MOTOR_INTERVAL);
                     performTeleop(tfr_utilities::TeleopCode::CLOCKWISE);
                     break;
                 case (Qt::Key_Semicolon):
+                    motorKill->start(MOTOR_INTERVAL);
                     performTeleop(tfr_utilities::TeleopCode::COUNTERCLOCKWISE);
                     break;
                 case (Qt::Key_Y):
+                    motorKill->start(MOTOR_INTERVAL);
                     performTeleop(tfr_utilities::TeleopCode::DUMP);
                     break;
                 case (Qt::Key_H):
+                    motorKill->start(MOTOR_INTERVAL);
                     performTeleop(tfr_utilities::TeleopCode::RESET_DUMPING);
                     break;
             }
