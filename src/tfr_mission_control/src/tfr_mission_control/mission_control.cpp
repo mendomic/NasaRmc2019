@@ -379,6 +379,9 @@ namespace tfr_mission_control {
                 case (Qt::Key_Semicolon):
                     performTeleop(tfr_utilities::TeleopCode::COUNTERCLOCKWISE);
                     break;
+                case (Qt::Key_Shift):
+                    performTeleop(tfr_utilities::TeleopCode::DUMP);
+                    break;
             }
             //consume the key
             return true;

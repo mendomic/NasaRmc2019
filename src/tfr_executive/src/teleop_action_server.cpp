@@ -185,6 +185,8 @@ class TeleopExecutive
                         ROS_INFO("Teleop Action Server: Command Recieved, STOP_DRIVEBASE");
                         //all zeros by default
                         drivebase_publisher.publish(move_cmd);
+                        stop_arm_movement();
+                        stop_bin_movement();
                         break;
                     }
 
