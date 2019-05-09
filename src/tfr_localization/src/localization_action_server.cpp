@@ -28,8 +28,8 @@
 class Localizer
 {
     public:
-        Localizer(ros::NodeHandle &n, const double& velocity, const double&
-                duration, const double& thresh) : 
+        Localizer(ros::NodeHandle &n, double& velocity, double&
+                duration, double& thresh) : 
             aruco{n, "aruco_action_server"},
             server{n, "localize", boost::bind(&Localizer::localize, this, _1) ,false},
             cmd_publisher{n.advertise<geometry_msgs::Twist>("cmd_vel", 5)},
@@ -68,9 +68,9 @@ class Localizer
         ros::ServiceClient rear_cam_client;
         ros::ServiceClient front_cam_client;
         TfManipulator tf_manipulator;
-        const double& turn_velocity;
-        const double& turn_duration;
-        const double& threshold;
+        double turn_velocity;
+        double turn_duration;
+        double threshold;
 
         void localize( const tfr_msgs::LocalizationGoalConstPtr &goal)
         {
@@ -97,7 +97,7 @@ class Localizer
                     break;
                 }
                 
-                if (!ros::param::getCached("~turn_velocity", turn_velocity) {turn_velocity = .5;}
+                if (!ros::param::getCached("~turn_velocity", turn_velocity)) {turn_velocity = .5;}
                 
                 tfr_msgs::ArucoResultConstPtr result = getArucoResult();
                 
