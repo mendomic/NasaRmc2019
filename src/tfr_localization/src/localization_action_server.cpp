@@ -97,7 +97,7 @@ class Localizer
                     break;
                 }
                 
-                if (!ros::param::getCached("~turn_velocity", turn_velocity)) {turn_velocity = .5;}
+                if ( not ros::param::getCached("~turn_velocity", turn_velocity)) {turn_velocity = .5;}
                 
                 tfr_msgs::ArucoResultConstPtr result = getArucoResult();
                 

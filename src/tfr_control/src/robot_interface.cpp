@@ -265,7 +265,7 @@ namespace tfr_control
             bool write_arm_values;
             if (not ros::param::getCached("/write_arm_values", write_arm_values)) {write_arm_values = false;}
             if (write_arm_values){
-                ROS_INFO("Write_arm");
+                //ROS_INFO("Robot Interface: writing arm values");
                 
                 //TURNTABLE
 			    int32_t turntable_position = 
@@ -351,7 +351,7 @@ namespace tfr_control
 			    scoop_publisher.publish(scoop_position_msg);
 			
 			} else {
-			    ROS_INFO("Robot Interface: not writeing arm values");
+			    //ROS_INFO("Robot Interface: not writing arm values");
 		    }
 			
 			/*
