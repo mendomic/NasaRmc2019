@@ -75,11 +75,11 @@ class Localizer
         void localize( const tfr_msgs::LocalizationGoalConstPtr &goal)
         {
             ROS_INFO("Localization Action Server: Localize Starting");
+            
             //setup
             bool odometry = goal->set_odometry, success = true, set = false;
-
             geometry_msgs::Twist cmd;
-            cmd.angular.z = turn_velocity;
+            cmd.angular.z = 0;
             cmd_publisher.publish(cmd);
 
             ROS_INFO("Localization Action Server: odometry %s, target yaw %f",
@@ -96,6 +96,8 @@ class Localizer
                     success = false;
                     break;
                 }
+                
+                if (!ros::param::getCached("~turn_velocity", turn_velocity) {turn_velocity = .5;}
                 
                 tfr_msgs::ArucoResultConstPtr result = getArucoResult();
                 
