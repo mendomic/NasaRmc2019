@@ -80,12 +80,12 @@ private:
 
             ROS_INFO("starting set");
             // If we don't have enough time, bail on the action and exit
-            if ((endTime - now).toSec() < set.getTimeEstimate())
+            /*if ((endTime - now).toSec() < set.getTimeEstimate())
             {
                 ROS_INFO("Not enough time to complete the next digging set, exiting. cost: %f remaining: %f",
                         set.getTimeEstimate(), (endTime - now).toSec() );
                 break;
-            }
+            }*/
             
             std::queue<std::vector<double> > current_set{set.states};
 
