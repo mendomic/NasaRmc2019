@@ -7,7 +7,7 @@ observation_sources: point_cloud_sensor
 point_cloud_sensor: {
     sensor_frame: camera_link,
     data_type: PointCloud2 ,
-    min_obstacle_height: .1,
+    min_obstacle_height: .2,
     max_obstacle_height: 1.0,
     topic: /sensors/camera/depth/color/points,
     marking: true,
