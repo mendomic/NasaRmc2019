@@ -154,10 +154,11 @@ class Localizer
                         }
                         break;
                     } else {
-                        turn_velocity /= 2;
-                        if (difference < 0){
+                        if (difference < 0 && turn_velocity < 0){
+                           turn_velocity /= 2;
                            turn_velocity = std::abs(turn_velocity);
-                        } else {
+                        } else if (turn_velocity > 0){
+                            turn_velocity /= 2;
                             turn_velocity = -std::abs(turn_velocity);
                         }
                     }
