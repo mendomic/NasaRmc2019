@@ -197,9 +197,49 @@ int main(int argc, char* argv[]) {
 		}
 		
 		else if (deviceId == IMU_NODE_ID)
-		{
-			auto iosub_120_1 = std::make_shared<kaco::EntrySubscriber>(device, "cmd_cango/cmd_cango_1");
-    		bridge.add_subscriber(iosub_120_1);
+		{	
+			// Remember, we are not allowed to use the magnetometer. It is also disabled in the IMU's control settings, so no messages for that are being published on the can bus.
+	
+			auto iopub_120_1 = std::make_shared<kaco::EntryPublisher>(device, "gyroscope_x");
+    		bridge.add_publisher(iopub_120_1, loop_rate);
+			
+			auto iopub_120_2 = std::make_shared<kaco::EntryPublisher>(device, "gyroscope_y");
+    		bridge.add_publisher(iopub_120_2, loop_rate);
+			
+			auto iopub_120_3 = std::make_shared<kaco::EntryPublisher>(device, "gyroscope_z");
+    		bridge.add_publisher(iopub_120_3, loop_rate);
+			
+			auto iopub_120_4 = std::make_shared<kaco::EntryPublisher>(device, "euler_x");
+    		bridge.add_publisher(iopub_120_4, loop_rate);
+			
+			auto iopub_120_5 = std::make_shared<kaco::EntryPublisher>(device, "euler_y");
+    		bridge.add_publisher(iopub_120_5, loop_rate);
+			
+			auto iopub_120_6 = std::make_shared<kaco::EntryPublisher>(device, "euler_z");
+    		bridge.add_publisher(iopub_120_6, loop_rate);
+			
+			auto iopub_120_7 = std::make_shared<kaco::EntryPublisher>(device, "linear_acceleration_x");
+    		bridge.add_publisher(iopub_120_7, loop_rate);
+			
+			auto iopub_120_8 = std::make_shared<kaco::EntryPublisher>(device, "linear_acceleration_y");
+    		bridge.add_publisher(iopub_120_8, loop_rate);
+			
+			auto iopub_120_9 = std::make_shared<kaco::EntryPublisher>(device, "linear_acceleration_z");
+    		bridge.add_publisher(iopub_120_9, loop_rate);
+			
+			auto iopub_120_10 = std::make_shared<kaco::EntryPublisher>(device, "quaternion_w");
+    		bridge.add_publisher(iopub_120_10, loop_rate);
+			
+			auto iopub_120_11 = std::make_shared<kaco::EntryPublisher>(device, "quaternion_x");
+    		bridge.add_publisher(iopub_120_11, loop_rate);
+			
+			auto iopub_120_12 = std::make_shared<kaco::EntryPublisher>(device, "quaternion_y");
+    		bridge.add_publisher(iopub_120_12, loop_rate);
+			
+			auto iopub_120_13 = std::make_shared<kaco::EntryPublisher>(device, "quaternion_z");
+    		bridge.add_publisher(iopub_120_13, loop_rate);
+			
+			
 		}
 	}
 	PRINT("About to call bridge.run()");
