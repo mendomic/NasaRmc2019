@@ -25,4 +25,4 @@ rolling_window: true
 
 resolution: 0.1
 transform_tolerance: 0.5
-inflation: 0.1
+inflation: 0
