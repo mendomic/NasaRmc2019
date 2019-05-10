@@ -130,7 +130,6 @@ class Localizer
                         if(ros::service::call("/localize_bin", request, response)) {
                             ROS_INFO("localized");
                             tfr_msgs::LocalizationResult result;
-                            server.setSucceeded(output);
                             odometry = false;
                             set = true;
                         } else {
