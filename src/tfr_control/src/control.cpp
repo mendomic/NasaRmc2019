@@ -96,7 +96,14 @@ class Control
             armService{n.advertiseService("arm_state", &Control::getArmState,this)},
             zeroService{n.advertiseService("zero_turntable", &Control::zeroTurntable,this)},
             cycle{1/rate},
-            enabled{false}
+            enabled{false},
+			quat_x_sub{"/device120/quaternion_x", &Control::updatePrivateLocalVariable1,this)},
+			quat_y_sub{"/device120/quaternion_y", &Control::updatePrivateLocalVariable2,this)},
+			quat_z_sub{"/device120/quaternion_z", &Control::updatePrivateLocalVariable3,this)},
+			quat_w_sub{"/device120/quaternion_w", &Control::updatePrivateLocalVariable4,this)},
+			lin_vel_x_sub{"linear_acceleration_x", &Control::accumulateX,this)},
+			lin_vel_y_sub{"linear_acceleration_y", &Control::accumulateY,this)},
+			lin_vel_z_sub{"linear_acceleration_z", &Control::accumulateZ,this)},
         {}
         
         /*
@@ -112,6 +119,9 @@ class Control
                 robot_interface.clearCommands();
             //update hardware from controllers
             robot_interface.write();
+			
+			publishIMUOdometry();
+			
             cycle.sleep();
         }
 
@@ -136,8 +146,147 @@ class Control
         //how fast to spin
         ros::Duration cycle;
 
+		double quat_x = 0;
+		double quat_y = 0;
+		double quat_z = 0;
+		double quat_w = 0;
+		
+		double lin_vel_x = 0;
+		double lin_vel_y = 0;
+		double lin_vel_z = 0;
+		
+		ros::Subcriber quat_x_sub;
+		ros::Subcriber quat_y_sub;
+		ros::Subcriber quat_z_sub;
+		ros::Subcriber quat_w_sub;
+		
+		ros::Subcriber lin_vel_x_sub;
+		ros::Subcriber lin_vel_y_sub;
+		ros::Subcriber lin_vel_z_sub;
+		
+		void updatePrivateLocalVariable1(std_msgs::Float64 &value)
+		{
+			quat_x = value;
+		}
+		
+		void updatePrivateLocalVariable2(std_msgs::Float64 &value)
+		{
+			quat_y = value;
+		}
+		
+		void updatePrivateLocalVariable3(std_msgs::Float64 &value)
+		{
+			quat_z = value;
+		}
+		
+		void updatePrivateLocalVariable4(std_msgs::Float64 &value)
+		{
+			quat_w = value;
+		}
+		
+		
+		void accumulateX(std_msgs::Float64 &value)
+		{
+			lin_vel_x += value;
+		}
+		
+		void accumulateY(std_msgs::Float64 &value)
+		{
+			lin_vel_y += value;
+		}
+		
+		void accumulateZ(std_msgs::Float64 &value)
+		{
+			lin_vel_z += value;
+		}
+		
+		
+		
         //if our motors are enabled
         bool enabled;
+
+		void publishIMUOdometry()
+		{
+			//TODO:
+			ros::NodeHandle n;
+  ros::Publisher odom_pub = n.advertise<nav_msgs::Odometry>("odom", 50);
+  tf::TransformBroadcaster odom_broadcaster;
+
+  double imu_x = 0.0;
+  double imu_y = 0.0;
+  double imu_th = 0.0;
+
+  double imu_vx = 0.1;
+  double imu_vy = -0.1;
+  double imu_vth = 0.1;
+
+  ros::Time current_time, last_time;
+  current_time = ros::Time::now();
+  last_time = ros::Time::now();
+
+  //ros::Rate r(1.0);
+  if (n.ok()){
+
+    //ros::spinOnce();               // check for incoming messages
+    current_time = ros::Time::now();
+
+    //compute odometry in a typical way given the velocities of the robot
+    double dt = (current_time - last_time).toSec();
+    double delta_x = (vx * cos(th) - vy * sin(th)) * dt;
+    double delta_y = (vx * sin(th) + vy * cos(th)) * dt;
+    double delta_th = vth * dt;
+
+    x += delta_x;
+    y += delta_y;
+    th += delta_th;
+
+    //since all odometry is 6DOF we'll need a quaternion created from yaw
+    geometry_msgs::Quaternion odom_quat{};// = tf::createQuaternionMsgFromYaw(th);
+
+	odom_quat.x = quat_x;
+	odom_quat.y = quat_y;
+	odom_quat.z = quat_z;
+	odom_quat.w = quat_w;
+
+    //first, we'll publish the transform over tf
+    geometry_msgs::TransformStamped odom_trans;
+    odom_trans.header.stamp = current_time;
+    odom_trans.header.frame_id = "odom";
+    odom_trans.child_frame_id = "base_link";
+
+    //odom_trans.transform.translation.x = x;
+    //odom_trans.transform.translation.y = y;
+    //odom_trans.transform.translation.z = 0.0;
+    //odom_trans.transform.rotation = odom_quat;
+
+    //send the transform
+    //odom_broadcaster.sendTransform(odom_trans);
+
+    //next, we'll publish the odometry message over ROS
+    nav_msgs::Odometry odom;
+    odom.header.stamp = current_time;
+    odom.header.frame_id = "odom";
+
+    //set the position
+    //odom.pose.pose.position.x = x;
+    //odom.pose.pose.position.y = y;
+    //odom.pose.pose.position.z = 0.0;
+    odom.pose.pose.orientation = odom_quat;
+
+    //set the velocity
+    odom.child_frame_id = "base_link";
+    odom.twist.twist.linear.x = lin_vel_x;
+    odom.twist.twist.linear.y = lin_vel_y;
+	odom.twist.twist.linear.z = lin_vel_z;
+    //odom.twist.twist.angular.z = vth;
+
+    //publish the message
+    odom_pub.publish(odom);
+
+    last_time = current_time;
+    //r.sleep();
+  }
+		}
 
         /*
          * Toggles the emergency stop on and off
