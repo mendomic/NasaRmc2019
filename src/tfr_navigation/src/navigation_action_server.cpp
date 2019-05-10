@@ -8,6 +8,7 @@
 #include <tfr_utilities/location_codes.h>
 #include <boost/bind.hpp>
 #include <cstdint>
+#include <tf2_geometry_msgs/tf2_geometry_msgs.h>
 class Navigator
 { 
     public:
@@ -164,13 +165,19 @@ class Navigator
             //set reference frame
             nav_goal.target_pose.header.frame_id = bin_frame;
             nav_goal.target_pose.header.stamp = ros::Time::now();
+            
             //set translation goal
+            tf2::Quaternion quat;
             switch(goal)
             {
                 case(tfr_utilities::LocationCode::MINING):
-                    nav_goal.target_pose.pose.position.x = constraints.get_safe_mining_distance();
+                    nav_goal.target_pose.pose.position.y = -constraints.get_safe_mining_distance();
                     nav_goal.target_pose.pose.position.z = height_adjustment;
+                    
                     nav_goal.target_pose.pose.orientation.w = 1; //No rotation
+                    quat.setRPY(0, 0, -3.14/2);
+                    
+                    tf2::convert(quat, nav_goal.target_pose.pose.orientation);
                     break;
                 case(tfr_utilities::LocationCode::DUMPING):
                     nav_goal.target_pose.pose.position.x = constraints.get_finish_line();
