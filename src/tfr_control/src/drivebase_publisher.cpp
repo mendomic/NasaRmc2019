@@ -29,6 +29,16 @@ namespace tfr_control
 
         double left_velocity = msg->linear.x - (wheel_span * msg->angular.z) / 2;
         double right_velocity = msg->linear.x + (wheel_span * msg->angular.z) / 2;
+        
+        if (msg->linear.x == 0 && msg->angular.z == 0 && msg->linear.y){
+            left_velocity = 0.05;
+            right_velocity = 0.05;
+            if(msg->linear.y < 0){
+                left_velocity = -left_velocity;
+                right_velocity = -right_velocity;
+            }
+        }
+        
 
         std_msgs::Float64 left_cmd;
         left_cmd.data = left_velocity;
