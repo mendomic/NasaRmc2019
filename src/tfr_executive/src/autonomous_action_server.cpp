@@ -159,7 +159,7 @@ class AutonomousExecutive
             if (LOCALIZATION_TO)
             {
                 ROS_INFO("Autonomous Action Server: commencing Localization To");
-                localize(true, 3.14);
+                localize(true, 0);
                 ROS_INFO("Autonomous Action Server: finished Localization To");
             }
 
