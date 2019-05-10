@@ -92,7 +92,7 @@ Visualization Manager:
         bin_bottom:
           Value: false
         bin_footprint:
-          Value: false
+          Value: true
         bin_left:
           Value: false
         bin_right:
@@ -101,6 +101,18 @@ Visualization Manager:
           Value: false
         bin_slope_2:
           Value: false
+        camera_color_frame:
+          Value: true
+        camera_color_optical_frame:
+          Value: true
+        camera_depth_frame:
+          Value: true
+        camera_depth_optical_frame:
+          Value: true
+        camera_infra1_frame:
+          Value: true
+        camera_infra1_optical_frame:
+          Value: true
         camera_link:
           Value: true
         front_cam_link:
@@ -158,7 +170,15 @@ Visualization Manager:
                 bin_slope_2:
                   {}
               camera_link:
-                {}
+                camera_color_frame:
+                  camera_color_optical_frame:
+                    {}
+                camera_depth_frame:
+                  camera_depth_optical_frame:
+                    {}
+                camera_infra1_frame:
+                  camera_infra1_optical_frame:
+                    {}
               front_cam_link:
                 {}
               rear_cam_link:
@@ -630,10 +650,10 @@ Visualization Manager:
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.00999999978
-      Pitch: 0.544796348
+      Pitch: 0.754796028
       Target Frame: <Fixed Frame>
       Value: Orbit (rviz)
-      Yaw: 3.77263808
+      Yaw: 4.12082052
     Saved: ~
 Window Geometry:
   Displays:
