@@ -90,12 +90,7 @@ class Localizer
             while (true) {
 
                 ROS_INFO("Localization Action Server: iterating");
-                if (server.isPreemptRequested() || !server.isActive() || ! ros::ok()) {
-                    ROS_INFO("Localization Action Server: preempt requested");
-                    server.setPreempted(output);
-                    success = false;
-                    break;
-                }
+                if (checkPreempt(output, success)){break;}
                 
                 if ( not ros::param::getCached("~turn_velocity", turn_velocity)) {turn_velocity = .5;}
                 
@@ -125,13 +120,16 @@ class Localizer
                     request.pose = processed_pose;
                     tfr_msgs::PoseSrv::Response response;
                     output.pose = processed_pose.pose;
+                    
 
-                    while(odometry) {
+                    while(true) {
+                        if (checkPreempt(output, success)) {break;} 
                         if(ros::service::call("/localize_bin", request, response)) {
                             ROS_INFO("localized");
                             tfr_msgs::LocalizationResult result;
                             odometry = false;
                             set = true;
+                            break;
                         } else {
                             ROS_INFO("Localization Action Server: retrying to localize movable point");
                         }
@@ -155,6 +153,14 @@ class Localizer
                             server.setSucceeded(output);
                         }
                         break;
+                    } else {
+                        if (difference < 0 && turn_velocity < 0){
+                           turn_velocity /= 2;
+                           turn_velocity = std::abs(turn_velocity);
+                        } else if (turn_velocity > 0){
+                            turn_velocity /= 2;
+                            turn_velocity = -std::abs(turn_velocity);
+                        }
                     }
                 }
                 ROS_INFO("Localization Action Server: turning");
@@ -203,9 +209,20 @@ class Localizer
             aruco.waitForResult();
             return aruco.getResult();
         }
-
+        
+        bool checkPreempt(tfr_msgs::LocalizationResult& output, bool& success){
+            if (server.isPreemptRequested() || !server.isActive() || ! ros::ok()) {
+                ROS_INFO("Localization Action Server: preempt requested");
+                server.setPreempted(output);
+                success = false;
+                return true;
+            }
+            return false;
+        }
 
 };
+
+
 
 int main(int argc, char** argv)
 {
