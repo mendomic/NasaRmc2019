@@ -35,7 +35,7 @@ namespace control_test
 {
     // ADAM'S TEST CODE
     // Whether we're running on hardware or using fake values
-    const bool use_fake_values = false;
+    bool use_fake_values = false;
     // If we're faking the inputs, we need to know the model constraints on
     // the arm: load them here.
     // If not, just use zeroes, the limits don't matter. TEST code
@@ -87,7 +87,7 @@ void initializeTestCode(ros::NodeHandle& n)
 class Control
 {
     public:
-        Control(ros::NodeHandle &n, const double& rate):
+        Control(ros::NodeHandle &n, double& rate):
             robot_interface{n, use_fake_values, lower_limits, upper_limits},
             controller_interface{&robot_interface},
             eStopControl{n.advertiseService("toggle_control", &Control::toggleControl,this)},
@@ -97,14 +97,14 @@ class Control
             zeroService{n.advertiseService("zero_turntable", &Control::zeroTurntable,this)},
             cycle{1/rate},
             enabled{false},
-			quat_x_sub{"/device120/quaternion_x", &Control::updatePrivateLocalVariable1,this)},
-			quat_y_sub{"/device120/quaternion_y", &Control::updatePrivateLocalVariable2,this)},
-			quat_z_sub{"/device120/quaternion_z", &Control::updatePrivateLocalVariable3,this)},
-			quat_w_sub{"/device120/quaternion_w", &Control::updatePrivateLocalVariable4,this)},
-			lin_vel_x_sub{"linear_acceleration_x", &Control::accumulateX,this)},
-			lin_vel_y_sub{"linear_acceleration_y", &Control::accumulateY,this)},
-			lin_vel_z_sub{"linear_acceleration_z", &Control::accumulateZ,this)},
-        {}
+			quat_x_sub{n.subscribe("/device120/quaternion_x", 5, &Control::updatePrivateLocalVariable1,this)},
+			quat_y_sub{n.subscribe("/device120/quaternion_y", 5, &Control::updatePrivateLocalVariable2,this)},
+			quat_z_sub{n.subscribe("/device120/quaternion_z", 5, &Control::updatePrivateLocalVariable3,this)},
+			quat_w_sub{n.subscribe("/device120/quaternion_w", 5, &Control::updatePrivateLocalVariable4,this)},
+			lin_vel_x_sub{n.subscribe("linear_acceleration_x", 5, &Control::accumulateX,this)},
+			lin_vel_y_sub{n.subscribe("linear_acceleration_y", 5, &Control::accumulateY,this)},
+			lin_vel_z_sub{n.subscribe("linear_acceleration_z", 5, &Control::accumulateZ,this)}
+		{}
         
         /*
          * performs one iteration of the control loop
@@ -155,49 +155,49 @@ class Control
 		double lin_vel_y = 0;
 		double lin_vel_z = 0;
 		
-		ros::Subcriber quat_x_sub;
-		ros::Subcriber quat_y_sub;
-		ros::Subcriber quat_z_sub;
-		ros::Subcriber quat_w_sub;
+		ros::Subscriber quat_x_sub;
+		ros::Subscriber quat_y_sub;
+		ros::Subscriber quat_z_sub;
+		ros::Subscriber quat_w_sub;
 		
-		ros::Subcriber lin_vel_x_sub;
-		ros::Subcriber lin_vel_y_sub;
-		ros::Subcriber lin_vel_z_sub;
+		ros::Subscriber lin_vel_x_sub;
+		ros::Subscriber lin_vel_y_sub;
+		ros::Subscriber lin_vel_z_sub;
 		
-		void updatePrivateLocalVariable1(std_msgs::Float64 &value)
+		void updatePrivateLocalVariable1(const std_msgs::Float64 &value)
 		{
-			quat_x = value;
+			quat_x = value.data;
 		}
 		
-		void updatePrivateLocalVariable2(std_msgs::Float64 &value)
+		void updatePrivateLocalVariable2(const std_msgs::Float64 &value)
 		{
-			quat_y = value;
+			quat_y = value.data;
 		}
 		
-		void updatePrivateLocalVariable3(std_msgs::Float64 &value)
+		void updatePrivateLocalVariable3(const std_msgs::Float64 &value)
 		{
-			quat_z = value;
+			quat_z = value.data;
 		}
 		
-		void updatePrivateLocalVariable4(std_msgs::Float64 &value)
+		void updatePrivateLocalVariable4(const std_msgs::Float64 &value)
 		{
-			quat_w = value;
+			quat_w = value.data;
 		}
 		
 		
-		void accumulateX(std_msgs::Float64 &value)
+		void accumulateX(const std_msgs::Float64 &value)
 		{
-			lin_vel_x += value;
+			lin_vel_x += value.data;
 		}
 		
-		void accumulateY(std_msgs::Float64 &value)
+		void accumulateY(const std_msgs::Float64 &value)
 		{
-			lin_vel_y += value;
+			lin_vel_y += value.data;
 		}
 		
-		void accumulateZ(std_msgs::Float64 &value)
+		void accumulateZ(const std_msgs::Float64 &value)
 		{
-			lin_vel_z += value;
+			lin_vel_z += value.data;
 		}
 		
 		
@@ -232,13 +232,13 @@ class Control
 
     //compute odometry in a typical way given the velocities of the robot
     double dt = (current_time - last_time).toSec();
-    double delta_x = (vx * cos(th) - vy * sin(th)) * dt;
-    double delta_y = (vx * sin(th) + vy * cos(th)) * dt;
-    double delta_th = vth * dt;
+    double delta_x = 0;//(vx * cos(th) - vy * sin(th)) * dt;
+    double delta_y = 0;//(vx * sin(th) + vy * cos(th)) * dt;
+    double delta_th = 0;//vth * dt;
 
-    x += delta_x;
-    y += delta_y;
-    th += delta_th;
+    //x += delta_x;
+    //y += delta_y;
+    //th += delta_th;
 
     //since all odometry is 6DOF we'll need a quaternion created from yaw
     geometry_msgs::Quaternion odom_quat{};// = tf::createQuaternionMsgFromYaw(th);
