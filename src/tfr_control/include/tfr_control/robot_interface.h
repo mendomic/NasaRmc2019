@@ -81,6 +81,7 @@ namespace tfr_control {
         void setEnabled(bool val);
 	
         void zeroTurntable();
+        
 		
 		
 
@@ -91,19 +92,9 @@ namespace tfr_control {
         hardware_interface::PositionJointInterface joint_position_interface;
         //cmd states for velocity driven joints
         hardware_interface::EffortJointInterface joint_effort_interface;
-
-        //reads from arduino encoder publisher
-        /*
-		ros::Subscriber arduino_a;
-        ros::Subscriber arduino_b;
-        ros::Publisher pwm_publisher;
-		*/
-        bool enabled;
         
-		/*
-		tfr_msgs::ArduinoAReadingConstPtr latest_arduino_a;
-        tfr_msgs::ArduinoBReadingConstPtr latest_arduino_b;
-		*/
+        bool enabled;
+
         double turntable_offset;
 
 		// Read the relative velocity counters from the brushless motor controller
@@ -178,16 +169,16 @@ namespace tfr_control {
 		const int32_t brushless_encoder_count_per_revolution = 1280;
 		double brushlessEncoderCountToRadians(int32_t encoder_count);
 		
-		 int32_t bin_encoder_min = 0;
-		 int32_t bin_encoder_max = 1000;
-		 double bin_joint_min = 0.0;
-		 double bin_joint_max = 0.0;
-		
-		 int32_t turntable_encoder_min = -25760;
-		 int32_t turntable_encoder_max = 25760;
-		 double turntable_joint_min = -2 * 3.14159265358979;
-		 double turntable_joint_max = 2 * 3.14159265358979;
-		
+        int32_t bin_encoder_min = 0;
+        int32_t bin_encoder_max = 1000;
+        double bin_joint_min = 0.0;
+        double bin_joint_max = 0.0;
+
+        int32_t turntable_encoder_min = -25760;
+        int32_t turntable_encoder_max = 25760;
+        double turntable_joint_min = -2 * 3.14159265358979;
+        double turntable_joint_max = 2 * 3.14159265358979;
+
 		
 		/* 
 			Arm all the way up (actutator extended):
@@ -214,9 +205,6 @@ namespace tfr_control {
 		
 		const int32_t get_arm_lower_min_int();
 		const int32_t get_arm_lower_max_int();
-		
-		double  linear_interp_double(double x, double x1, double y1, double x2, double y2);
-		int32_t linear_interp_int(int32_t x, int32_t x1, int32_t y1, int32_t x2, int32_t y2);
 
         // Populated by controller layer for us to use
         double command_values[tfr_utilities::Joint::JOINT_COUNT]{};
@@ -231,46 +219,12 @@ namespace tfr_control {
         std::pair<double, double> drivebase_v0;
         ros::Time last_update;
 
+        template <typename t>
+    	t linear_interp(t x, t x1, t y1, t x2, t y2);
         
         void registerJointEffortInterface(std::string name, tfr_utilities::Joint joint);
         void registerJointPositionInterface(std::string name, tfr_utilities::Joint joint);
         //void registerBinJoint(std::string name, Joint joint);
-
-		/*
-        //callback for publisher
-        void readArduinoA(const tfr_msgs::ArduinoAReadingConstPtr &msg);
-        //callback for publisher
-        void readArduinoB(const tfr_msgs::ArduinoBReadingConstPtr &msg);
-		*/
-	
-	
-        /**
-         * Gets the PWM appropriate output for an angle joint at the current time
-         * */
-        //double angleToPWM(const double &desired, const double &measured);
-
-        /**
-         * Gets the PWM appropriate output for turntable at the current time
-         * */
-        //double turntableAngleToPWM(const double &desired, const double &measured);
-
-        /**
-         * Gets the PWM appropriate output for turntable at the current time
-         * */
-        /*
-		std::pair<double, double> twinAngleToPWM(const double &desired, 
-                const double &measured_left, const double &measured_right);
-		*/
-
-        /**
-         * Gets the PWM appropriate output for a joint at the current time
-         * */
-        //double drivebaseVelocityToPWM(const double &v_1, const double &v_0);
-
-        /*
-         * Scale the PWM outputs to avoid browning out 
-         * */
-        //double scalePWM(const double &pwm_1, const double &pwm_0);
 
         void adjustFakeJoint(const tfr_utilities::Joint &joint);
 
