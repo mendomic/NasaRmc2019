@@ -24,6 +24,7 @@ namespace tfr_control
 
     void DrivebasePublisher::subscriptionCallback(const geometry_msgs::Twist::ConstPtr& msg)
     {
+        ros::param::getCached("~wheel_span", wheel_span);
 
         double left_velocity = msg->linear.x - (wheel_span * msg->angular.z) / 2;
         double right_velocity = msg->linear.x + (wheel_span * msg->angular.z) / 2;
