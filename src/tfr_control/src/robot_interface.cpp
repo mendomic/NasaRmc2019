@@ -573,12 +573,13 @@ namespace tfr_control
 
 		accumulated_brushless_right_tread_vel = 0;
 		accumulated_brushless_right_tread_vel_num_updates = 0;
-		accumulated_brushless_right_tread_vel_start_time = ros::Time::now();
 		accumulated_brushless_right_tread_vel_end_time = ros::Time::now();
+		auto diff = accumulated_brushless_right_tread_vel_end_time - accumulated_brushless_right_tread_vel_start_time  
+		accumulated_brushless_right_tread_vel_start_time = ros::Time::now();
 
 		brushless_right_tread_mutex.unlock();
 		
-		return brushlessEncoderCountToRadians(encoder_count) / accumulated_brushless_right_tread_vel_end_time.toSec();
+		return brushlessEncoderCountToRadians(encoder_count) / diff.toSec();
 	}
 	
 	double RobotInterface::readBrushlessLeftVel()
@@ -590,12 +591,13 @@ namespace tfr_control
 
 		accumulated_brushless_left_tread_vel = 0;
 		accumulated_brushless_left_tread_vel_num_updates = 0;
-		accumulated_brushless_right_tread_vel_start_time = ros::Time::now();
-		accumulated_brushless_right_tread_vel_end_time = ros::Time::now();
+		accumulated_brushless_left_tread_vel_end_time = ros::Time::now();
+		auto diff = accumulated_brushless_left_tread_vel_end_time - accumulated_brushless_left_tread_vel_start_time  
+		accumulated_brushless_left_tread_vel_start_time = ros::Time::now();
 
 		brushless_left_tread_mutex.unlock();
 		
-		return brushlessEncoderCountToRadians(encoder_count) / accumulated_brushless_left_tread_vel_end_time.toSec();
+		return brushlessEncoderCountToRadians(encoder_count) / diff.toSec();
 	}
 	
 	
