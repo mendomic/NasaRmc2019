@@ -150,6 +150,7 @@ class Localizer
                     ROS_INFO("Angle %f Difference %f", angle, difference);
                     if (std::abs(difference) < threshold)
                     {
+                        ROS_INFO("Difference is %f, which is less than threshold",std::abs(difference));
                         if (!set)
                         {
                             server.setSucceeded(output);

@@ -178,7 +178,7 @@ class TeleopExecutive
 		            scoop_encoder_publisher.publish(scoop_encoder_msg);
 		           
 		            tfr_msgs::ArmMoveGoal goal;
-		            goal.pose = std::vector<double> {3.3, 0.2, 1.20, -1.00, 0};
+		            goal.pose = std::vector<double> {3.14, 0.11, 1.08, -1.17, 0};
 		            
 		            arm_client.sendGoal(goal);
                     ros::Rate rate(10.0);
