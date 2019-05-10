@@ -1,0 +1,11 @@
+#A queue to test dumping in the bin
+#does not go over bin yet so we can manually check the clearence
+positions: [
+  [[3.05, 0.1, 0.98, -1.17], #zero position
+  [3.05, 1.03, 1.07, -1.08], #arm is hanging over digging spot
+  [3.05, 1.11, 1.07, -1.08], #arm touches down
+  [3.05, 0.86, 1.6, 0.0], #dig in
+  [3.05, 0.5, 1.4, 1.35], #uplift
+  [0.95, 0.5, 1.02, 1.55], # around to the right to clear treds
+  [0.95, 0.13, 1.02, 1.55]],  # Set arm up to Clear bin
+]

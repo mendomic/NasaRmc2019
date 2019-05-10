@@ -1,0 +1,129 @@
+#slightly deeper dig than shallow_test_queue.yaml
+positions: [
+  [[3.05, 0.1, 0.98, -1.17], #1a- zero position
+  [3.05, 1.03, 1.07, -1.08], #arm is hanging over digging spot
+  [3.05, 1.11, 1.07, -1.08], #arm touches down
+  [3.05, 0.86, 1.6, 0.0], #dig in
+  [3.05, 0.5, 1.4, 1.35], #uplift
+  [2.0, 0.5, 1.25, 1.06], # Excess ready to dump right
+  [2.0, 0.5, 1.25, -1.0]],  # Excess release
+  [[3.25, 0.1, 1.70, 1.62], #1b- Dig start position
+  [3.25, 1.03, 1.07, -1.08], #arm is hanging over digging spot
+  [3.25, 1.11, 1.07, -1.08], #arm touches down
+  [3.25, 0.86, 1.6, 0.0], #dig in
+  [3.25, 0.5, 1.4, 1.35], #uplift
+  [1.4, 0.5, 1.25, 1.06], # Excess ready to dump right further back
+  [1.4, 0.5, 1.25, -1.0]],  # Excess release
+  [[3.05, 0.1, 1.70, 1.62], #2a- Dig start position
+  [3.05, 1.03, 1.07, -1.08], #arm is hanging over digging spot
+  [3.05, 1.14, 1.07, -1.08], #arm touches down
+  [3.05, 0.89, 1.6, 0.0], #dig in
+  [3.05, 0.5, 1.4, 1.35], #uplift
+  [2.0, 0.5, 1.25, 1.06], # Excess ready to dump right
+  [2.0, 0.5, 1.25, -1.0]],  # Excess release
+  [[3.25, 0.1, 1.70, 1.62], #2b- Dig start position
+  [3.25, 1.03, 1.07, -1.08], #arm is hanging over digging spot
+  [3.25, 1.14, 1.07, -1.08], #arm touches down
+  [3.25, 0.89, 1.6, 0.0], #dig in
+  [3.25, 0.5, 1.4, 1.35], #uplift
+  [1.4, 0.5, 1.25, 1.06], # Excess ready to dump right further back
+  [1.4, 0.5, 1.25, -1.0]],  # Excess release
+  [[3.05, 0.1, 1.70, 1.62], #3a- Dig start position
+  [3.05, 1.03, 1.07, -1.08], #arm is hanging over digging spot
+  [3.05, 1.17, 1.07, -1.08], #arm touches down
+  [3.05, 0.92, 1.6, 0.0], #dig in
+  [3.05, 0.5, 1.4, 1.35], #uplift
+  [2.0, 0.5, 1.25, 1.06], # Excess ready to dump right
+  [2.0, 0.5, 1.25, -1.0]],  # Excess release
+  [[3.25, 0.1, 1.70, 1.62], #3b- Dig start position
+  [3.25, 1.03, 1.07, -1.08], #arm is hanging over digging spot
+  [3.25, 1.17, 1.07, -1.08], #arm touches down
+  [3.25, 0.92, 1.6, 0.0], #dig in
+  [3.25, 0.5, 1.4, 1.35], #uplift
+  [1.4, 0.5, 1.25, 1.06], # Excess ready to dump right further back
+  [1.4, 0.5, 1.25, -1.0]],  # Excess release
+  [[3.05, 0.1, 1.70, 1.62], #4a- Dig start position
+  [3.05, 1.03, 1.07, -1.08], #arm is hanging over digging spot
+  [3.05, 1.2, 1.07, -1.08], #arm touches down
+  [3.05, 0.95, 1.6, 0.0], #dig in
+  [3.05, 0.5, 1.4, 1.35], #uplift
+  [2.0, 0.5, 1.25, 1.06], # Excess ready to dump right
+  [2.0, 0.5, 1.25, -1.0]],  # Excess release
+  [[3.25, 0.1, 1.70, 1.62], #4b- Dig start position
+  [3.25, 1.03, 1.07, -1.08], #arm is hanging over digging spot
+  [3.25, 1.2, 1.07, -1.08], #arm touches down
+  [3.25, 0.95, 1.6, 0.0], #dig in
+  [3.25, 0.5, 1.4, 1.35], #uplift
+  [1.4, 0.5, 1.25, 1.06], # Excess ready to dump right further back
+  [1.4, 0.5, 1.25, -1.0]],  # Excess release
+  [[3.05, 0.1, 1.70, 1.62], #5a- Dig start position
+  [3.05, 1.03, 1.07, -1.08], #arm is hanging over digging spot
+  [3.05, 1.23, 1.07, -1.08], #arm touches down
+  [3.05, 0.98, 1.6, 0.0], #dig in
+  [3.05, 0.5, 1.4, 1.35], #uplift
+  [2.0, 0.5, 1.25, 1.06], # Excess ready to dump right
+  [2.0, 0.5, 1.25, -1.0]],  # Excess release
+  [[3.25, 0.1, 1.70, 1.62], #5b- Dig start position
+  [3.25, 1.03, 1.07, -1.08], #arm is hanging over digging spot
+  [3.25, 1.23, 1.07, -1.08], #arm touches down
+  [3.25, 0.98, 1.6, 0.0], #dig in
+  [3.25, 0.5, 1.4, 1.35], #uplift
+  [1.4, 0.5, 1.25, 1.06], # Excess ready to dump right further back
+  [1.4, 0.5, 1.25, -1.0]],  # Excess release
+  [[3.05, 0.1, 1.70, 1.62], #6a- Dig start position
+  [3.05, 1.03, 1.07, -1.08], #arm is hanging over digging spot
+  [3.05, 1.26, 1.07, -1.08], #arm touches down
+  [3.05, 1.01, 1.6, 0.0], #dig in
+  [3.05, 0.5, 1.4, 1.35], #uplift
+  [2.0, 0.5, 1.25, 1.06], # Excess ready to dump right
+  [2.0, 0.5, 1.25, -1.0]],  # Excess release
+  [[3.25, 0.1, 1.70, 1.62], #6b- Dig start position
+  [3.25, 1.03, 1.07, -1.08], #arm is hanging over digging spot
+  [3.25, 1.26, 1.07, -1.08], #arm touches down
+  [3.25, 1.01, 1.6, 0.0], #dig in
+  [3.25, 0.5, 1.4, 1.35], #uplift
+  [1.4, 0.5, 1.25, 1.06], # Excess ready to dump right further back
+  [1.4, 0.5, 1.25, -1.0]],  # Excess release
+  [[3.05, 0.1, 1.70, 1.62], #7a- Dig start position
+  [3.05, 1.03, 1.07, -1.08], #arm is hanging over digging spot
+  [3.05, 1.29, 1.07, -1.08], #arm touches down
+  [3.05, 1.04, 1.6, 0.0], #dig in
+  [3.05, 0.5, 1.4, 1.35], #uplift
+  [2.0, 0.5, 1.25, 1.06], # Excess ready to dump right
+  [2.0, 0.5, 1.25, -1.0]],  # Excess release
+  [[3.25, 0.1, 1.70, 1.62], #7b- Dig start position
+  [3.25, 1.03, 1.07, -1.08], #arm is hanging over digging spot
+  [3.25, 1.29, 1.07, -1.08], #arm touches down
+  [3.25, 1.04, 1.6, 0.0], #dig in
+  [3.25, 0.5, 1.4, 1.35], #uplift
+  [1.4, 0.5, 1.25, 1.06], # Excess ready to dump right further back
+  [1.4, 0.5, 1.25, -1.0]],  # Excess release
+  [[3.05, 0.1, 1.70, 1.62], #8a- Dig start position
+  [3.05, 1.03, 1.07, -1.08], #arm is hanging over digging spot
+  [3.05, 1.32, 1.07, -1.08], #arm touches down
+  [3.05, 1.07, 1.6, 0.0], #dig in
+  [3.05, 0.5, 1.4, 1.35], #uplift
+  [2.0, 0.5, 1.25, 1.06], # Excess ready to dump right
+  [2.0, 0.5, 1.25, -1.0]],  # Excess release
+  [[3.25, 0.1, 1.70, 1.62], #8b- Dig start position
+  [3.25, 1.03, 1.07, -1.08], #arm is hanging over digging spot
+  [3.25, 1.32, 1.07, -1.08], #arm touches down
+  [3.25, 1.07, 1.6, 0.0], #dig in
+  [3.25, 0.5, 1.4, 1.35], #uplift
+  [1.4, 0.5, 1.25, 1.06], # Excess ready to dump right further back
+  [1.4, 0.5, 1.25, -1.0]],  # Excess release
+  [[3.05, 0.1, 1.70, 1.62], #9a- Dig start position
+  [3.05, 1.03, 1.07, -1.08], #arm is hanging over digging spot
+  [3.05, 1.35, 1.07, -1.08], #arm touches down
+  [3.05, 1.1, 1.6, 0.0], #dig in
+  [3.05, 0.5, 1.4, 1.35], #uplift
+  [2.0, 0.5, 1.25, 1.06], # Excess ready to dump right
+  [2.0, 0.5, 1.25, -1.0]],  # Excess release
+  [[3.25, 0.1, 1.70, 1.62], #9b- Dig start position
+  [3.25, 1.03, 1.07, -1.08], #arm is hanging over digging spot
+  [3.25, 1.35, 1.07, -1.08], #arm touches down
+  [3.25, 1.1, 1.6, 0.0], #dig in
+  [3.25, 0.5, 1.4, 1.35], #uplift
+  [1.4, 0.5, 1.25, 1.06], # Excess ready to dump right further back
+  [1.4, 0.5, 1.25, -1.0]],  # Excess release
+]
