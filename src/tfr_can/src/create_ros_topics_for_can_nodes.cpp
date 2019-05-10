@@ -105,12 +105,12 @@ int main(int argc, char* argv[]) {
 		    ERROR("tfr_can could not find the private parameter 'eds_files_path'. Make sure this parameter is getting set in the launch file for tfr_can.");
 		}
 		
-		device.load_dictionary_from_eds(eds_files_path + "roboteq_motor_controllers_v60.eds");
-		
 		int deviceId = device.get_node_id();
 
 		if (deviceId == 4)
 		{
+			device.load_dictionary_from_eds(eds_files_path + "roboteq_motor_controllers_v60.eds");
+			
 			ROS_DEBUG_STREAM("tfr_can: case: Device 4" << std::endl);
 			
 			//device.print_dictionary();
@@ -121,6 +121,8 @@ int main(int argc, char* argv[]) {
 		
 		else if (deviceId == 8)
 		{
+			device.load_dictionary_from_eds(eds_files_path + "roboteq_motor_controllers_v60.eds");
+			
 			ROS_DEBUG_STREAM("tfr_can: case: Device 8" << std::endl);
 			
 			// Roboteq SBL2360 in Closed Loop Speed Position mode.
@@ -153,6 +155,8 @@ int main(int argc, char* argv[]) {
 		
 		else if (deviceId == 12)
 		{
+			device.load_dictionary_from_eds(eds_files_path + "roboteq_motor_controllers_v60.eds");
+			
 			ROS_DEBUG_STREAM("tfr_can: case: Device 12" << std::endl);
 			
 			
@@ -199,6 +203,8 @@ int main(int argc, char* argv[]) {
 		else if (deviceId == IMU_NODE_ID)
 		{	
 			// Remember, we are not allowed to use the magnetometer. It is also disabled in the IMU's control settings, so no messages for that are being published on the can bus.
+	
+			device.load_dictionary_from_eds(eds_files_path + "LPMS-CU2_32BitDataSettings.eds");
 	
 			auto iopub_120_1 = std::make_shared<kaco::EntryPublisher>(device, "gyroscope_x");
     		bridge.add_publisher(iopub_120_1, loop_rate);
