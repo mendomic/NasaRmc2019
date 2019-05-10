@@ -39,8 +39,8 @@ namespace tfr_control
         void subscriptionCallback(const geometry_msgs::Twist::ConstPtr& msg);
 
         ros::NodeHandle& n;
-        const double wheel_radius;
-        const double wheel_span;
+        double wheel_radius;
+        double wheel_span;
 
         ros::Publisher left_tread_publisher;
         ros::Publisher right_tread_publisher;
