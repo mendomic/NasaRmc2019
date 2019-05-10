@@ -39,8 +39,12 @@ class Localizer
 
         {
             ROS_INFO("Localization Action Server: Connecting Aruco");
-            aruco.waitForServer();
-            ROS_INFO("Localization Action Server: Connected Aruco");
+            if( not aruco.waitForServer(ros::Duration(0))){
+                ROS_INFO("Failed to connect to Aruco client");
+            } else {
+                ROS_INFO("Autonomous Action Server: Connected to digging server");
+            }
+            
 
             ROS_INFO("Localization Action Server: Connecting Image Client");
             rear_cam_client = n.serviceClient<tfr_msgs::WrappedImage>("/on_demand/rear_cam/image_raw");

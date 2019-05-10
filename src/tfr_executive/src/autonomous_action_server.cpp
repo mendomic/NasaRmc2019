@@ -77,29 +77,37 @@ class AutonomousExecutive
             if (LOCALIZATION_TO || LOCALIZATION_FROM || LOCALIZATION_FINISH)
             {
                 ROS_INFO("Autonomous Action Server: Connecting to localization server");
-                localizationClient.waitForServer();
-                ROS_INFO("Autonomous Action Server: Connected to localization server");
+                if( not localizationClient.waitForServer(ros::Duration(0))){
+                    ROS_INFO("Failed to connect to localization client");
+                } else {
+                    ROS_INFO("Autonomous Action Server: Connected to localization server");
+                }
                 status_publisher.info(StatusCode::EXC_CONNECT_LOCALIZATION, 1.0);
             }
             ros::param::param<bool>("~navigation_to", NAVIGATION_TO, true);
             ros::param::param<bool>("~navigation_from", NAVIGATION_FROM, true);
             if (NAVIGATION_TO || NAVIGATION_FROM)
             {
-                navigationClient.waitForServer();
+                if( not navigationClient.waitForServer(ros::Duration(0))){
+                    ROS_INFO("Failed to connect to navigation client");
+                }
                 status_publisher.info(StatusCode::EXC_CONNECT_NAVIGATION, 1.0);
             }
             ros::param::param<bool>("~digging", DIGGING, true);
             if (DIGGING)
             {
                 ROS_INFO("Autonomous Action Server: Connecting to digging server");
-                diggingClient.waitForServer();
-                ROS_INFO("Autonomous Action Server: Connected to digging server");
+                if( not diggingClient.waitForServer(ros::Duration(0))){
+                    ROS_INFO("Failed to connect to digging client");
+                } else {
+                    ROS_INFO("Autonomous Action Server: Connected to digging server");
+                }
             }
             ros::param::param<bool>("~dumping", DUMPING, true);
             if (DUMPING)
             {
                 ROS_INFO("Autonomous Action Server: Connecting to digging server");
-                dumpingClient.waitForServer();
+                dumpingClient.waitForServer(ros::Duration(0));
                 ROS_INFO("Autonomous Action Server: Connected to digging server");
             }
             server.start();
