@@ -30,6 +30,9 @@
 #include <vector>
 #include <mutex>
 #include <limits>
+#include <ros/ros.h>
+#include <tf/transform_broadcaster.h>
+#include <nav_msgs/Odometry.h>
 
 namespace tfr_control {
 
