@@ -12,7 +12,7 @@ point_cloud_sensor: {
     topic: /sensors/camera/depth/color/points,
     marking: true,
     clearing: true,
-    observation_persistence: 0.25,
+    observation_persistence: 0,
 }
 
 
