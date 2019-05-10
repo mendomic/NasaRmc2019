@@ -28,6 +28,8 @@
 #include <tfr_utilities/joints.h>
 #include "robot_interface.h"
 #include "bin_control_server.h"
+#include <sensor_msgs/Imu.h>
+#include <geometry_msgs/Vector3.h>
 
 
 
@@ -151,6 +153,10 @@ class Control
 		double quat_z = 0;
 		double quat_w = 0;
 		
+		double lin_acc_x = 0;
+		double lin_acc_y = 0;
+		double lin_acc_z = 0;
+		
 		double lin_vel_x = 0;
 		double lin_vel_y = 0;
 		double lin_vel_z = 0;
@@ -187,19 +193,21 @@ class Control
 		
 		void accumulateX(const std_msgs::Float64 &value)
 		{
+			lin_acc_x = value.data;
 			lin_vel_x += value.data;
 		}
 		
 		void accumulateY(const std_msgs::Float64 &value)
 		{
+			lin_acc_y = value.data;
 			lin_vel_y += value.data;
 		}
 		
 		void accumulateZ(const std_msgs::Float64 &value)
 		{
+			lin_acc_z = value.data;
 			lin_vel_z += value.data;
 		}
-		
 		
 		
         //if our motors are enabled
@@ -281,7 +289,19 @@ class Control
     //odom.twist.twist.angular.z = vth;
 
     //publish the message
-    odom_pub.publish(odom);
+    //odom_pub.publish(odom);
+
+	sensor_msgs::Imu imu_msg;
+	imu_msg.orientation = odom_quat;
+	
+	geometry_msgs::Vector3 lin_acc;
+	lin_acc.x = lin_acc_x;
+	lin_acc.y = lin_acc_y;
+	lin_acc.z = lin_acc_z;
+	
+	imu_msg.linear_acceleration = lin_acc;
+	
+	odom_pub.publish(imu_msg);
 
     last_time = current_time;
     //r.sleep();
