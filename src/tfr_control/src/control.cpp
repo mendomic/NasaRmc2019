@@ -209,9 +209,9 @@ class Control
 		{
 			//TODO:
 			ros::NodeHandle n;
-  ros::Publisher odom_pub = n.advertise<nav_msgs::Odometry>("odom", 50);
+  ros::Publisher odom_pub = n.advertise<nav_msgs::Odometry>("/sensors/mti/sensor/imu", 50);
   tf::TransformBroadcaster odom_broadcaster;
-
+  //abcd
   double imu_x = 0.0;
   double imu_y = 0.0;
   double imu_th = 0.0;
