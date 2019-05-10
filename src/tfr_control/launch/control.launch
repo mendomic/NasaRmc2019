@@ -9,7 +9,10 @@
     <node name="robot_state_publisher" pkg="robot_state_publisher"
         type="robot_state_publisher" respawn="false" />
 
-    <node name="drivebase" pkg="tfr_control" type="drivebase" output="screen"/>
+    <node name="drivebase" pkg="tfr_control" type="drivebase" output="screen">
+        <param name="wheel_span"  value="0.025"/> 
+        <param name="wheel_radius" value="0.876"/> 
+    </node>
 
     <!-- Load the controller manager plugin for the drivebase -->
     <node name="control" pkg="tfr_control" type="control" output="screen">
