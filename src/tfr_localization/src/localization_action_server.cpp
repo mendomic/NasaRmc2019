@@ -90,7 +90,7 @@ class Localizer
             while (true) {
 
                 ROS_INFO("Localization Action Server: iterating");
-                if (checkPreempt(output)){break;}
+                if (checkPreempt(output, success)){break;}
                 
                 if ( not ros::param::getCached("~turn_velocity", turn_velocity)) {turn_velocity = .5;}
                 
@@ -123,7 +123,7 @@ class Localizer
                     
 
                     while(true) {
-                        if (checkPreempt(output)) {break;} 
+                        if (checkPreempt(output, success)) {break;} 
                         if(ros::service::call("/localize_bin", request, response)) {
                             ROS_INFO("localized");
                             tfr_msgs::LocalizationResult result;
@@ -208,19 +208,20 @@ class Localizer
             aruco.waitForResult();
             return aruco.getResult();
         }
-
+        
+        bool checkPreempt(tfr_msgs::LocalizationResult& output, bool& success){
+            if (server.isPreemptRequested() || !server.isActive() || ! ros::ok()) {
+                ROS_INFO("Localization Action Server: preempt requested");
+                server.setPreempted(output);
+                success = false;
+                return true;
+            }
+            return false;
+        }
 
 };
 
-bool checkPreempt(tfr_msgs::LocalizationResult& output){
-    if (server.isPreemptRequested() || !server.isActive() || ! ros::ok()) {
-        ROS_INFO("Localization Action Server: preempt requested");
-        server.setPreempted(output);
-        success = false;
-        return true;
-    }
-    return false;
-}
+
 
 int main(int argc, char** argv)
 {
