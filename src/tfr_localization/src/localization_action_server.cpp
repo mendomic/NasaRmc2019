@@ -154,7 +154,7 @@ class Localizer
                         }
                         break;
                     } else {
-                        if (difference > 0 && turn_velocity < 0){
+                        /*if (difference > 0 && turn_velocity < 0){
                             ROS_INFO("Setting Velocity +");
                             turn_velocity /= 2;
                             turn_velocity = std::abs(turn_velocity);
@@ -162,7 +162,7 @@ class Localizer
                             ROS_INFO("Setting Velocity -");
                             turn_velocity /= 2;
                             turn_velocity = -std::abs(turn_velocity);
-                        }
+                        }*/
                     }
                 }
                 ROS_INFO("Localization Action Server: turning");
