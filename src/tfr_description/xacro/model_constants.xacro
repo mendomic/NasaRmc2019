@@ -9,6 +9,8 @@
   <xacro:property name="sqrt2" value="1.41421" />
 
   <!-- Drivebase parameters -->
+  <xacro:property name="base_mass" value="${25.0}"/>
+
   <xacro:property name="base_length" value="${50*itom}" />
 
   <xacro:property name="tube_width" value="${2*itom}" />
@@ -17,6 +19,8 @@
   <xacro:property name="drivebase_total_height" value="${6*itom}" />
 
   <!-- Drivetrain parameters -->
+  <xacro:property name="tred_left_mass" value="${30.0}" />
+  <xacro:property name="tred_right_mass" value="${30.0}" />
   <xacro:property name="tread_end_radius" value="${(15.5/2)*itom}" />
   <xacro:property name="tread_mid_height" value="${19*itom}" />
   <xacro:property name="tread_mid_length" value="${24*itom}" />
@@ -28,6 +32,7 @@
   <!-- Bin parameters -->
   <!-- Length of top of bin, length of bottom is 13.86 -->
   <!-- Using the bigger size as a box instead of making complex angled shape -->
+  <xacro:property name="bin_mass" value="${10.0}" />
   <xacro:property name="bin_length" value="${36*itom}" />
   <xacro:property name="bin_width" value="${13.5*itom}" />
   <xacro:property name="bin_height" value="${16*itom}" />
@@ -36,30 +41,34 @@
 
 
   <!-- Turntable parameters -->
+  <xacro:property name="turntable_mass" value="${25.0}"/>
   <xacro:property name="turntable_radius" value="${4.92*itom}" />
   <!-- 1" in model plus undefined height for mounting and extra components -->
   <!-- Rounded to 2" for now -->
   <xacro:property name="turntable_height" value="${2.25*itom}" />
 
   <!-- Lower arm parameters -->
+  <xacro:property name="lower_arm_mass" value="${28.0}"/>
   <xacro:property name="lower_arm_length" value="${22*itom}" />
   <xacro:property name="lower_arm_primary_length" value="${16*itom}" />
   <xacro:property name="lower_arm_width" value="${6*itom}" />
   <xacro:property name="lower_arm_height" value="${6*itom}" />
-  <xacro:property name="lower_arm_min" value="0.1092" />
-  <xacro:property name="lower_arm_max" value="1.395" />   
+  <xacro:property name="lower_arm_min" value="0.104" />
+  <xacro:property name="lower_arm_max" value="1.55" />   
 
   <!-- Upper arm parameters -->
+  <xacro:property name="upper_arm_mass" value="${10.0}"/>
   <xacro:property name="upper_arm_length" value="${20*itom}" />
   <xacro:property name="upper_arm_width" value="${4.75*itom}" />
   <xacro:property name="upper_arm_height" value="${5*itom}" />
-  <xacro:property name="upper_arm_min" value="1.029"/>
-  <xacro:property name="upper_arm_max" value="2.28"/>
+  <xacro:property name="upper_arm_min" value="0.98"/>
+  <xacro:property name="upper_arm_max" value="2.4"/>
 
   <!-- Scoop parameters -->
+  <xacro:property name="scoop_mass" value="${5.0}"/>
   <xacro:property name="scoop_width" value="${8.5*itom}" />
   <xacro:property name="scoop_length" value="${12*itom}" />
   <xacro:property name="scoop_diameter" value="${12.5*itom}" />
-  <xacro:property name="scoop_min" value="-1.235" />
-  <xacro:property name="scoop_max" value="1.539" />
+  <xacro:property name="scoop_min" value="-1.16614" />
+  <xacro:property name="scoop_max" value="1.62" />
 </robot>
