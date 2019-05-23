@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!-- Model of the arm without the joint that would atatch it to the base.
     used for simulation the arm without the base -->
-<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="excavator">
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="tfr_arm">
 
   <!-- attatch robot to world frame -->
   <link name="world"/>
