@@ -23,6 +23,8 @@
   <depend>hardware_interface</depend>
   <depend>controller_manager</depend>
   <depend>joint_state_controller</depend>
+  <depend>joint_state_publisher</depend>
+  <depend>rqt_gui</depend>
   <depend>effort_controllers</depend>
   <depend>joint_trajectory_controller</depend>
   <depend>moveit_ros_planning_interface</depend>

@@ -15,7 +15,7 @@
         respawn="false" output="screen" ns="/tfr_arm"
         args="
         arm_controller
-	arm_end_controller
+	    arm_end_controller
         joint_state_controller"/>
 
     <!-- Publishes the state of the robot to TF for Rviz or other usages -->
