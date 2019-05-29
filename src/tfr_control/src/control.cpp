@@ -215,97 +215,97 @@ class Control
 
 		void publishIMUOdometry()
 		{
-			//TODO:
-			ros::NodeHandle n;
-  ros::Publisher odom_pub = n.advertise<sensor_msgs::Imu>("/sensors/mti/sensor/imu", 50);
-  tf::TransformBroadcaster odom_broadcaster;
-  //abcd
-  double imu_x = 0.0;
-  double imu_y = 0.0;
-  double imu_th = 0.0;
+		    //TODO:
+		    ros::NodeHandle n;
+            ros::Publisher odom_pub = n.advertise<sensor_msgs::Imu>("/sensors/mti/sensor/imu", 50);
+            tf::TransformBroadcaster odom_broadcaster;
+            //abcd
+            double imu_x = 0.0;
+            double imu_y = 0.0;
+            double imu_th = 0.0;
 
-  double imu_vx = 0.1;
-  double imu_vy = -0.1;
-  double imu_vth = 0.1;
+            double imu_vx = 0.1;
+            double imu_vy = -0.1;
+            double imu_vth = 0.1;
 
-  ros::Time current_time, last_time;
-  current_time = ros::Time::now();
-  last_time = ros::Time::now();
+            ros::Time current_time, last_time;
+            current_time = ros::Time::now();
+            last_time = ros::Time::now();
 
-  //ros::Rate r(1.0);
-  if (n.ok()){
+            //ros::Rate r(1.0);
+            if (n.ok()){
 
-    //ros::spinOnce();               // check for incoming messages
-    current_time = ros::Time::now();
+                //ros::spinOnce();               // check for incoming messages
+                current_time = ros::Time::now();
 
-    //compute odometry in a typical way given the velocities of the robot
-    double dt = (current_time - last_time).toSec();
-    double delta_x = 0;//(vx * cos(th) - vy * sin(th)) * dt;
-    double delta_y = 0;//(vx * sin(th) + vy * cos(th)) * dt;
-    double delta_th = 0;//vth * dt;
+                //compute odometry in a typical way given the velocities of the robot
+                double dt = (current_time - last_time).toSec();
+                double delta_x = 0;//(vx * cos(th) - vy * sin(th)) * dt;
+                double delta_y = 0;//(vx * sin(th) + vy * cos(th)) * dt;
+                double delta_th = 0;//vth * dt;
 
-    //x += delta_x;
-    //y += delta_y;
-    //th += delta_th;
+                //x += delta_x;
+                //y += delta_y;
+                //th += delta_th;
 
-    //since all odometry is 6DOF we'll need a quaternion created from yaw
-    geometry_msgs::Quaternion odom_quat{};// = tf::createQuaternionMsgFromYaw(th);
+                //since all odometry is 6DOF we'll need a quaternion created from yaw
+                geometry_msgs::Quaternion odom_quat{};// = tf::createQuaternionMsgFromYaw(th);
 
-	odom_quat.x = quat_x;
-	odom_quat.y = quat_y;
-	odom_quat.z = quat_z;
-	odom_quat.w = quat_w;
+                odom_quat.x = quat_x;
+                odom_quat.y = quat_y;
+                odom_quat.z = quat_z;
+                odom_quat.w = quat_w;
 
-    //first, we'll publish the transform over tf
-    geometry_msgs::TransformStamped odom_trans;
-    odom_trans.header.stamp = current_time;
-    odom_trans.header.frame_id = "odom";
-    odom_trans.child_frame_id = "base_link";
+                //first, we'll publish the transform over tf
+                geometry_msgs::TransformStamped odom_trans;
+                odom_trans.header.stamp = current_time;
+                odom_trans.header.frame_id = "odom";
+                odom_trans.child_frame_id = "base_link";
 
-    //odom_trans.transform.translation.x = x;
-    //odom_trans.transform.translation.y = y;
-    //odom_trans.transform.translation.z = 0.0;
-    //odom_trans.transform.rotation = odom_quat;
+                //odom_trans.transform.translation.x = x;
+                //odom_trans.transform.translation.y = y;
+                //odom_trans.transform.translation.z = 0.0;
+                //odom_trans.transform.rotation = odom_quat;
 
-    //send the transform
-    //odom_broadcaster.sendTransform(odom_trans);
+                //send the transform
+                //odom_broadcaster.sendTransform(odom_trans);
 
-    //next, we'll publish the odometry message over ROS
-    nav_msgs::Odometry odom;
-    odom.header.stamp = current_time;
-    odom.header.frame_id = "odom";
+                //next, we'll publish the odometry message over ROS
+                nav_msgs::Odometry odom;
+                odom.header.stamp = current_time;
+                odom.header.frame_id = "odom";
 
-    //set the position
-    //odom.pose.pose.position.x = x;
-    //odom.pose.pose.position.y = y;
-    //odom.pose.pose.position.z = 0.0;
-    odom.pose.pose.orientation = odom_quat;
+                //set the position
+                //odom.pose.pose.position.x = x;
+                //odom.pose.pose.position.y = y;
+                //odom.pose.pose.position.z = 0.0;
+                odom.pose.pose.orientation = odom_quat;
 
-    //set the velocity
-    odom.child_frame_id = "base_link";
-    odom.twist.twist.linear.x = lin_vel_x;
-    odom.twist.twist.linear.y = lin_vel_y;
-	odom.twist.twist.linear.z = lin_vel_z;
-    //odom.twist.twist.angular.z = vth;
+                //set the velocity
+                odom.child_frame_id = "base_link";
+                odom.twist.twist.linear.x = lin_vel_x;
+                odom.twist.twist.linear.y = lin_vel_y;
+                odom.twist.twist.linear.z = lin_vel_z;
+                //odom.twist.twist.angular.z = vth;
 
-    //publish the message
-    //odom_pub.publish(odom);
+                //publish the message
+                //odom_pub.publish(odom);
 
-	sensor_msgs::Imu imu_msg;
-	imu_msg.orientation = odom_quat;
-	
-	geometry_msgs::Vector3 lin_acc;
-	lin_acc.x = lin_acc_x;
-	lin_acc.y = lin_acc_y;
-	lin_acc.z = lin_acc_z;
-	
-	imu_msg.linear_acceleration = lin_acc;
-	
-	odom_pub.publish(imu_msg);
+                sensor_msgs::Imu imu_msg;
+                imu_msg.orientation = odom_quat;
 
-    last_time = current_time;
-    //r.sleep();
-  }
+                geometry_msgs::Vector3 lin_acc;
+                lin_acc.x = lin_acc_x;
+                lin_acc.y = lin_acc_y;
+                lin_acc.z = lin_acc_z;
+
+                imu_msg.linear_acceleration = lin_acc;
+
+                odom_pub.publish(imu_msg);
+
+                last_time = current_time;
+                //r.sleep();
+            }
 		}
 
         /*
