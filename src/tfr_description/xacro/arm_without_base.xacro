@@ -93,7 +93,7 @@
     </collision>
     <!-- test -->
     <inertial>
-      <mass value="2.3" />
+      <mass value=".23" />
       <inertia ixx="${0.0833333 * 2.3}" ixy="0.0" ixz="0.0" iyy="${0.0833333 * 2.3}" iyz="0.0" izz="${0.0833333 * 2.3}"/>
     </inertial>
   </link>
@@ -118,7 +118,7 @@
     </collision>
     <!-- test -->
     <inertial>
-      <mass value="2.3" />
+      <mass value=".23" />
       <inertia ixx="${0.0833333 * 2.3}" ixy="0.0" ixz="0.0" iyy="${0.0833333 * 2.3}" iyz="0.0" izz="${0.0833333 * 2.3}"/>
     </inertial>
   </link>

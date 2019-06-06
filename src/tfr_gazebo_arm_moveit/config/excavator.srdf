@@ -23,6 +23,16 @@
         <joint name="scoop_joint" value="-1" />
         <joint name="upper_arm_joint" value="1.07" />
     </group_state>
+    <group_state name="dig_in" group="tfr_arm">
+        <joint name="lower_arm_joint" value="0.86" />
+        <joint name="scoop_joint" value="0" />
+        <joint name="upper_arm_joint" value="1.6" />
+    </group_state>
+    <group_state name="uplift" group="tfr_arm">
+        <joint name="lower_arm_joint" value="0.5" />
+        <joint name="scoop_joint" value="1.35" />
+        <joint name="upper_arm_joint" value="1.4" />
+    </group_state>
     <!--VIRTUAL JOINT: Purpose: this element defines a virtual joint between a robot link and an external frame of reference (considered fixed with respect to the robot)-->
     <virtual_joint name="worldLink" type="fixed" parent_frame="world" child_link="world" />
     <!--DISABLE COLLISIONS: By default it is assumed that any link of the robot could potentially come into collision with any other link in the robot. This tag disables collision checking between a specified pair of links. -->
