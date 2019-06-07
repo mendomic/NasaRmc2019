@@ -14,8 +14,3 @@ git submodule update --init --recursive
 ```bash
 ./apt_install_dependencies.sh
 ```
-
-# Arduino Libraries
-Some of our control software is installed on arduino. Modifications require the Encoder library to be installed. https://www.pjrc.com/teensy/td_libs_Encoder.html
-
-
