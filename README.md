@@ -13,4 +13,5 @@ git submodule update --init --recursive
 # Installation
 ```bash
 ./apt_install_dependencies.sh
+./build_all.sh
 ```
