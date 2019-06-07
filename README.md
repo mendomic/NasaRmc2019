@@ -13,5 +13,6 @@ git submodule update --init --recursive
 # Installation
 ```bash
 ./apt_install_dependencies.sh
+source /opt/ros/kinetic/setup.bash
 ./build_all.sh
 ```
