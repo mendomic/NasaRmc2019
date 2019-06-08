@@ -6,7 +6,6 @@ This is the primary codebase for all of the TrickFire Robotics Nasa RMC 2019 com
 ```bash
 git clone --recurse-submodules https://github.com/TrickfireRobotics/NasaRmc2019.git
 cd NasaRmc2019
-git checkout jetson
 git submodule update --init --recursive
 ```
 
