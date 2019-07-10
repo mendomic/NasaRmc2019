@@ -1,0 +1,13 @@
+<launch>
+  <include file="$(find tfr_gazebo)/launch/gazebo_simplified_base.launch">
+    <arg name="paused" value="false" />
+  </include>
+  <node pkg="tf2_ros" type="static_transform_publisher" name="base_link_broadcaster"
+      args="0 0 0.15 0 0 0 base_footprint base_link"/>
+  <include file="$(find tfr_executive)/launch/executive.launch"/>
+
+  <include file="$(find tfr_sensor)/launch/simulation_sensor.launch"/>
+  <include file="$(find tfr_control)/launch/simulation_control.launch"/>
+  <include file="$(find tfr_localization)/launch/localization.launch"/>
+  <include file="$(find tfr_navigation)/launch/navigation.launch"/>
+</launch>
