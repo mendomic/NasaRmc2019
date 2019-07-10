@@ -7,7 +7,7 @@
 #include <ros/ros.h>
 #include <tfr_msgs/PwmCommand.h>
 
-// The wiringPi library declares its functions directly in the global namespace. It can go fuck itself.
+// The wiringPi library declares its functions directly in the global namespace by default, so we put it inside of a namespace.
 namespace wiringpi
 {
     #include <wiringPi.h>
