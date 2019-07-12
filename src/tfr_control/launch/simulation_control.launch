@@ -1,0 +1,30 @@
+<launch>
+    <!-- Load all of the motor controllers -->
+    <rosparam file="$(find tfr_control)/config/controllers.yaml" command="load"/>
+
+    <!-- Publishes the state of the robot to TF for Rviz or other usages -->
+    <node name="robot_state_publisher" pkg="robot_state_publisher"
+        type="robot_state_publisher" respawn="false" />
+
+    <node name="drivebase" pkg="tfr_control" type="drivebase" output="screen">
+        <param name="wheel_span"  value="0.3"/>
+        <param name="wheel_radius" value="0.876"/>
+    </node>
+
+    <!-- Load the controller manager plugin for the drivebase -->
+    <node name="control" pkg="tfr_control" type="control" output="screen">
+        <rosparam>
+            rate: 20
+        </rosparam>
+    </node>
+	<rosparam file="$(find tfr_control)/config/encoder_limits.yaml" command="load" />
+
+    <!-- Spawn the controllers -->
+    <node name="controller_spawner" pkg="controller_manager" type="spawner"
+        args="left_tread_velocity_controller
+        right_tread_velocity_controller"/>
+
+	<param name="left_tread_scale" value="3000" type="int"/>
+	<param name="right_tread_scale" value="3000" type="int"/>
+	<param name="/write_arm_values" value="false" type="bool"/>
+</launch>

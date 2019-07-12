@@ -1,0 +1,20 @@
+<launch>
+    <group ns="sensors">
+      <node name="front_cam_wrapper" pkg="tfr_sensor" type="image_topic_wrapper">
+          <rosparam>
+              camera_topic: /sensors/front_cam/image_raw
+              service_name: /on_demand/front_cam/image_raw
+          </rosparam>
+      </node>
+      <node name="rear_cam_wrapper" pkg="tfr_sensor" type="image_topic_wrapper">
+          <rosparam>
+              camera_topic: /sensors/rear_cam/image_raw
+              service_name: /on_demand/rear_cam/image_raw
+          </rosparam>
+      </node>
+    </group>
+    <include file="$(find tfr_aruco)/launch/aruco.launch"/>
+    <include file="$(find tfr_sensor)/launch/fiducial_odom.launch"/>
+    <include file="$(find tfr_sensor)/launch/drivebase_odom.launch"/>
+    <include file="$(find tfr_sensor)/launch/fusion.launch"/>
+</launch>

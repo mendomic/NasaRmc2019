@@ -4,20 +4,23 @@
 #include <cstdint>
 #include <string>
 
+const int MAX_MESSAGE_SIZE = 100;
+
 /**
  * Definitions of Sub Systems.
  *
  * These codes use the top 8 bits to uniquely identify the sub system a
  * particular status code belongs to and should never be changed.
  */
+ 
 enum class SubSystem: uint16_t
 {
-    SYS = 0b0000000000000000,
-    EXC = 0b0000000100000000,
-    LOC = 0b0000001000000000,
-    NAV = 0b0000010000000000,
-    MIN = 0b0000100000000000,
-    DMP = 0b0001000000000000
+    SYS = 0,
+    EXC = 0X100,
+    LOC = 0X200,
+    NAV = 0X400,
+    MIN = 0X800,
+    DMP = 0X1000
 };
 
 /**
@@ -39,25 +42,25 @@ enum class SubSystem: uint16_t
 enum class StatusCode : uint16_t
 {
     //System Status Codes
-    SYS_OK = 0b0000000000000000,
-    SYS_MOTOR_TOGGLE = 0b0000000000000001,
+    SYS_OK = 0,
+    SYS_MOTOR_TOGGLE = 1,
 
     //Executive Status Codes
-    EXC_OK = 0b0000000100000000,
-    EXC_CONNECT_LOCALIZATION = 0b0000001000000000,
-    EXC_CONNECT_NAVIGATION = 0b0000001100000000,
+    EXC_OK = 0X100,
+    EXC_CONNECT_LOCALIZATION = 0X101,
+    EXC_CONNECT_NAVIGATION = 0X102,
 
     //Localization Status Codes
-    LOC_OK = 0b0000001000000000,
+    LOC_OK = 0X200,
 
     //Navigation Status Codes
-    NAV_OK = 0b0000010000000000,
+    NAV_OK = 0X400,
 
     //Mining Status Codes
-    MIN_OK = 0b0000100000000000,
+    MIN_OK = 0X800,
 
     //Dumping Status Codes
-    DMP_OK = 0b0001000000000000
+    DMP_OK = 0X1000
 };
 
 /**

@@ -47,8 +47,14 @@ std::string getStatusMessage(StatusCode code, float data)
             return parseDumpCode(code, data);
         }
         default:
-        {
-            return "Warning: Unknown sub system identifier received.";
+        {   
+            
+            char msg[MAX_MESSAGE_SIZE];
+            int written = snprintf(msg, MAX_MESSAGE_SIZE, "Warning: Unknown sub system identifier %X received.", static_cast<uint16_t>(code));
+            if (written >= MAX_MESSAGE_SIZE){
+                return "Error generating status code message";
+            }
+            return std::string(msg);
         }
     }
 }

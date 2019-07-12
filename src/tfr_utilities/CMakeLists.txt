@@ -32,18 +32,18 @@ find_package(GTest REQUIRED)
 catkin_package(
     INCLUDE_DIRS include include/${PROJECT_NAME}
     LIBRARIES status_code tf_manipulator status_publisher arm_manipulator
-    CATKIN_DEPENDS 
-        roscpp 
-        actionlib 
-        tf 
-        tf2 
-        tf2_ros 
+    CATKIN_DEPENDS
+        roscpp
+        actionlib
+        tf
+        tf2
+        tf2_ros
         tf2_geometry_msgs
         trajectory_msgs
-        tfr_msgs 
-        message_runtime 
-        sensor_msgs 
-        geometry_msgs 
+        tfr_msgs
+        message_runtime
+        sensor_msgs
+        geometry_msgs
         nav_msgs
 )
 
@@ -76,6 +76,10 @@ target_link_libraries(status_publisher status_code ${catkin_LIBRARIES})
 add_executable(point_broadcaster src/point_broadcaster.cpp)
 target_link_libraries(point_broadcaster ${catkin_LIBRARIES})
 add_dependencies(point_broadcaster ${catkin_EXPORTED_TARGETS})
+
+add_executable(joy_teleop src/joy_teleop.cpp)
+target_link_libraries(joy_teleop ${catkin_LIBRARIES})
+add_dependencies(joy_teleop ${catkin_EXPORTED_TARGETS})
 
 # This call is sometimes needed and sometimes not and I'm not really clear why
 SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread")
