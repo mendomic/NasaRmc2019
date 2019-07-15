@@ -30,6 +30,7 @@ before_install:
   - sudo rosdep init
   - rosdep update
   - source /opt/ros/$ROS_DISTRO/setup.bash
+  - bash install_librealsense.sh
 
 install:
   - bash ./build_all.sh
