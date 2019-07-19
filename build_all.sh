@@ -8,9 +8,9 @@ ARCH=$(uname -m)
 export ARCH=$ARCH
 if [ "$ARCH" == "aarch64" ]
 then
-    CMAKE_OPTIONS="-DARCH_DIR=$ARCH -DCMAKE_C_COMPILER=/usr/bin/gcc-5 -DCMAKE_CXX_COMPILER=/usr/bin/g++-5 -DOpenCV_DIR=/usr/local/share/OpenCV"
+    CMAKE_OPTIONS="-DARCH_DIR=$ARCH -DCMAKE_C_COMPILER=/usr/bin/gcc -DCMAKE_CXX_COMPILER=/usr/bin/g++ -DOpenCV_DIR=/usr/local/share/OpenCV"
 else
-    CMAKE_OPTIONS="-DARCH_DIR=$ARCH"
+    CMAKE_OPTIONS="-DARCH_DIR=$ARCH -DCMAKE_C_COMPILER=/usr/bin/gcc -DCMAKE_CXX_COMPILER=/usr/bin/g++ -DOpenCV_DIR=/usr/local/share/OpenCV"
 fi
 
 if [ "$ARCH" == "armv7l" ]
