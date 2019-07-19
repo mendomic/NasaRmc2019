@@ -12,6 +12,8 @@ git submodule update --init --recursive
 # Installation
 ```bash
 ./apt_install_dependencies.sh
+./install_opencv_and_contrib.sh
+./install_librealsense.sh
 source /opt/ros/kinetic/setup.bash
 ./build_all.sh
 ```
