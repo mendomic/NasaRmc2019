@@ -17,3 +17,17 @@ git submodule update --init --recursive
 source /opt/ros/kinetic/setup.bash
 ./build_all.sh
 ```
+
+# Start the robot
+```bash
+source ./devel/setup.bash
+initialize_jetson_and_robot.sh
+./start_robot.sh
+```
+
+# Start mission control
+```bash
+source ./devel/setup.bash
+initialize_jetson_and_robot.sh
+./start_mission_control.sh
+```
