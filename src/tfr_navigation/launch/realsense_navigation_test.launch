@@ -1,0 +1,27 @@
+<launch>
+  <node name="fake_odom" pkg="tfr_utilities" type="zero_odom_publisher.py" output="screen"/>
+  <node name="sensor_fusion" pkg="robot_localization" type="ukf_localization_node"  clear_params="true" output="screen">
+      <rosparam command="load" file="$(find tfr_sensor)/params/fusion.yaml" />
+  </node>
+  <node pkg="tf2_ros" type="static_transform_publisher" name="base_link_broadcaster"
+      args="0 0 0.15 0 0 0 base_footprint base_link"/>
+  <include file="$(find tfr_sensor)/launch/realsense.launch" ns="sensors"/>
+  <param name="robot_description" command="$(find xacro)/xacro --inorder
+      '$(find tfr_description)/xacro/model.xacro'" />
+  <node name="robot_state_publisher" pkg="robot_state_publisher"
+      type="robot_state_publisher" respawn="false" />
+  <node pkg="move_base" type="move_base" respawn="false" name="move_base" output="screen">
+      <rosparam file="$(find tfr_navigation)/params/move_base.yaml"
+        command="load" />
+      <rosparam file="$(find tfr_navigation)/params/shared_costmap.yaml"
+        command="load" ns="global_costmap" />
+      <rosparam file="$(find tfr_navigation)/params/shared_costmap.yaml"
+        command="load" ns="local_costmap" />
+      <rosparam file="$(find tfr_navigation)/params/local_costmap.yaml"
+        command="load" />
+      <rosparam file="$(find tfr_navigation)/params/global_costmap.yaml"
+        command="load" />
+      <rosparam file="$(find tfr_navigation)/params/planner.yaml"
+        command="load" />
+  </node>
+</launch>
