@@ -2,6 +2,12 @@
 
 This is the primary codebase for all of the TrickFire Robotics Nasa RMC 2019 competition entry.
 
+
+# Prereqs
+Currently running Ubuntu 16.04 LTS.
+ROS Kinetic.
+
+
 # Clone the repo
 ```bash
 git clone --recurse-submodules https://github.com/TrickfireRobotics/NasaRmc2019.git
