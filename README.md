@@ -28,6 +28,5 @@ initialize_jetson_and_robot.sh
 # Start mission control
 ```bash
 source ./devel/setup.bash
-initialize_jetson_and_robot.sh
 ./start_mission_control.sh
 ```
