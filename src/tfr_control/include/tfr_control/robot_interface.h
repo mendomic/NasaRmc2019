@@ -219,8 +219,11 @@ namespace tfr_control {
         std::pair<double, double> drivebase_v0;
         ros::Time last_update;
 
-        template <typename t>
-    	t linear_interp(t x, t x1, t y1, t x2, t y2);
+        template <typename T>
+    	T linear_interp(T x, T x1, T y1, T x2, T y2);
+
+        template <typename T>
+        T clamp(const T input, const T bound_1, const T bound_2);
         
         void registerJointEffortInterface(std::string name, tfr_utilities::Joint joint);
         void registerJointPositionInterface(std::string name, tfr_utilities::Joint joint);

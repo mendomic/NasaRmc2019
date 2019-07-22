@@ -308,14 +308,31 @@ namespace tfr_control
         drivebase_v0.second = velocity_values[static_cast<int>(tfr_utilities::Joint::RIGHT_TREAD)];
     }
     
-    template <typename t>
-    t RobotInterface::linear_interp(t x, t x1, t y1, t x2, t y2)
+    template <typename T>
+    T RobotInterface::linear_interp(T x, T x1, T y1, T x2, T y2)
     {
         // line defined by two points: (x1, y1) and (x2, y2)
-        t y = ((y2 - y1)/(x2 - x1))*(x - x1) + y1;
+        T y = ((y2 - y1)/(x2 - x1))*(x - x1) + y1;
         return y;
     }
     
+    template <typename T>
+    T RobotInterface::clamp(const T input, const T bound_1, const T bound_2)
+    {
+        T lower_bound;
+        T upper_bound;
+        
+        if (bound_1 < bound_2) {
+            lower_bound = bound_1;
+            upper_bound = bound_2;        
+        } else {
+            upper_bound = bound_1;
+            lower_bound = bound_2;  
+        }      
+
+        return std::max(std::min(input, upper_bound), lower_bound);
+    }
+
     // TODO: Horrible duplication of code should be removed.
     // has hardcoded min joint position in header file
     const int32_t RobotInterface::get_arm_lower_min_int()
