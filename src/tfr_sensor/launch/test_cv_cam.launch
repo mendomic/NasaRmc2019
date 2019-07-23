@@ -1,15 +1,15 @@
 <launch>
     <node name="front_cam" pkg="cv_camera" type="cv_camera_node" output="screen">
         <rosparam>
-            file: "nvcamerasrc sensor-id=0 fpsRange=\"30.0 30.0\" ! nvvidconv flip-method=2 ! video/x-raw, format=(string)I420 ! videoconvert ! video/x-raw, format=(string)BGR !  appsink" 
+            file: "nvcamerasrc sensor-id=2 fpsRange=\"30.0 30.0\" ! video/x-raw(memory:NVMM), width=(int)4056, height=(int)3040, format=(string)I420, framerate=(fraction)30/1 ! nvtee ! nvvidconv ! video/x-raw, format=(string)BGRx ! videoconvert !  appsink"
             frame_id: front_cam_link
-            rate: 5 
+            rate: 30
         </rosparam>
-        <param name="camera_info_url" value="file://$(find tfr_sensor)/calib/front.yaml"/>
+        <param name="camera_info_url" value="file://$(find tfr_sensor)/calib/front_4056x3040.yaml"/>
     </node>
     <node name="front_cam_wrapper" pkg="tfr_sensor" type="image_topic_wrapper">
         <rosparam>
-            camera_topic: /front_cam/image_raw
+            camera_topic: /sensors/front_cam/image_raw
             service_name: /on_demand/front_cam/image_raw
         </rosparam>
     </node>

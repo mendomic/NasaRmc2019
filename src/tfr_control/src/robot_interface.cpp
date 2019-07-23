@@ -117,7 +117,7 @@ namespace tfr_control
      * by multiple potentiometers. For the purpose of populating information for
      * control I take the average of the two positions.
      * */
-    void RobotInterface::read() 
+ void RobotInterface::read() 
     {
         //LEFT_TREAD
         position_values[static_cast<int>(tfr_utilities::Joint::LEFT_TREAD)] = 0;
@@ -288,7 +288,9 @@ namespace tfr_control
         //left_tread_command = linear_interp<double>(left_tread_command, 0.0, 0.0, 1.0, 1000.0);
         std_msgs::Int32 left_tread_msg;
         left_tread_msg.data = static_cast<int32_t>(left_tread_command * left_tread_scale);
-        brushless_left_tread_vel_publisher.publish(left_tread_msg);
+        std_msgs::Int32 new_left_tread_msg;
+        new_left_tread_msg.data = (int)(left_tread_command * left_tread_scale);
+	brushless_left_tread_vel_publisher.publish(new_left_tread_msg);
 
         //RIGHT_TREAD
     int right_tread_scale = 1;
@@ -299,8 +301,10 @@ namespace tfr_control
         right_tread_msg.data = static_cast<int32_t>(right_tread_command * right_tread_scale);
         brushless_right_tread_vel_publisher.publish(right_tread_msg);
 
-        //ROS_INFO_STREAM("left_tread_scale: " << left_tread_msg.data << std::endl);
-        //ROS_INFO_STREAM("right_tread_scale: " << right_tread_msg.data << std::endl);
+        ROS_INFO_STREAM("left_tread_velocity_value: " << velocity_values[static_cast<int>(tfr_utilities::Joint::LEFT_TREAD)] << std::endl);
+	ROS_INFO_STREAM("left_tread_command: " << left_tread_command << std::endl);
+        ROS_INFO_STREAM("left_tread_msg: " << static_cast<int32_t>(left_tread_msg.data) << std::endl);
+	ROS_INFO_STREAM("new_left_tread_msg: " << new_left_tread_msg.data << std::endl);
         
         //UPKEEP
         last_update = ros::Time::now();
