@@ -294,7 +294,7 @@ namespace tfr_control
         
 
         ROS_INFO_STREAM_NAMED("debugrobotinterface", 
-            std::setw(8) << std::setprecision(2) << left_tread_setpoint << ", "
+            "left_tread: " << std::setw(8) << std::setprecision(2) << left_tread_setpoint << ", "
             << std::setw(8) << std::setprecision(2) << velocity_values[tfr_utilities::Joint::LEFT_TREAD] << ", "
             << std::setw(8) << left_tread_msg.data << std::endl);
         
