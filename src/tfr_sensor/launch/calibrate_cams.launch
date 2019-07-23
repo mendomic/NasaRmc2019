@@ -1,0 +1,9 @@
+<launch>
+    <node name="my_camera" pkg="cv_camera" type="cv_camera_node" output="screen">
+        <rosparam>
+            file: "nvcamerasrc sensor-id=0 fpsRange=\"30.0 30.0\" ! video/x-raw(memory:NVMM), width=(int)4056, height=(int)3040, format=(string)I420, framerate=(fraction)30/1 ! nvtee ! nvvidconv flip-method=2 ! video/x-raw, format=(string)BGRx ! videoconvert !  appsink"
+            frame_id: front_cam_link
+            rate: 30
+        </rosparam>
+    </node>
+</launch>
