@@ -25,7 +25,7 @@ namespace tfr_control
     void DrivebasePublisher::subscriptionCallback(const geometry_msgs::Twist::ConstPtr& msg)
     {
         ros::param::getCached("~wheel_span", wheel_span);
-        ROS_INFO("Wheel Span: %f", wheel_span);
+        //ROS_INFO("Wheel Span: %f", wheel_span);
 
         double left_velocity = msg->linear.x - (wheel_span * msg->angular.z) / 2;
         double right_velocity = msg->linear.x + (wheel_span * msg->angular.z) / 2;
@@ -46,6 +46,10 @@ namespace tfr_control
         right_cmd.data = right_velocity;
         left_tread_publisher.publish(left_cmd);
         right_tread_publisher.publish(right_cmd);
+        
+        // Debug. Write the setpoints to the parameter server so that other nodes can see them.
+        n.setParam("/left_tread_velocity_controller/setpoint", left_cmd.data);
+        n.setParam("/right_tread_velocity_controller/setpoint", right_cmd.data);
     }
 
 }
