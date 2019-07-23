@@ -4,3 +4,5 @@ devel/*
 src/CMakeLists.txt
 *.pro
 *.user
+librealsense/*
+opencv/*
