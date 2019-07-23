@@ -287,10 +287,8 @@ namespace tfr_control
         double left_tread_command = command_values[static_cast<int32_t>(tfr_utilities::Joint::LEFT_TREAD)];
         //left_tread_command = linear_interp<double>(left_tread_command, 0.0, 0.0, 1.0, 1000.0);
         std_msgs::Int32 left_tread_msg;
-        left_tread_msg.data = static_cast<int32_t>(left_tread_command * left_tread_scale);
-        std_msgs::Int32 new_left_tread_msg;
-        new_left_tread_msg.data = (int)(left_tread_command * left_tread_scale);
-	brushless_left_tread_vel_publisher.publish(new_left_tread_msg);
+        left_tread_msg.data = clamp(static_cast<int32_t>(left_tread_command * left_tread_scale), -1000, 1000);
+	    brushless_left_tread_vel_publisher.publish(left_tread_msg);
 
         //RIGHT_TREAD
     int right_tread_scale = 1;
@@ -298,13 +296,12 @@ namespace tfr_control
         double right_tread_command = command_values[static_cast<int32_t>(tfr_utilities::Joint::RIGHT_TREAD)];
         //right_tread_command = linear_interp<double>(right_tread_command, 0.0, 0.0, 1.0, 1000.0);
         std_msgs::Int32 right_tread_msg;
-        right_tread_msg.data = static_cast<int32_t>(right_tread_command * right_tread_scale);
+        right_tread_msg.data = clamp(static_cast<int32_t>(right_tread_command * right_tread_scale), -1000, 1000);
         brushless_right_tread_vel_publisher.publish(right_tread_msg);
 
         ROS_INFO_STREAM("left_tread_velocity_value: " << velocity_values[static_cast<int>(tfr_utilities::Joint::LEFT_TREAD)] << std::endl);
 	ROS_INFO_STREAM("left_tread_command: " << left_tread_command << std::endl);
         ROS_INFO_STREAM("left_tread_msg: " << static_cast<int32_t>(left_tread_msg.data) << std::endl);
-	ROS_INFO_STREAM("new_left_tread_msg: " << new_left_tread_msg.data << std::endl);
         
         //UPKEEP
         last_update = ros::Time::now();
