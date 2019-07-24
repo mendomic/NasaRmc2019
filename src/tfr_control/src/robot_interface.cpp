@@ -19,14 +19,14 @@ namespace tfr_control
             const double *lower_lim, const double *upper_lim) :
 
 
-        brushless_left_tread_vel{n.subscribe("/device8/get_qry_relcntr/channel_2", 5,
+        brushless_left_tread_vel{n.subscribe("/device8/get_qry_relcntr/channel_1", 5,
                 &RobotInterface::accumulateBrushlessLeftVel, this)},
-        brushless_left_tread_vel_publisher{n.advertise<std_msgs::Int32>("/device8/set_cmd_cango/cmd_cango_2", 1)},
+        brushless_left_tread_vel_publisher{n.advertise<std_msgs::Int32>("/device8/set_cmd_cango/cmd_cango_1", 1)},
         
         
-        brushless_right_tread_vel{n.subscribe("/device8/get_qry_relcntr/channel_1", 5,
+        brushless_right_tread_vel{n.subscribe("/device8/get_qry_relcntr/channel_2", 5,
                 &RobotInterface::accumulateBrushlessRightVel, this)},
-        brushless_right_tread_vel_publisher{n.advertise<std_msgs::Int32>("/device8/set_cmd_cango/cmd_cango_1", 1)},
+        brushless_right_tread_vel_publisher{n.advertise<std_msgs::Int32>("/device8/set_cmd_cango/cmd_cango_2", 1)},
         
         
         turntable_subscriber_encoder{n.subscribe("/device4/get_qry_abcntr/channel_1", 5,
@@ -100,10 +100,9 @@ namespace tfr_control
         
         for (int joint = 0; joint < tfr_utilities::Joint::JOINT_COUNT; joint++)
         {
-            velocity_values[static_cast<int>(tfr_utilities::Joint::RIGHT_TREAD)] = 0;
-            effort_values[static_cast<int>(tfr_utilities::Joint::RIGHT_TREAD)] = 0;
+            velocity_values[joint] = 0;
+            effort_values[joint] = 0;
         }
-        
     }
 
 
@@ -113,20 +112,17 @@ namespace tfr_control
      * Information that is not explicity needed by our controllers 
      * is written to some safe sensible default (usually 0).
      *
-     * A couple of our logical joints are controlled by two actuators and read
-     * by multiple potentiometers. For the purpose of populating information for
-     * control I take the average of the two positions.
      * */
  void RobotInterface::read() 
     {
         //LEFT_TREAD
         position_values[static_cast<int>(tfr_utilities::Joint::LEFT_TREAD)] = 0;
-        velocity_values[static_cast<int>(tfr_utilities::Joint::LEFT_TREAD)] = readBrushlessRightVel();
+        velocity_values[static_cast<int>(tfr_utilities::Joint::LEFT_TREAD)] = readBrushlessLeftVel();
         effort_values[static_cast<int>(tfr_utilities::Joint::LEFT_TREAD)] = 0;
 
         //RIGHT_TREAD
         position_values[static_cast<int>(tfr_utilities::Joint::RIGHT_TREAD)] = 0;
-        velocity_values[static_cast<int>(tfr_utilities::Joint::RIGHT_TREAD)] = readBrushlessLeftVel();
+        velocity_values[static_cast<int>(tfr_utilities::Joint::RIGHT_TREAD)] = readBrushlessRightVel();
         effort_values[static_cast<int>(tfr_utilities::Joint::RIGHT_TREAD)] = 0;
 
         if (!use_fake_values)
@@ -553,7 +549,7 @@ namespace tfr_control
         return (static_cast<double>(encoder_count) * (2 * pi)) / static_cast<double>(brushless_encoder_count_per_revolution);
     }
 
-    //This DOES work
+    
     void RobotInterface::accumulateBrushlessRightVel(const std_msgs::Int32 &msg)
     {
         brushless_right_tread_mutex.lock();
@@ -566,10 +562,8 @@ namespace tfr_control
         
         //ROS_INFO_STREAM("accumulateBrushlessRightVel: " << accumulated_brushless_right_tread_vel << std::endl);
         
-        
     }
     
-    //This DOES work
     void RobotInterface::accumulateBrushlessLeftVel(const std_msgs::Int32 &msg)
     {
         brushless_left_tread_mutex.lock();
@@ -599,7 +593,9 @@ namespace tfr_control
 
         brushless_right_tread_mutex.unlock();
         
-        return brushlessEncoderCountToRadians(encoder_count) / diff.toSec();
+        double wheel_radius_meters = 0.1524; 
+        
+        return wheel_radius_meters * brushlessEncoderCountToRadians(encoder_count) / diff.toSec();
     }
     
     double RobotInterface::readBrushlessLeftVel()
@@ -616,8 +612,10 @@ namespace tfr_control
         accumulated_brushless_left_tread_vel_start_time = ros::Time::now();
 
         brushless_left_tread_mutex.unlock();
+
+        double wheel_radius_meters = 0.1524; 
         
-        return brushlessEncoderCountToRadians(encoder_count) / diff.toSec();
+        return wheel_radius_meters * brushlessEncoderCountToRadians(encoder_count) / diff.toSec();
     }
     
     
