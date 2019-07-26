@@ -1,0 +1,14 @@
+<launch>
+  <node name="camera" pkg="cv_camera" type="cv_camera_node" output="screen">
+    <rosparam>
+        device_id: 1
+        rate: 30
+    </rosparam>
+  </node>
+  <!-- <node name="camera_latency_test" pkg="tfr_utilities" type="camera_latency_test.py" output="screen">
+      <rosparam>
+          image_topic: camera/image_raw
+      </rosparam>
+  </node> -->
+
+</launch>
