@@ -24,4 +24,5 @@
       <rosparam file="$(find tfr_navigation)/params/planner.yaml"
         command="load" />
   </node>
+  <node name="rviz" pkg="rviz" type="rviz" args="-d $(find tfr_visualization)/config/realsense_nav.rviz"/>
 </launch>

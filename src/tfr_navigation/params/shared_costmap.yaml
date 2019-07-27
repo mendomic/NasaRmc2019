@@ -1,6 +1,6 @@
 
-obstacle_range: 1.5
-raytrace_range: 2.5
+obstacle_range: 2.5
+raytrace_range: 4
 footprint: [[-0.635, -0.225],  [0.635, -0.225], [0.635, 0.225], [-0.635, 0.225]]
 observation_sources: point_cloud_sensor
 
@@ -12,7 +12,7 @@ point_cloud_sensor: {
     topic: /sensors/camera/depth/color/points,
     marking: true,
     clearing: true,
-    observation_persistence: 0,
+    observation_persistence: 0.5,
 }
 
 
@@ -25,4 +25,4 @@ rolling_window: true
 
 resolution: 0.1
 transform_tolerance: 0.5
-inflation: 0.05
+inflation: 0.4
