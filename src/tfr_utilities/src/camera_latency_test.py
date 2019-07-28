@@ -61,9 +61,10 @@ class LatencyTracker(object):
         ms = round(ms)
         rospy.loginfo("Latency: {} ms, {} fps".format(ms, fps))
         self.times.append(ms)
+        window = self.times if len(self.times) < 20 else self.times[-20:]
         #rospy.loginfo(self.times)
-        self.average_latency_milli = sum(self.times)/len(self.times)
-        rospy.loginfo("Average Latency: {} ms".format(self.average_latency_milli))
+        self.average_latency_milli = sum(window)/len(window)
+        rospy.loginfo("Average Latency: {} ms for window of  {}".format(self.average_latency_milli, len(window)))
 
     def toggle(self):
         self.record_time = None
