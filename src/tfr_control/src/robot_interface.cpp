@@ -83,6 +83,9 @@ namespace tfr_control
         // Note: the string parameters in these constructors must match the
         // joint names from the URDF, and yaml controller description. 
 
+	// DEBUG: Try to make printing faster
+	std::ios_base::sync_with_stdio(false);
+
         // Connect and register each joint with appropriate interfaces at our
         // layer
         registerJointEffortInterface("left_tread_joint", tfr_utilities::Joint::LEFT_TREAD);
@@ -279,7 +282,7 @@ namespace tfr_control
         //LEFT_TREAD
         double left_tread_command = command_values[static_cast<int32_t>(tfr_utilities::Joint::LEFT_TREAD)];
         std_msgs::Int32 left_tread_msg;
-        left_tread_msg.data = clamp(static_cast<int32_t>(left_tread_command), -1000, 1000);
+        left_tread_msg.data = -1 * clamp(static_cast<int32_t>(left_tread_command), -1000, 1000);
 	    brushless_left_tread_vel_publisher.publish(left_tread_msg);
 
         //ROS_INFO_STREAM("left_tread_velocity_value: " << velocity_values[static_cast<int>(tfr_utilities::Joint::LEFT_TREAD)] << std::endl);
@@ -289,16 +292,18 @@ namespace tfr_control
         ros::param::get("/left_tread_velocity_controller/setpoint", left_tread_setpoint);
         
 
+	
         ROS_INFO_STREAM_NAMED("debugrobotinterface", 
             "left_tread: " << std::setw(8) << std::setprecision(2) << left_tread_setpoint << ", "
             << std::setw(8) << std::setprecision(2) << velocity_values[tfr_utilities::Joint::LEFT_TREAD] << ", "
-            << std::setw(8) << left_tread_msg.data << std::endl);
-        
+            << std::setw(8) << left_tread_msg.data);
+	
+
 
         //RIGHT_TREAD
         double right_tread_command = command_values[static_cast<int32_t>(tfr_utilities::Joint::RIGHT_TREAD)];
         std_msgs::Int32 right_tread_msg;
-        right_tread_msg.data = clamp(static_cast<int32_t>(right_tread_command), -1000, 1000);
+        right_tread_msg.data = -1 * clamp(static_cast<int32_t>(right_tread_command), -1000, 1000);
         brushless_right_tread_vel_publisher.publish(right_tread_msg);
         
         //UPKEEP

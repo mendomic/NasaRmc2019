@@ -34,6 +34,8 @@
 #include <tf/transform_broadcaster.h>
 #include <nav_msgs/Odometry.h>
 #include <iomanip>
+#include <iostream>
+#include <cstdio>
 
 namespace tfr_control {
 
