@@ -56,6 +56,10 @@ namespace tfr_control
                 &RobotInterface::readScoopAmps, this)},
         scoop_publisher{n.advertise<std_msgs::Int32>("/device4/set_cmd_cango/cmd_cango_2", 1)},
         
+        left_tread_publisher_pid_debug_setpoint{n.advertise<std_msgs::Float64>("/left_tread_velocity_controller/pid_debug/setpoint", 1)},
+        left_tread_publisher_pid_debug_state{n.advertise<std_msgs::Float64>("/left_tread_velocity_controller/pid_debug/state", 1)},
+        left_tread_publisher_pid_debug_command{n.advertise<std_msgs::Int32>("/left_tread_velocity_controller/pid_debug/command", 1)},
+        
         //pwm_publisher{n.advertise<tfr_msgs::PwmCommand>("/motor_output", 15)},
         use_fake_values{fakes}, lower_limits{lower_lim},
         upper_limits{upper_lim}, drivebase_v0{std::make_pair(0,0)},
@@ -288,15 +292,30 @@ namespace tfr_control
         //ROS_INFO_STREAM("left_tread_velocity_value: " << velocity_values[static_cast<int>(tfr_utilities::Joint::LEFT_TREAD)] << std::endl);
 	    //ROS_INFO_STREAM("left_tread_command: " << left_tread_command << std::endl);
 
-        double left_tread_setpoint = 0;
-        ros::param::get("/left_tread_velocity_controller/setpoint", left_tread_setpoint);
+        
         
 
-	
-        ROS_INFO_STREAM_NAMED("debugrobotinterface", 
+	    if (enable_left_tread_pid_debug_output)
+	    {
+	        double left_tread_setpoint = 0;
+            ros::param::get("/left_tread_velocity_controller/setpoint", left_tread_setpoint);
+            
+            /*
+            ROS_INFO_STREAM_NAMED("debugrobotinterface", 
             "left_tread: " << std::setw(8) << std::setprecision(2) << left_tread_setpoint << ", "
             << std::setw(8) << std::setprecision(2) << velocity_values[tfr_utilities::Joint::LEFT_TREAD] << ", "
             << std::setw(8) << left_tread_msg.data);
+	        */
+	        std_msgs::Float64 left_tread_setpoint_msg;
+	        std_msgs::Float64 left_tread_state_msg;
+	        
+	        left_setpoint_setpoint_message.data = // progress save
+	        
+	        left_tread_publisher_pid_debug_state.publish(left_setpoint_state_msg);
+	        left_tread_publisher_pid_debug_command.publish(left_tread_msg);
+	        
+	    }
+
 	
 
 

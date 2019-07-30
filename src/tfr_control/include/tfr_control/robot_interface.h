@@ -169,6 +169,13 @@ namespace tfr_control {
 		double readBrushlessRightVel();
 		double readBrushlessLeftVel();
 		
+		const bool enable_left_tread_pid_debug_output = true;
+		
+		ros::Publisher left_tread_publisher_pid_debug_setpoint;
+		ros::Publisher left_tread_publisher_pid_debug_state;
+		ros::Publisher left_tread_publisher_pid_debug_command;
+		
+		
 		const int32_t brushless_encoder_count_per_revolution = 1280;
 		double brushlessEncoderCountToRadians(int32_t encoder_count);
 		
