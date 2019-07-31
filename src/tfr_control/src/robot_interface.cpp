@@ -309,9 +309,11 @@ namespace tfr_control
 	        std_msgs::Float64 left_tread_setpoint_msg;
 	        std_msgs::Float64 left_tread_state_msg;
 	        
-	        left_setpoint_setpoint_message.data = // progress save
+	        left_tread_setpoint_msg.data = left_tread_setpoint;
+	        left_tread_state_msg.data = velocity_values[static_cast<int>(tfr_utilities::Joint::LEFT_TREAD)];
 	        
-	        left_tread_publisher_pid_debug_state.publish(left_setpoint_state_msg);
+	        left_tread_publisher_pid_debug_setpoint.publish(left_tread_setpoint_msg);
+	        left_tread_publisher_pid_debug_state.publish(left_tread_state_msg);
 	        left_tread_publisher_pid_debug_command.publish(left_tread_msg);
 	        
 	    }
