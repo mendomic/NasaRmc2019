@@ -318,8 +318,6 @@ namespace tfr_control
 	        
 	    }
 
-	
-
 
         //RIGHT_TREAD
         double right_tread_command = command_values[static_cast<int32_t>(tfr_utilities::Joint::RIGHT_TREAD)];
