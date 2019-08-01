@@ -155,6 +155,22 @@ namespace tfr_control {
 		ros::Time accumulated_brushless_right_tread_vel_end_time;
 		
 		
+		
+		void setBrushlessLeftEncoder(const std_msgs::Int32 &msg);
+		void setBrushlessRightEncoder(const std_msgs::Int32 &msg);
+		
+		int32_t left_tread_absolute_encoder_previous = 0;
+		int32_t left_tread_absolute_encoder_current = 0;
+		ros::Time left_tread_time_previous;
+		ros::Time left_tread_time_current;
+		
+		int32_t right_tread_absolute_encoder_previous = 0;
+		int32_t right_tread_absolute_encoder_current = 0;
+		ros::Time right_tread_time_previous;
+		ros::Time right_tread_time_current;
+		
+		
+		
 		std::mutex brushless_left_tread_mutex;
 		int32_t accumulated_brushless_left_tread_vel = 0;
 		int32_t accumulated_brushless_left_tread_vel_num_updates = 0;

@@ -19,13 +19,13 @@ namespace tfr_control
             const double *lower_lim, const double *upper_lim) :
 
 
-        brushless_left_tread_vel{n.subscribe("/device8/get_qry_relcntr/channel_1", 5,
-                &RobotInterface::accumulateBrushlessLeftVel, this)},
+        brushless_left_tread_vel{n.subscribe("/device8/get_qry_abcntr/channel_1", 5,
+                &RobotInterface::setBrushlessLeftEncoder, this)},
         brushless_left_tread_vel_publisher{n.advertise<std_msgs::Int32>("/device8/set_cmd_cango/cmd_cango_1", 1)},
         
         
-        brushless_right_tread_vel{n.subscribe("/device8/get_qry_relcntr/channel_2", 5,
-                &RobotInterface::accumulateBrushlessRightVel, this)},
+        brushless_right_tread_vel{n.subscribe("/device8/get_qry_abcntr/channel_2", 5,
+                &RobotInterface::setBrushlessRightEncoder, this)},
         brushless_right_tread_vel_publisher{n.advertise<std_msgs::Int32>("/device8/set_cmd_cango/cmd_cango_2", 1)},
         
         
@@ -549,6 +549,16 @@ namespace tfr_control
     */
 
 
+    void setBrushlessLeftEncoder(const std_msgs::Int32 &msg)
+    {
+        left_tread_absolute_encoder_current = msg.data;
+    }
+    
+    void setBrushlessLeftEncoder(const std_msgs::Int32 &msg)
+    {
+        right_tread_absolute_encoder_current = msg.data;
+    }
+
     /*
      * Register this joint with each neccessary hardware interface
      * */
@@ -578,7 +588,7 @@ namespace tfr_control
     {
         brushless_right_tread_mutex.lock();
 
-        accumulated_brushless_right_tread_vel += msg.data;
+        accumulated_brushless_right_tread_vel = msg.data;
         accumulated_brushless_right_tread_vel_num_updates++;
         accumulated_brushless_right_tread_vel_end_time = ros::Time::now(); // keep this call inside the mutex. The readBrushlessRightVel() call will also update it.
 
@@ -592,7 +602,7 @@ namespace tfr_control
     {
         brushless_left_tread_mutex.lock();
 
-        accumulated_brushless_left_tread_vel += msg.data;
+        accumulated_brushless_left_tread_vel = msg.data;
         accumulated_brushless_left_tread_vel_num_updates++;
         accumulated_brushless_left_tread_vel_end_time = ros::Time::now();
 
