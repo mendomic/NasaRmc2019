@@ -169,7 +169,7 @@ namespace tfr_control {
 		ros::Time right_tread_time_previous;
 		ros::Time right_tread_time_current;
 		
-		
+		const double pi = 3.14159265358979;
 		
 		std::mutex brushless_left_tread_mutex;
 		int32_t accumulated_brushless_left_tread_vel = 0;
@@ -192,8 +192,10 @@ namespace tfr_control {
 		ros::Publisher left_tread_publisher_pid_debug_command;
 		
 		
-		const int32_t brushless_encoder_count_per_revolution = 1280;
+		const int32_t brushless_encoder_count_per_revolution = 5120;
 		double brushlessEncoderCountToRadians(int32_t encoder_count);
+		double brushlessEncoderCountToRevolutions(int32_t encoder_count);
+		double encoderDeltaToLinearSpeed(int32_t encoder_delta, ros::Duration time_delta);
 		
         int32_t bin_encoder_min = 0;
         int32_t bin_encoder_max = 1000;

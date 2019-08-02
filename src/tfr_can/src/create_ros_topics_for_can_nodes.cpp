@@ -23,7 +23,7 @@ const std::string baudrate = "250K";
 
 const size_t num_devices_required = 1;
 
-const double loop_rate = 10; // [Hz]
+const double loop_rate = 100; // [Hz]
 
 const int IMU_NODE_ID = 120;
 

@@ -549,14 +549,16 @@ namespace tfr_control
     */
 
 
-    void setBrushlessLeftEncoder(const std_msgs::Int32 &msg)
+    void RobotInterface::setBrushlessLeftEncoder(const std_msgs::Int32 &msg)
     {
         left_tread_absolute_encoder_current = msg.data;
+        left_tread_time_current = ros::Time::now();
     }
     
-    void setBrushlessLeftEncoder(const std_msgs::Int32 &msg)
+    void RobotInterface::setBrushlessRightEncoder(const std_msgs::Int32 &msg)
     {
         right_tread_absolute_encoder_current = msg.data;
+        right_tread_time_current = ros::Time::now();
     }
 
     /*
@@ -578,9 +580,23 @@ namespace tfr_control
     // get the ratio of the encoder count to the max encoder count for a revolution
     double RobotInterface::brushlessEncoderCountToRadians(int32_t encoder_count)
     {
-        //static const double pi = boost::math::constants::pi<double>();
-        static const double pi = 3.14159265358979;
-        return (static_cast<double>(encoder_count) * (2 * pi)) / static_cast<double>(brushless_encoder_count_per_revolution);
+        return (2 * pi) * brushlessEncoderCountToRevolutions(encoder_count);
+    }
+
+    double RobotInterface::brushlessEncoderCountToRevolutions(int32_t encoder_count)
+    {
+        return (static_cast<double>(encoder_count) / static_cast<double>(brushless_encoder_count_per_revolution));
+    }
+   
+    // returns the linear speed of the robot (how fast it is moving forwards) in meters / second.
+    double RobotInterface::encoderDeltaToLinearSpeed(int32_t encoder_delta, ros::Duration time_delta)
+    {
+        const double wheel_radius_meters = 0.1524; 
+        const double wheel_circumference = 2 * pi * wheel_radius_meters;
+        
+        const double linear_speed_meters_per_sec = (double)(wheel_circumference * brushlessEncoderCountToRevolutions(encoder_delta)) / time_delta.toSec();
+        
+        return linear_speed_meters_per_sec;
     }
 
     
@@ -616,40 +632,36 @@ namespace tfr_control
     {
         brushless_right_tread_mutex.lock();
 
-        int32_t encoder_count = accumulated_brushless_right_tread_vel;
-        int32_t num_updates = accumulated_brushless_right_tread_vel_num_updates;
-
-        accumulated_brushless_right_tread_vel = 0;
-        accumulated_brushless_right_tread_vel_num_updates = 0;
-        accumulated_brushless_right_tread_vel_end_time = ros::Time::now();
-        auto diff = accumulated_brushless_right_tread_vel_end_time - accumulated_brushless_right_tread_vel_start_time;
-        accumulated_brushless_right_tread_vel_start_time = ros::Time::now();
-
+        int32_t encoder_delta = right_tread_absolute_encoder_current - right_tread_absolute_encoder_previous;
+        
+        ros::Duration time_delta = right_tread_time_current - right_tread_time_previous;
+        
+        right_tread_absolute_encoder_previous = right_tread_absolute_encoder_current;
+        right_tread_time_previous = right_tread_time_current;
+        
         brushless_right_tread_mutex.unlock();
         
-        double wheel_radius_meters = 0.1524; 
+        const double linear_speed_meters_per_sec = encoderDeltaToLinearSpeed(encoder_delta, time_delta);
         
-        return wheel_radius_meters * brushlessEncoderCountToRadians(encoder_count) / diff.toSec();
+        return linear_speed_meters_per_sec;
     }
     
     double RobotInterface::readBrushlessLeftVel()
     {
         brushless_left_tread_mutex.lock();
 
-        int32_t encoder_count = accumulated_brushless_left_tread_vel;
-        int32_t num_updates = accumulated_brushless_left_tread_vel_num_updates;
-
-        accumulated_brushless_left_tread_vel = 0;
-        accumulated_brushless_left_tread_vel_num_updates = 0;
-        accumulated_brushless_left_tread_vel_end_time = ros::Time::now();
-        auto diff = accumulated_brushless_left_tread_vel_end_time - accumulated_brushless_left_tread_vel_start_time;
-        accumulated_brushless_left_tread_vel_start_time = ros::Time::now();
-
-        brushless_left_tread_mutex.unlock();
-
-        double wheel_radius_meters = 0.1524; 
+        int32_t encoder_delta = left_tread_absolute_encoder_current - left_tread_absolute_encoder_previous;
         
-        return wheel_radius_meters * brushlessEncoderCountToRadians(encoder_count) / diff.toSec();
+        ros::Duration time_delta = left_tread_time_current - left_tread_time_previous;
+        
+        left_tread_absolute_encoder_previous = left_tread_absolute_encoder_current;
+        left_tread_time_previous = left_tread_time_current;
+        
+        brushless_left_tread_mutex.unlock();
+        
+        const double linear_speed_meters_per_sec = encoderDeltaToLinearSpeed(encoder_delta, time_delta);
+        
+        return linear_speed_meters_per_sec;
     }
     
     
