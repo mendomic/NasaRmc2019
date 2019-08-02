@@ -594,7 +594,9 @@ namespace tfr_control
         const double wheel_radius_meters = 0.1524; 
         const double wheel_circumference = 2 * pi * wheel_radius_meters;
         
-        const double linear_speed_meters_per_sec = (double)(wheel_circumference * brushlessEncoderCountToRevolutions(encoder_delta)) / time_delta.toSec();
+        const double revolutions = brushlessEncoderCountToRevolutions(encoder_delta);
+        
+        const double linear_speed_meters_per_sec = (wheel_circumference * revolutions) / time_delta.toSec();
         
         return linear_speed_meters_per_sec;
     }
