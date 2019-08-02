@@ -610,8 +610,6 @@ namespace tfr_control
 
         brushless_right_tread_mutex.unlock();
         
-        //ROS_INFO_STREAM("accumulateBrushlessRightVel: " << accumulated_brushless_right_tread_vel << std::endl);
-        
     }
     
     void RobotInterface::accumulateBrushlessLeftVel(const std_msgs::Int32 &msg)
@@ -624,7 +622,6 @@ namespace tfr_control
 
         brushless_left_tread_mutex.unlock();
         
-        //ROS_INFO_STREAM("accumulateBrushlessLeftVel: " << accumulated_brushless_left_tread_vel << std::endl);
         
     }
     
