@@ -19,14 +19,14 @@ namespace tfr_control
             const double *lower_lim, const double *upper_lim) :
 
 
-        brushless_left_tread_vel{n.subscribe("/device8/get_qry_relcntr/channel_2", 5,
-                &RobotInterface::accumulateBrushlessLeftVel, this)},
-        brushless_left_tread_vel_publisher{n.advertise<std_msgs::Int32>("/device8/set_cmd_cango/cmd_cango_2", 1)},
+        brushless_left_tread_vel{n.subscribe("/device8/get_qry_abcntr/channel_1", 5,
+                &RobotInterface::setBrushlessLeftEncoder, this)},
+        brushless_left_tread_vel_publisher{n.advertise<std_msgs::Int32>("/device8/set_cmd_cango/cmd_cango_1", 1)},
         
         
-        brushless_right_tread_vel{n.subscribe("/device8/get_qry_relcntr/channel_1", 5,
-                &RobotInterface::accumulateBrushlessRightVel, this)},
-        brushless_right_tread_vel_publisher{n.advertise<std_msgs::Int32>("/device8/set_cmd_cango/cmd_cango_1", 1)},
+        brushless_right_tread_vel{n.subscribe("/device8/get_qry_abcntr/channel_2", 5,
+                &RobotInterface::setBrushlessRightEncoder, this)},
+        brushless_right_tread_vel_publisher{n.advertise<std_msgs::Int32>("/device8/set_cmd_cango/cmd_cango_2", 1)},
         
         
         turntable_subscriber_encoder{n.subscribe("/device4/get_qry_abcntr/channel_1", 5,
@@ -56,6 +56,10 @@ namespace tfr_control
                 &RobotInterface::readScoopAmps, this)},
         scoop_publisher{n.advertise<std_msgs::Int32>("/device4/set_cmd_cango/cmd_cango_2", 1)},
         
+        left_tread_publisher_pid_debug_setpoint{n.advertise<std_msgs::Float64>("/left_tread_velocity_controller/pid_debug/setpoint", 1)},
+        left_tread_publisher_pid_debug_state{n.advertise<std_msgs::Float64>("/left_tread_velocity_controller/pid_debug/state", 1)},
+        left_tread_publisher_pid_debug_command{n.advertise<std_msgs::Int32>("/left_tread_velocity_controller/pid_debug/command", 1)},
+        
         //pwm_publisher{n.advertise<tfr_msgs::PwmCommand>("/motor_output", 15)},
         use_fake_values{fakes}, lower_limits{lower_lim},
         upper_limits{upper_lim}, drivebase_v0{std::make_pair(0,0)},
@@ -83,6 +87,9 @@ namespace tfr_control
         // Note: the string parameters in these constructors must match the
         // joint names from the URDF, and yaml controller description. 
 
+	// DEBUG: Try to make printing faster
+	std::ios_base::sync_with_stdio(false);
+
         // Connect and register each joint with appropriate interfaces at our
         // layer
         registerJointEffortInterface("left_tread_joint", tfr_utilities::Joint::LEFT_TREAD);
@@ -100,10 +107,9 @@ namespace tfr_control
         
         for (int joint = 0; joint < tfr_utilities::Joint::JOINT_COUNT; joint++)
         {
-            velocity_values[static_cast<int>(tfr_utilities::Joint::RIGHT_TREAD)] = 0;
-            effort_values[static_cast<int>(tfr_utilities::Joint::RIGHT_TREAD)] = 0;
+            velocity_values[joint] = 0;
+            effort_values[joint] = 0;
         }
-        
     }
 
 
@@ -113,20 +119,17 @@ namespace tfr_control
      * Information that is not explicity needed by our controllers 
      * is written to some safe sensible default (usually 0).
      *
-     * A couple of our logical joints are controlled by two actuators and read
-     * by multiple potentiometers. For the purpose of populating information for
-     * control I take the average of the two positions.
      * */
  void RobotInterface::read() 
     {
         //LEFT_TREAD
         position_values[static_cast<int>(tfr_utilities::Joint::LEFT_TREAD)] = 0;
-        velocity_values[static_cast<int>(tfr_utilities::Joint::LEFT_TREAD)] = readBrushlessRightVel();
+        velocity_values[static_cast<int>(tfr_utilities::Joint::LEFT_TREAD)] = readBrushlessLeftVel();
         effort_values[static_cast<int>(tfr_utilities::Joint::LEFT_TREAD)] = 0;
 
         //RIGHT_TREAD
         position_values[static_cast<int>(tfr_utilities::Joint::RIGHT_TREAD)] = 0;
-        velocity_values[static_cast<int>(tfr_utilities::Joint::RIGHT_TREAD)] = readBrushlessLeftVel();
+        velocity_values[static_cast<int>(tfr_utilities::Joint::RIGHT_TREAD)] = readBrushlessRightVel();
         effort_values[static_cast<int>(tfr_utilities::Joint::RIGHT_TREAD)] = 0;
 
         if (!use_fake_values)
@@ -281,30 +284,46 @@ namespace tfr_control
         }
         
         //LEFT_TREAD
-        int left_tread_scale = 1;
-        ros::param::getCached("left_tread_scale", left_tread_scale);
-        //ROS_INFO("Left tread scale %d", left_tread_scale);
         double left_tread_command = command_values[static_cast<int32_t>(tfr_utilities::Joint::LEFT_TREAD)];
-        //left_tread_command = linear_interp<double>(left_tread_command, 0.0, 0.0, 1.0, 1000.0);
         std_msgs::Int32 left_tread_msg;
-        left_tread_msg.data = static_cast<int32_t>(left_tread_command * left_tread_scale);
-        std_msgs::Int32 new_left_tread_msg;
-        new_left_tread_msg.data = (int)(left_tread_command * left_tread_scale);
-	brushless_left_tread_vel_publisher.publish(new_left_tread_msg);
+        left_tread_msg.data = -1 * clamp(static_cast<int32_t>(left_tread_command), -1000, 1000);
+	    brushless_left_tread_vel_publisher.publish(left_tread_msg);
+
+        //ROS_INFO_STREAM("left_tread_velocity_value: " << velocity_values[static_cast<int>(tfr_utilities::Joint::LEFT_TREAD)] << std::endl);
+	    //ROS_INFO_STREAM("left_tread_command: " << left_tread_command << std::endl);
+
+        
+        
+
+	    if (enable_left_tread_pid_debug_output)
+	    {
+	        double left_tread_setpoint = 0;
+            ros::param::get("/left_tread_velocity_controller/setpoint", left_tread_setpoint);
+            
+            /*
+            ROS_INFO_STREAM_NAMED("debugrobotinterface", 
+            "left_tread: " << std::setw(8) << std::setprecision(2) << left_tread_setpoint << ", "
+            << std::setw(8) << std::setprecision(2) << velocity_values[tfr_utilities::Joint::LEFT_TREAD] << ", "
+            << std::setw(8) << left_tread_msg.data);
+	        */
+	        std_msgs::Float64 left_tread_setpoint_msg;
+	        std_msgs::Float64 left_tread_state_msg;
+	        
+	        left_tread_setpoint_msg.data = left_tread_setpoint;
+	        left_tread_state_msg.data = velocity_values[static_cast<int>(tfr_utilities::Joint::LEFT_TREAD)];
+	        
+	        left_tread_publisher_pid_debug_setpoint.publish(left_tread_setpoint_msg);
+	        left_tread_publisher_pid_debug_state.publish(left_tread_state_msg);
+	        left_tread_publisher_pid_debug_command.publish(left_tread_msg);
+	        
+	    }
+
 
         //RIGHT_TREAD
-    int right_tread_scale = 1;
-    ros::param::getCached("right_tread_scale", right_tread_scale);
         double right_tread_command = command_values[static_cast<int32_t>(tfr_utilities::Joint::RIGHT_TREAD)];
-        //right_tread_command = linear_interp<double>(right_tread_command, 0.0, 0.0, 1.0, 1000.0);
         std_msgs::Int32 right_tread_msg;
-        right_tread_msg.data = static_cast<int32_t>(right_tread_command * right_tread_scale);
+        right_tread_msg.data = -1 * clamp(static_cast<int32_t>(right_tread_command), -1000, 1000);
         brushless_right_tread_vel_publisher.publish(right_tread_msg);
-
-        ROS_INFO_STREAM("left_tread_velocity_value: " << velocity_values[static_cast<int>(tfr_utilities::Joint::LEFT_TREAD)] << std::endl);
-	ROS_INFO_STREAM("left_tread_command: " << left_tread_command << std::endl);
-        ROS_INFO_STREAM("left_tread_msg: " << static_cast<int32_t>(left_tread_msg.data) << std::endl);
-	ROS_INFO_STREAM("new_left_tread_msg: " << new_left_tread_msg.data << std::endl);
         
         //UPKEEP
         last_update = ros::Time::now();
@@ -312,14 +331,31 @@ namespace tfr_control
         drivebase_v0.second = velocity_values[static_cast<int>(tfr_utilities::Joint::RIGHT_TREAD)];
     }
     
-    template <typename t>
-    t RobotInterface::linear_interp(t x, t x1, t y1, t x2, t y2)
+    template <typename T>
+    T RobotInterface::linear_interp(T x, T x1, T y1, T x2, T y2)
     {
         // line defined by two points: (x1, y1) and (x2, y2)
-        t y = ((y2 - y1)/(x2 - x1))*(x - x1) + y1;
+        T y = ((y2 - y1)/(x2 - x1))*(x - x1) + y1;
         return y;
     }
     
+    template <typename T>
+    T RobotInterface::clamp(const T input, const T bound_1, const T bound_2)
+    {
+        T lower_bound;
+        T upper_bound;
+        
+        if (bound_1 < bound_2) {
+            lower_bound = bound_1;
+            upper_bound = bound_2;        
+        } else {
+            upper_bound = bound_1;
+            lower_bound = bound_2;  
+        }      
+
+        return std::max(std::min(input, upper_bound), lower_bound);
+    }
+
     // TODO: Horrible duplication of code should be removed.
     // has hardcoded min joint position in header file
     const int32_t RobotInterface::get_arm_lower_min_int()
@@ -513,6 +549,18 @@ namespace tfr_control
     */
 
 
+    void RobotInterface::setBrushlessLeftEncoder(const std_msgs::Int32 &msg)
+    {
+        left_tread_absolute_encoder_current = msg.data;
+        left_tread_time_current = ros::Time::now();
+    }
+    
+    void RobotInterface::setBrushlessRightEncoder(const std_msgs::Int32 &msg)
+    {
+        right_tread_absolute_encoder_current = msg.data;
+        right_tread_time_current = ros::Time::now();
+    }
+
     /*
      * Register this joint with each neccessary hardware interface
      * */
@@ -532,39 +580,50 @@ namespace tfr_control
     // get the ratio of the encoder count to the max encoder count for a revolution
     double RobotInterface::brushlessEncoderCountToRadians(int32_t encoder_count)
     {
-        //static const double pi = boost::math::constants::pi<double>();
-        static const double pi = 3.14159265358979;
-        return (static_cast<double>(encoder_count) * (2 * pi)) / static_cast<double>(brushless_encoder_count_per_revolution);
+        return (2 * pi) * brushlessEncoderCountToRevolutions(encoder_count);
     }
 
-    //This DOES work
+    double RobotInterface::brushlessEncoderCountToRevolutions(int32_t encoder_count)
+    {
+        return (static_cast<double>(encoder_count) / static_cast<double>(brushless_encoder_count_per_revolution));
+    }
+   
+    // returns the linear speed of the robot (how fast it is moving forwards) in meters / second.
+    double RobotInterface::encoderDeltaToLinearSpeed(int32_t encoder_delta, ros::Duration time_delta)
+    {
+        const double wheel_radius_meters = 0.1524; 
+        const double wheel_circumference = 2 * pi * wheel_radius_meters;
+        
+        const double revolutions = brushlessEncoderCountToRevolutions(encoder_delta);
+        
+        const double linear_speed_meters_per_sec = (wheel_circumference * revolutions) / time_delta.toSec();
+        
+        return linear_speed_meters_per_sec;
+    }
+
+    
     void RobotInterface::accumulateBrushlessRightVel(const std_msgs::Int32 &msg)
     {
         brushless_right_tread_mutex.lock();
 
-        accumulated_brushless_right_tread_vel += msg.data;
+        accumulated_brushless_right_tread_vel = msg.data;
         accumulated_brushless_right_tread_vel_num_updates++;
         accumulated_brushless_right_tread_vel_end_time = ros::Time::now(); // keep this call inside the mutex. The readBrushlessRightVel() call will also update it.
 
         brushless_right_tread_mutex.unlock();
         
-        //ROS_INFO_STREAM("accumulateBrushlessRightVel: " << accumulated_brushless_right_tread_vel << std::endl);
-        
-        
     }
     
-    //This DOES work
     void RobotInterface::accumulateBrushlessLeftVel(const std_msgs::Int32 &msg)
     {
         brushless_left_tread_mutex.lock();
 
-        accumulated_brushless_left_tread_vel += msg.data;
+        accumulated_brushless_left_tread_vel = msg.data;
         accumulated_brushless_left_tread_vel_num_updates++;
         accumulated_brushless_left_tread_vel_end_time = ros::Time::now();
 
         brushless_left_tread_mutex.unlock();
         
-        //ROS_INFO_STREAM("accumulateBrushlessLeftVel: " << accumulated_brushless_left_tread_vel << std::endl);
         
     }
     
@@ -572,36 +631,36 @@ namespace tfr_control
     {
         brushless_right_tread_mutex.lock();
 
-        int32_t encoder_count = accumulated_brushless_right_tread_vel;
-        int32_t num_updates = accumulated_brushless_right_tread_vel_num_updates;
-
-        accumulated_brushless_right_tread_vel = 0;
-        accumulated_brushless_right_tread_vel_num_updates = 0;
-        accumulated_brushless_right_tread_vel_end_time = ros::Time::now();
-        auto diff = accumulated_brushless_right_tread_vel_end_time - accumulated_brushless_right_tread_vel_start_time;
-        accumulated_brushless_right_tread_vel_start_time = ros::Time::now();
-
+        int32_t encoder_delta = right_tread_absolute_encoder_current - right_tread_absolute_encoder_previous;
+        
+        ros::Duration time_delta = right_tread_time_current - right_tread_time_previous;
+        
+        right_tread_absolute_encoder_previous = right_tread_absolute_encoder_current;
+        right_tread_time_previous = right_tread_time_current;
+        
         brushless_right_tread_mutex.unlock();
         
-        return brushlessEncoderCountToRadians(encoder_count) / diff.toSec();
+        const double linear_speed_meters_per_sec = encoderDeltaToLinearSpeed(encoder_delta, time_delta);
+        
+        return linear_speed_meters_per_sec;
     }
     
     double RobotInterface::readBrushlessLeftVel()
     {
         brushless_left_tread_mutex.lock();
 
-        int32_t encoder_count = accumulated_brushless_left_tread_vel;
-        int32_t num_updates = accumulated_brushless_left_tread_vel_num_updates;
-
-        accumulated_brushless_left_tread_vel = 0;
-        accumulated_brushless_left_tread_vel_num_updates = 0;
-        accumulated_brushless_left_tread_vel_end_time = ros::Time::now();
-        auto diff = accumulated_brushless_left_tread_vel_end_time - accumulated_brushless_left_tread_vel_start_time;
-        accumulated_brushless_left_tread_vel_start_time = ros::Time::now();
-
+        int32_t encoder_delta = left_tread_absolute_encoder_current - left_tread_absolute_encoder_previous;
+        
+        ros::Duration time_delta = left_tread_time_current - left_tread_time_previous;
+        
+        left_tread_absolute_encoder_previous = left_tread_absolute_encoder_current;
+        left_tread_time_previous = left_tread_time_current;
+        
         brushless_left_tread_mutex.unlock();
         
-        return brushlessEncoderCountToRadians(encoder_count) / diff.toSec();
+        const double linear_speed_meters_per_sec = encoderDeltaToLinearSpeed(encoder_delta, time_delta);
+        
+        return linear_speed_meters_per_sec;
     }
     
     

@@ -33,6 +33,9 @@
 #include <ros/ros.h>
 #include <tf/transform_broadcaster.h>
 #include <nav_msgs/Odometry.h>
+#include <iomanip>
+#include <iostream>
+#include <cstdio>
 
 namespace tfr_control {
 
@@ -152,6 +155,22 @@ namespace tfr_control {
 		ros::Time accumulated_brushless_right_tread_vel_end_time;
 		
 		
+		
+		void setBrushlessLeftEncoder(const std_msgs::Int32 &msg);
+		void setBrushlessRightEncoder(const std_msgs::Int32 &msg);
+		
+		int32_t left_tread_absolute_encoder_previous = 0;
+		int32_t left_tread_absolute_encoder_current = 0;
+		ros::Time left_tread_time_previous;
+		ros::Time left_tread_time_current;
+		
+		int32_t right_tread_absolute_encoder_previous = 0;
+		int32_t right_tread_absolute_encoder_current = 0;
+		ros::Time right_tread_time_previous;
+		ros::Time right_tread_time_current;
+		
+		const double pi = 3.14159265358979;
+		
 		std::mutex brushless_left_tread_mutex;
 		int32_t accumulated_brushless_left_tread_vel = 0;
 		int32_t accumulated_brushless_left_tread_vel_num_updates = 0;
@@ -166,8 +185,17 @@ namespace tfr_control {
 		double readBrushlessRightVel();
 		double readBrushlessLeftVel();
 		
-		const int32_t brushless_encoder_count_per_revolution = 1280;
+		const bool enable_left_tread_pid_debug_output = true;
+		
+		ros::Publisher left_tread_publisher_pid_debug_setpoint;
+		ros::Publisher left_tread_publisher_pid_debug_state;
+		ros::Publisher left_tread_publisher_pid_debug_command;
+		
+		
+		const int32_t brushless_encoder_count_per_revolution = 5120;
 		double brushlessEncoderCountToRadians(int32_t encoder_count);
+		double brushlessEncoderCountToRevolutions(int32_t encoder_count);
+		double encoderDeltaToLinearSpeed(int32_t encoder_delta, ros::Duration time_delta);
 		
         int32_t bin_encoder_min = 0;
         int32_t bin_encoder_max = 1000;
@@ -219,8 +247,11 @@ namespace tfr_control {
         std::pair<double, double> drivebase_v0;
         ros::Time last_update;
 
-        template <typename t>
-    	t linear_interp(t x, t x1, t y1, t x2, t y2);
+        template <typename T>
+    	T linear_interp(T x, T x1, T y1, T x2, T y2);
+
+        template <typename T>
+        T clamp(const T input, const T bound_1, const T bound_2);
         
         void registerJointEffortInterface(std::string name, tfr_utilities::Joint joint);
         void registerJointPositionInterface(std::string name, tfr_utilities::Joint joint);

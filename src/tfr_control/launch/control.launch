@@ -17,7 +17,7 @@
     <!-- Load the controller manager plugin for the drivebase -->
     <node name="control" pkg="tfr_control" type="control" output="screen">
         <rosparam>
-            rate: 20
+            rate: 100
         </rosparam>
     </node>
 	<rosparam file="$(find tfr_control)/config/encoder_limits.yaml" command="load" />
@@ -31,8 +31,8 @@
         arm_controller
         arm_end_controller"/>
 	
-	<param name="left_tread_scale" value="3000" type="int"/>
-	<param name="right_tread_scale" value="3000" type="int"/>
+	<param name="left_tread_scale" value="1" type="int"/>
+	<param name="right_tread_scale" value="1" type="int"/>
 	<param name="/write_arm_values" value="false" type="bool"/>
 
     <!-- Launch all the MoveIt! nodes -->

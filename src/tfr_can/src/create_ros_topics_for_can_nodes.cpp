@@ -23,7 +23,7 @@ const std::string baudrate = "250K";
 
 const size_t num_devices_required = 1;
 
-const double loop_rate = 10; // [Hz]
+const double loop_rate = 100; // [Hz]
 
 const int IMU_NODE_ID = 120;
 
@@ -125,32 +125,39 @@ int main(int argc, char* argv[]) {
 			
 			ROS_DEBUG_STREAM("tfr_can: case: Device 8" << std::endl);
 			
-			// Roboteq SBL2360 in Closed Loop Speed Position mode.
+			// Roboteq SBL2360.
 
 			auto iosub_8_1_1 = std::make_shared<kaco::EntrySubscriber>(device, "cmd_cango/cmd_cango_1");
     		bridge.add_subscriber(iosub_8_1_1);
 
-			auto iopub_8_1_2 = std::make_shared<kaco::EntryPublisher>(device, "qry_relcntr/channel_1");
-    		bridge.add_publisher(iopub_8_1_2, loop_rate);
+			//auto iopub_8_1_2 = std::make_shared<kaco::EntryPublisher>(device, "qry_relcntr/channel_1");
+    		//bridge.add_publisher(iopub_8_1_2, loop_rate);
 
 			auto iopub_8_1_3 = std::make_shared<kaco::EntryPublisher>(device, "qry_motamps/channel_1");
     		bridge.add_publisher(iopub_8_1_3, loop_rate);
 			
-			auto iopub_8_1_4 = std::make_shared<kaco::EntryPublisher>(device, "qry_blrspeed/channel_1");
-    		bridge.add_publisher(iopub_8_1_4, loop_rate);
+			//auto iopub_8_1_4 = std::make_shared<kaco::EntryPublisher>(device, "qry_blrspeed/channel_1");
+    		//bridge.add_publisher(iopub_8_1_4, loop_rate);
+    		
+    		auto iopub_8_1_5 = std::make_shared<kaco::EntryPublisher>(device, "qry_abcntr/channel_1");
+    		bridge.add_publisher(iopub_8_1_5, loop_rate);
 			
 			
 			auto iosub_8_2_1 = std::make_shared<kaco::EntrySubscriber>(device, "cmd_cango/cmd_cango_2");
     		bridge.add_subscriber(iosub_8_2_1);
 
-			auto iopub_8_2_2 = std::make_shared<kaco::EntryPublisher>(device, "qry_relcntr/channel_2");
-    		bridge.add_publisher(iopub_8_2_2, loop_rate);
+			//auto iopub_8_2_2 = std::make_shared<kaco::EntryPublisher>(device, "qry_relcntr/channel_2");
+    		//bridge.add_publisher(iopub_8_2_2, loop_rate);
 
 			auto iopub_8_2_3 = std::make_shared<kaco::EntryPublisher>(device, "qry_motamps/channel_2");
     		bridge.add_publisher(iopub_8_2_3, loop_rate);
 			
-			auto iopub_8_2_4 = std::make_shared<kaco::EntryPublisher>(device, "qry_blrspeed/channel_2");
-    		bridge.add_publisher(iopub_8_2_4, loop_rate);
+			//auto iopub_8_2_4 = std::make_shared<kaco::EntryPublisher>(device, "qry_blrspeed/channel_2");
+    		//bridge.add_publisher(iopub_8_2_4, loop_rate);
+    		
+    		auto iopub_8_2_5 = std::make_shared<kaco::EntryPublisher>(device, "qry_abcntr/channel_2");
+    		bridge.add_publisher(iopub_8_2_5, loop_rate);
+			
 		}
 		
 		else if (deviceId == 12)
