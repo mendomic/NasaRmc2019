@@ -27,7 +27,7 @@ namespace tfr_mission_control {
     /* NOTE: I think these QObjects have reference counting and are held by
      * smart pointers under the hood. (I never ever see any qt programmers
      * implement destructors or free memory on QObjects in any tutorial, example
-     * code or forum). However I do not know for sure, so I do it here to make 
+     * code or forum). However I do not know for sure, so I do it here to make
      * myself feel better, and it doesn't seem to complain.
      * */
     MissionControl::~MissionControl()
@@ -75,7 +75,7 @@ namespace tfr_mission_control {
          * happens: button pressed/released, timer expires... You can attach
          * signals to 0 or many slots. Slots are functions that get put into an
          * application level queue and processed when time allows. This allows
-         * for thread safety. 
+         * for thread safety.
          *
          * Signals can pass data, however slots they attach to must be able to
          * recieve that data, so signatures need to match. Sometimes you don't
@@ -84,8 +84,8 @@ namespace tfr_mission_control {
          *
          * Qt might or might not run different ui objects on many different
          * threads, and rqt will be running on a diffent thread. So in general,
-         * if you need to have synchronous state passing, do it through the 
-         * signal/slot system, and you should be fine. 
+         * if you need to have synchronous state passing, do it through the
+         * signal/slot system, and you should be fine.
          * */
         connect(ui.start_button, &QPushButton::clicked,this, &MissionControl::startMission);
         connect(ui.clock_button, &QPushButton::clicked,this, &MissionControl::startManual);
@@ -95,13 +95,11 @@ namespace tfr_mission_control {
         //Control
         connect(ui.control_enable_button,&QPushButton::clicked, [this] () {toggleControl(true);});
         connect(ui.control_disable_button,&QPushButton::clicked, [this] () {toggleControl(false);});
-        //Motor
-        connect(ui.motor_enable_button,&QPushButton::clicked, [this] () {toggleMotors(true);});
-        connect(ui.motor_disable_button,&QPushButton::clicked, [this] () {toggleMotors(false);});
+
         //PID
         connect(ui.arm_pid_enable_button,&QPushButton::clicked, [this] () {setArmPID(true);});
         connect(ui.arm_pid_disable_button,&QPushButton::clicked, [this] () {setArmPID(false);});
-        
+
         connect(countdownClock, &QTimer::timeout, this,  &MissionControl::renderClock);
         connect(this, &MissionControl::emitStatus, ui.status_log, &QPlainTextEdit::appendPlainText);
         connect(ui.status_log, &QPlainTextEdit::textChanged, this,  &MissionControl::renderStatus);
@@ -113,7 +111,7 @@ namespace tfr_mission_control {
          * qt5 did a little phenagling which allows us to use lambdas instead.
          * */
 
-        connect(motorKill, &QTimer::timeout, 
+        connect(motorKill, &QTimer::timeout,
                 [this] () {performTeleop(tfr_utilities::TeleopCode::STOP_DRIVEBASE);});
 
         connect(ui.reset_starting_button,&QPushButton::clicked,
@@ -130,30 +128,30 @@ namespace tfr_mission_control {
         // arm buttons
         //lower arm
         connect(ui.lower_arm_extend_button,&QPushButton::clicked,
-                [this] () {performTeleop(tfr_utilities::TeleopCode::LOWER_ARM_EXTEND);}); 
+                [this] () {performTeleop(tfr_utilities::TeleopCode::LOWER_ARM_EXTEND);});
         connect(ui.lower_arm_retract_button,&QPushButton::clicked,
                 [this] () {performTeleop(tfr_utilities::TeleopCode::LOWER_ARM_RETRACT);});
-        //upper arm        
+        //upper arm
         connect(ui.upper_arm_extend_button,&QPushButton::clicked,
-                [this] () {performTeleop(tfr_utilities::TeleopCode::UPPER_ARM_EXTEND);}); 
+                [this] () {performTeleop(tfr_utilities::TeleopCode::UPPER_ARM_EXTEND);});
         connect(ui.upper_arm_retract_button,&QPushButton::clicked,
                 [this] () {performTeleop(tfr_utilities::TeleopCode::UPPER_ARM_RETRACT);});
-        //scoop        
+        //scoop
         connect(ui.scoop_extend_button,&QPushButton::clicked,
-                [this] () {performTeleop(tfr_utilities::TeleopCode::SCOOP_EXTEND);}); 
+                [this] () {performTeleop(tfr_utilities::TeleopCode::SCOOP_EXTEND);});
         connect(ui.scoop_retract_button,&QPushButton::clicked,
                 [this] () {performTeleop(tfr_utilities::TeleopCode::SCOOP_RETRACT);});
         // raise arm to straight, neutral position above robot
         connect(ui.raise_arm_button,&QPushButton::clicked,
                 [this] () {performTeleop(tfr_utilities::TeleopCode::RAISE_ARM);});
-        //turntable 
+        //turntable
         connect(ui.cw_button,&QPushButton::clicked,
                 [this] () {performTeleop(tfr_utilities::TeleopCode::CLOCKWISE);});
         connect(ui.ccw_button,&QPushButton::clicked,
                 [this] () {performTeleop(tfr_utilities::TeleopCode::COUNTERCLOCKWISE);});
         //reset encoders
         connect(ui.set_encoders,&QPushButton::clicked,
-                [this] () {performTeleop(tfr_utilities::TeleopCode::RESET_ENCODER_COUNTS_TO_START);}); 
+                [this] () {performTeleop(tfr_utilities::TeleopCode::RESET_ENCODER_COUNTS_TO_START);});
         //drivebase
         //forward
         connect(ui.forward_button,&QPushButton::pressed,
@@ -174,8 +172,8 @@ namespace tfr_mission_control {
         connect(ui.right_button,&QPushButton::pressed,
                 [this] () {performTeleop(tfr_utilities::TeleopCode::RIGHT);});
         connect(ui.right_button,&QPushButton::released,
-                [this] () {performTeleop(tfr_utilities::TeleopCode::STOP_DRIVEBASE);});    
-        
+                [this] () {performTeleop(tfr_utilities::TeleopCode::STOP_DRIVEBASE);});
+
 
         //set upp our action servers
         ROS_INFO("Mission Control: connecting autonomy");
@@ -205,14 +203,14 @@ namespace tfr_mission_control {
     /* Settings                                                                   */
     /* ========================================================================== */
 
-    /* we inherit this, but I don't think we need it*/ 
+    /* we inherit this, but I don't think we need it*/
     void MissionControl::saveSettings(
             qt_gui_cpp::Settings& plugin_settings,
             qt_gui_cpp::Settings& instance_settings) const
     {
     }
 
-    /* we inherit this, but I don't think we need it*/ 
+    /* we inherit this, but I don't think we need it*/
     void MissionControl::restoreSettings(
             const qt_gui_cpp::Settings& plugin_settings,
             const qt_gui_cpp::Settings& instance_settings)
@@ -222,7 +220,7 @@ namespace tfr_mission_control {
     /* ========================================================================== */
     /* Methods                                                                    */
     /* ========================================================================== */
- 
+
     /*
      * Startup utility to reset the turntable
      * */
@@ -239,7 +237,7 @@ namespace tfr_mission_control {
         toggleMotors(true);
 
     }
-   
+
     /* greys/ungreys all teleop buttons, and tell's system whether to process teleop or
      * not
      * */
@@ -278,21 +276,12 @@ namespace tfr_mission_control {
         ui.control_disable_button->setEnabled(value);
     }
 
-    /*
-     * Toggles the motor buttons
-     * */
-    void MissionControl::setMotors(bool value)
-    {
-        ui.motor_enable_button->setEnabled(!value);
-        ui.motor_disable_button->setEnabled(value);
-    }
-    
     void MissionControl::setArmPID(bool value){
         ros::param::set("/write_arm_values", value);
         ui.arm_pid_enable_button->setEnabled(!value);
         ui.arm_pid_disable_button->setEnabled(value);
     }
-    
+
     /*
      * Utility for stopping all motors
      * */
@@ -311,7 +300,7 @@ namespace tfr_mission_control {
      * watchdog.
      *
      * The problem is repeated keypresses, and the debouncing in qt being
-     * rubbish. 
+     * rubbish.
      *
      * So when we get a valid key in, I start a watchdog for the motors.
      * Whenever we get a repeat of that key I ignore it and restart the
@@ -322,7 +311,7 @@ namespace tfr_mission_control {
      *
      * I can't set the watchdog too long, or else there is an unacceptable delay
      * in stopping the motors. So I make it a requirement that our laptop have a
-     * reasonable key delay set. 
+     * reasonable key delay set.
      *
      * QT provides some built in functionality for this, but it's rubbish, and I
      * couldn't get fine enough control to meet our response requirements.
@@ -445,7 +434,7 @@ namespace tfr_mission_control {
         toggleControl(true);
         toggleMotors(true);
     }
-    
+
     //starts mission is teleop mode
     void MissionControl::startManual()
     {
@@ -480,7 +469,7 @@ namespace tfr_mission_control {
         widget->setFocus();
     }
 
-    //performs a teleop command asynchronously 
+    //performs a teleop command asynchronously
     void MissionControl::performTeleop(tfr_utilities::TeleopCode code)
     {
         tfr_msgs::TeleopGoal goal;
