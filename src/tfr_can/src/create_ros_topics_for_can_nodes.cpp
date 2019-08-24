@@ -26,6 +26,7 @@ const size_t num_devices_required = 1;
 const double loop_rate = 100; // [Hz]
 
 const int IMU_NODE_ID = 120;
+const int SINGLE_SERVO_CYLINDER_NODE_ID = 3;
 
 void setupDevice4Topics(kaco::Device& device, kaco::Bridge& bridge, std::string& eds_files_path){
     // Roboteq SDC3260 in Closed Loop Count Position mode.
@@ -69,6 +70,21 @@ void setupDevice4Topics(kaco::Device& device, kaco::Bridge& bridge, std::string&
 	bridge.add_subscriber(iopub_4_3_4);
 }
 
+void setupSingleServoCylinder(kaco::Device& device, kaco::Bridge& bridge, std::string& eds_files_path)
+{
+    //device.load_dictionary_from_eds(eds_files_path + "roboteq_motor_controllers_v60.eds");
+    
+    device.set_entry("modes_of_operation", device.get_constant("profile_position_mode"));
+
+    device.execute("enable_operation");
+
+    auto jspub = std::make_shared<kaco::JointStatePublisher>(device, 1500, 48000);
+    bridge.add_publisher(jspub, loop_rate);
+    
+    auto jssub = std::make_shared<kaco::JointStateSubscriber>(device, 1500, 48000);
+    bridge.add_subscriber(jssub);
+}
+
 int main(int argc, char* argv[]) {
 
 	
@@ -106,6 +122,11 @@ int main(int argc, char* argv[]) {
 		}
 		
 		int deviceId = device.get_node_id();
+
+        if (deviceId == SINGLE_SERVO_CYLINDER_NODE_ID)
+        {
+            setupSingleServoCylinder(device, bridge, eds_files_path);
+        }
 
 		if (deviceId == 4)
 		{
