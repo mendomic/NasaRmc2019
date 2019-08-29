@@ -26,7 +26,7 @@ const size_t num_devices_required = 1;
 const double loop_rate = 100; // [Hz]
 
 const int IMU_NODE_ID = 120;
-const int SINGLE_SERVO_CYLINDER_NODE_ID = 3;
+const int SINGLE_SERVO_CYLINDER_NODE_ID = 34;
 
 void setupDevice4Topics(kaco::Device& device, kaco::Bridge& bridge, std::string& eds_files_path){
     // Roboteq SDC3260 in Closed Loop Count Position mode.
@@ -72,16 +72,21 @@ void setupDevice4Topics(kaco::Device& device, kaco::Bridge& bridge, std::string&
 
 void setupSingleServoCylinder(kaco::Device& device, kaco::Bridge& bridge, std::string& eds_files_path)
 {
-    //device.load_dictionary_from_eds(eds_files_path + "roboteq_motor_controllers_v60.eds");
     
+    device.load_dictionary_from_library();
+    
+    device.load_dictionary_from_eds(eds_files_path + "SC_MC630R11_v_0_7_OD.eds");
+    
+    PRINT("Set position mode");
     device.set_entry("modes_of_operation", device.get_constant("profile_position_mode"));
 
+    PRINT("Enable operation");
     device.execute("enable_operation");
 
-    auto jspub = std::make_shared<kaco::JointStatePublisher>(device, 1500, 48000);
+    auto jspub = std::make_shared<kaco::JointStatePublisher>(device, 0, 47104);
     bridge.add_publisher(jspub, loop_rate);
     
-    auto jssub = std::make_shared<kaco::JointStateSubscriber>(device, 1500, 48000);
+    auto jssub = std::make_shared<kaco::JointStateSubscriber>(device, 0, 47104);
     bridge.add_subscriber(jssub);
 }
 
