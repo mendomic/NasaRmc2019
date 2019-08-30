@@ -73,7 +73,8 @@ void setupDevice4Topics(kaco::Device& device, kaco::Bridge& bridge, std::string&
 void setupSingleServoCylinder(kaco::Device& device, kaco::Bridge& bridge, std::string& eds_files_path)
 {
     
-    device.load_dictionary_from_library();
+    //device.load_dictionary_from_library();
+    const int slow_loop_rate = 1; // 1 Hz
     
     device.load_dictionary_from_eds(eds_files_path + "SC_MC630R11_v_0_7_OD.eds");
     
@@ -83,11 +84,65 @@ void setupSingleServoCylinder(kaco::Device& device, kaco::Bridge& bridge, std::s
     PRINT("Enable operation");
     device.execute("enable_operation");
 
-    auto jspub = std::make_shared<kaco::JointStatePublisher>(device, 0, 47104);
+    auto jspub = std::make_shared<kaco::JointStatePublisher>(device, 0, 47104); // min: 0, max: 6.28==2pi
     bridge.add_publisher(jspub, loop_rate);
     
     auto jssub = std::make_shared<kaco::JointStateSubscriber>(device, 0, 47104);
     bridge.add_subscriber(jssub);
+    
+    // read the current torque value
+    auto iopub_1 = std::make_shared<kaco::EntryPublisher>(device, "torque_actual_value");
+    bridge.add_publisher(iopub_1, loop_rate);
+    
+    auto iosub_1 = std::make_shared<kaco::EntrySubscriber>(device, "torque_actual_value");
+    bridge.add_subscriber(iosub_1);
+    
+    // read/write the max allowed torque value
+    auto iopub_2 = std::make_shared<kaco::EntryPublisher>(device, "max_torque");
+    bridge.add_publisher(iopub_2, slow_loop_rate);
+    
+    auto iosub_2 = std::make_shared<kaco::EntrySubscriber>(device, "max_torque");
+    bridge.add_subscriber(iosub_2);
+    
+    
+    // read the current velocity value
+    auto iopub_3 = std::make_shared<kaco::EntryPublisher>(device, "velocity_actual_value");
+    bridge.add_publisher(iopub_3, loop_rate);
+    
+    // read/write max speed
+    auto iopub_4 = std::make_shared<kaco::EntryPublisher>(device, "profile_velocity");
+    bridge.add_publisher(iopub_4, slow_loop_rate);
+    
+    auto iosub_4 = std::make_shared<kaco::EntrySubscriber>(device, "profile_velocity");
+    bridge.add_subscriber(iosub_4);
+    
+    
+    
+
+    
+    
+    // read/write heartbeat time interval in milliseconds
+    auto iopub_5 = std::make_shared<kaco::EntryPublisher>(device, "producer_heartbeat_time");
+    bridge.add_publisher(iopub_5, slow_loop_rate);
+    
+    auto iosub_5 = std::make_shared<kaco::EntrySubscriber>(device, "producer_heartbeat_time");
+    bridge.add_subscriber(iosub_5);
+    
+    
+    // profile_acceleration
+    auto iopub_6 = std::make_shared<kaco::EntryPublisher>(device, "profile_acceleration");
+    bridge.add_publisher(iopub_6, slow_loop_rate);
+    
+    auto iosub_6 = std::make_shared<kaco::EntrySubscriber>(device, "profile_acceleration");
+    bridge.add_subscriber(iosub_6);
+    
+    
+    // profile_deceleration
+    auto iopub_7 = std::make_shared<kaco::EntryPublisher>(device, "profile_deceleration");
+    bridge.add_publisher(iopub_7, slow_loop_rate);
+    
+    auto iosub_7 = std::make_shared<kaco::EntrySubscriber>(device, "profile_deceleration");
+    bridge.add_subscriber(iosub_7);
 }
 
 int main(int argc, char* argv[]) {
