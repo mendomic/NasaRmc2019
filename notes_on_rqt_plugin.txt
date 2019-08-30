@@ -1,0 +1,27 @@
+git submodule add https://github.com/OTL/rqt_ez_publisher.git
+
+rqt --force-discover
+
+
+what should be set???
+velocity_actual_value // read the current velocity value
+profile_velocity // read/write max speed
+torque_actual_value // read the current torque value
+max_torque // read/write the max allowed torque value
+read:supported_drive_modes
+
+
+some commands:
+rostopic get /device34/get_profile_velocity
+
+acceleration: 32500
+max_velocity: 8000000
+
+
+device.execute("set_controlword_flag", "controlword_quick_stop");
+
+device.execute("set_controlword_flag", "controlword_halt");
+
+Good reference for control words:
+    https://www.quicksilvercontrols.com/SP/AN/QCI-AN060_CiA402-CANopenDrivesAndMotionControlProfile.pdf
+
