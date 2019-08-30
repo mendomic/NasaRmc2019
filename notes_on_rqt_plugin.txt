@@ -24,4 +24,7 @@ device.execute("set_controlword_flag", "controlword_halt");
 
 Good reference for control words:
     https://www.quicksilvercontrols.com/SP/AN/QCI-AN060_CiA402-CANopenDrivesAndMotionControlProfile.pdf
+    
+Both halt and quick stop are implemented on the servo cylinder actuators.
+    see CANopen_SC_info.txt
 
