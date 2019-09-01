@@ -256,15 +256,14 @@ namespace tfr_control
 
                 //LOWER_ARM
                 //NOTE we reverse these because actuator is mounted backwards
-				//TODO
-                double arm_lower_position = std::max(std::min(command_values[static_cast<int>(tfr_utilities::Joint::LOWER_ARM)],1000.0), -1000.0);
+                double arm_lower_position = linear_interp(command_values[static_cast<int>(tfr_utilities::Joint::LOWER_ARM)], arm_lower_joint_min, arm_lower_encoder_min, arm_lower_joint_max, arm_lower_encoder_max);
                 sensor_msgs::JointState arm_lower_position_msg;
                 arm_lower_position_msg.position.push_back(arm_lower_position);
                 lower_arm_publisher.publish(arm_lower_position_msg);
             
 
                 //UPPER_ARM
-                double arm_upper_position = std::max(std::min(command_values[static_cast<int>(tfr_utilities::Joint::UPPER_ARM)], 1000.0), -1000.0);
+                double arm_upper_position = linear_interp(command_values[static_cast<int>(tfr_utilities::Joint::UPPER_ARM)], arm_upper_joint_min, arm_upper_encoder_min, arm_upper_joint_max, arm_upper_encoder_max);
 
                 sensor_msgs::JointState arm_upper_position_msg;
                 arm_upper_position_msg.position.push_back(arm_upper_position);
@@ -272,7 +271,7 @@ namespace tfr_control
             
 
                 //SCOOP
-                double scoop_position = std::max(std::min(command_values[static_cast<int>(tfr_utilities::Joint::SCOOP)], 1000.0), -1000.0);
+                double scoop_position = linear_interp(command_values[static_cast<int>(tfr_utilities::Joint::SCOOP)], arm_end_joint_min, arm_end_encoder_min, arm_end_joint_max, arm_end_encoder_max);
                         
                 sensor_msgs::JointState scoop_position_msg;
                 scoop_position_msg.position.push_back(scoop_position);

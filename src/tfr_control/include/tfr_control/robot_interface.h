@@ -216,18 +216,18 @@ namespace tfr_control {
 				encoder: 149
 				joint position: 1.55
 		*/
-		 int32_t arm_lower_encoder_min = 888;
-		 int32_t arm_lower_encoder_max = 0;
+		 double arm_lower_encoder_min = 5.2;
+		 double arm_lower_encoder_max = 1.2;
 		 double arm_lower_joint_min = 0.104; // lower arm UP
 		 double arm_lower_joint_max = 1.55;
 		
-		 int32_t arm_upper_encoder_min = 836; // arm UP
-		 int32_t arm_upper_encoder_max = 0;
+		 double arm_upper_encoder_min = 5.2; // arm UP
+		 double arm_upper_encoder_max = 1.2;
 		 double arm_upper_joint_min = 0.98; // arm UP
 		 double arm_upper_joint_max = 2.4; // arm DOWN, actuator EXTENDED
 		
-		 int32_t arm_end_encoder_min = 1721;
-		 int32_t arm_end_encoder_max = 0;
+		 double arm_end_encoder_min = 3.72;
+		 double arm_end_encoder_max = 1.2;
 		 double arm_end_joint_min = -1.16614; // scoop OPEN
 		 double arm_end_joint_max = 1.62; // actuator EXTENDED, scoop CLOSED
 		
