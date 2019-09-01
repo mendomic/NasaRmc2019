@@ -92,7 +92,7 @@ void setupLpmsImuDevice(kaco::Device& device, kaco::Bridge& bridge, std::string&
 void setupServoCylinderDevice(kaco::Device& device, kaco::Bridge& bridge, std::string& eds_files_path)
 {
     
-    //device.load_dictionary_from_library();
+    device.load_dictionary_from_library();
     
     device.load_dictionary_from_eds(eds_files_path + "SC_MC630R11_v_0_7_OD.eds");
     
