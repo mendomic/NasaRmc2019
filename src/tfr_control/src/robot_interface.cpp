@@ -40,21 +40,21 @@ namespace tfr_control
                 &RobotInterface::readLowerArmEncoder, this)},
         lower_arm_subscriber_amps{n.subscribe("/device12/get_qry_batamps/channel_1", 1,
                 &RobotInterface::readLowerArmAmps, this)},
-        lower_arm_publisher{n.advertise<std_msgs::Int32>("/device12/set_cmd_cango/cmd_cango_1", 1)},
+        lower_arm_publisher{n.advertise<sensor_msgs::JointState>("/device23/set_joint_state", 1)},
         
         
         upper_arm_subscriber_encoder{n.subscribe("/device45/get_joint_state", 5,
                 &RobotInterface::readUpperArmEncoder, this)},
         upper_arm_subscriber_amps{n.subscribe("/device4/get_qry_batamps/channel_3", 1,
                 &RobotInterface::readUpperArmAmps, this)},
-        upper_arm_publisher{n.advertise<std_msgs::Int32>("/device4/set_cmd_cango/cmd_cango_3", 1)},
+        upper_arm_publisher{n.advertise<sensor_msgs::JointState>("/device45/set_joint_state", 1)},
         
         
         scoop_subscriber_encoder{n.subscribe("/device56/get_joint_state", 5,
                 &RobotInterface::readScoopEncoder, this)},
         scoop_subscriber_amps{n.subscribe("/device4/get_qry_batamps/channel_2", 1,
                 &RobotInterface::readScoopAmps, this)},
-        scoop_publisher{n.advertise<std_msgs::Int32>("/device4/set_cmd_cango/cmd_cango_2", 1)},
+        scoop_publisher{n.advertise<sensor_msgs::JointState>("/device56/set_joint_state", 1)},
         
         left_tread_publisher_pid_debug_setpoint{n.advertise<std_msgs::Float64>("/left_tread_velocity_controller/pid_debug/setpoint", 1)},
         left_tread_publisher_pid_debug_state{n.advertise<std_msgs::Float64>("/left_tread_velocity_controller/pid_debug/state", 1)},
@@ -256,25 +256,26 @@ namespace tfr_control
 
                 //LOWER_ARM
                 //NOTE we reverse these because actuator is mounted backwards
-                int32_t arm_lower_position = std::max(std::min(-command_values[static_cast<int>(tfr_utilities::Joint::LOWER_ARM)],1000.0), -1000.0);
-                std_msgs::Int32 arm_lower_position_msg;
-                arm_lower_position_msg.data = arm_lower_position;
+				//TODO
+                double arm_lower_position = std::max(std::min(command_values[static_cast<int>(tfr_utilities::Joint::LOWER_ARM)],1000.0), -1000.0);
+                sensor_msgs::JointState arm_lower_position_msg;
+                arm_lower_position_msg.position.push_back(arm_lower_position);
                 lower_arm_publisher.publish(arm_lower_position_msg);
             
 
                 //UPPER_ARM
-                int32_t arm_upper_position = std::max(std::min(command_values[static_cast<int>(tfr_utilities::Joint::UPPER_ARM)], 1000.0), -1000.0);
+                double arm_upper_position = std::max(std::min(command_values[static_cast<int>(tfr_utilities::Joint::UPPER_ARM)], 1000.0), -1000.0);
 
-                std_msgs::Int32 arm_upper_position_msg;
-                arm_upper_position_msg.data = arm_upper_position;
+                sensor_msgs::JointState arm_upper_position_msg;
+                arm_upper_position_msg.position.push_back(arm_upper_position);
                 upper_arm_publisher.publish(arm_upper_position_msg);
             
 
                 //SCOOP
-                int32_t scoop_position = std::max(std::min(command_values[static_cast<int>(tfr_utilities::Joint::SCOOP)], 1000.0), -1000.0);
+                double scoop_position = std::max(std::min(command_values[static_cast<int>(tfr_utilities::Joint::SCOOP)], 1000.0), -1000.0);
                         
-                std_msgs::Int32 scoop_position_msg;
-                scoop_position_msg.data = scoop_position;
+                sensor_msgs::JointState scoop_position_msg;
+                scoop_position_msg.position.push_back(scoop_position);
                 scoop_publisher.publish(scoop_position_msg);
             
             } else {
