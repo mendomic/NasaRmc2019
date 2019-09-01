@@ -24,9 +24,15 @@ const std::string baudrate = "250K";
 const size_t num_devices_required = 1;
 
 const double loop_rate = 100; // [Hz]
+const int slow_loop_rate = 1; // 1 Hz
 
+// CANopen node IDs:
 const int IMU_NODE_ID = 120;
-const int SINGLE_SERVO_CYLINDER_NODE_ID = 34;
+const int SERVO_CYLINDER_LOWER_ARM = 23;
+const int SERVO_CYLINDER_SPARE 	= 34;
+const int SERVO_CYLINDER_UPPER_ARM = 45;
+const int SERVO_CYLINDER_SCOOP = 56;
+
 
 void setupDevice4Topics(kaco::Device& device, kaco::Bridge& bridge, std::string& eds_files_path){
     // Roboteq SDC3260 in Closed Loop Count Position mode.
@@ -70,11 +76,23 @@ void setupDevice4Topics(kaco::Device& device, kaco::Bridge& bridge, std::string&
 	bridge.add_subscriber(iopub_4_3_4);
 }
 
-void setupSingleServoCylinder(kaco::Device& device, kaco::Bridge& bridge, std::string& eds_files_path)
+
+//todo
+void setupDevice8Topics(kaco::Device& device, kaco::Bridge& bridge, std::string& eds_files_path){
+}
+
+//todo
+void setupDevice12Topics(kaco::Device& device, kaco::Bridge& bridge, std::string& eds_files_path){
+}
+
+//todo
+void setupLpmsImuDevice(kaco::Device& device, kaco::Bridge& bridge, std::string& eds_files_path){
+
+// initialize the topics for any Servo Cylinder actuator (must be 5.75" stroke length)
+void setupServoCylinderDevice(kaco::Device& device, kaco::Bridge& bridge, std::string& eds_files_path)
 {
     
     //device.load_dictionary_from_library();
-    const int slow_loop_rate = 1; // 1 Hz
     
     device.load_dictionary_from_eds(eds_files_path + "SC_MC630R11_v_0_7_OD.eds");
     
@@ -84,7 +102,10 @@ void setupSingleServoCylinder(kaco::Device& device, kaco::Bridge& bridge, std::s
     PRINT("Enable operation");
     device.execute("enable_operation");
 
-    auto jspub = std::make_shared<kaco::JointStatePublisher>(device, 0, 47104); // min: 0, max: 6.28==2pi
+
+	// min: 0 -> 0, 
+	// max: 47104 -> 6.28==2pi
+    auto jspub = std::make_shared<kaco::JointStatePublisher>(device, 0, 47104); 
     bridge.add_publisher(jspub, loop_rate);
     
     auto jssub = std::make_shared<kaco::JointStateSubscriber>(device, 0, 47104);
@@ -145,6 +166,8 @@ void setupSingleServoCylinder(kaco::Device& device, kaco::Bridge& bridge, std::s
     bridge.add_subscriber(iosub_7);
 }
 
+
+
 int main(int argc, char* argv[]) {
 
 	
@@ -183,9 +206,24 @@ int main(int argc, char* argv[]) {
 		
 		int deviceId = device.get_node_id();
 
-        if (deviceId == SINGLE_SERVO_CYLINDER_NODE_ID)
+        if (deviceId == SERVO_CYLINDER_LOWER_ARM)
         {
-            setupSingleServoCylinder(device, bridge, eds_files_path);
+            setupServoCylinderDevice(device, bridge, eds_files_path);
+        }
+		
+		if (deviceId == SERVO_CYLINDER_SPARE)
+        {
+            setupServoCylinderDevice(device, bridge, eds_files_path);
+        }
+		
+		if (deviceId == SERVO_CYLINDER_UPPER_ARM)
+        {
+            setupServoCylinderDevice(device, bridge, eds_files_path);
+        }
+		
+		if (deviceId == SERVO_CYLINDER_SCOOP)
+        {
+            setupServoCylinderDevice(device, bridge, eds_files_path);
         }
 
 		if (deviceId == 4)
