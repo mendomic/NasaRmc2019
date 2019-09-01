@@ -36,21 +36,21 @@ namespace tfr_control
         turntable_publisher{n.advertise<std_msgs::Int32>("/device4/set_cmd_cango/cmd_cango_1", 1)},
         
         
-        lower_arm_subscriber_encoder{n.subscribe("/device12/get_qry_abcntr/channel_2", 5, // "channel_2" is correct.
+        lower_arm_subscriber_encoder{n.subscribe("/device23/get_joint_state", 5, // "channel_2" is correct.
                 &RobotInterface::readLowerArmEncoder, this)},
         lower_arm_subscriber_amps{n.subscribe("/device12/get_qry_batamps/channel_1", 1,
                 &RobotInterface::readLowerArmAmps, this)},
         lower_arm_publisher{n.advertise<std_msgs::Int32>("/device12/set_cmd_cango/cmd_cango_1", 1)},
         
         
-        upper_arm_subscriber_encoder{n.subscribe("/device4/get_qry_abcntr/channel_3", 5,
+        upper_arm_subscriber_encoder{n.subscribe("/device45/get_joint_state", 5,
                 &RobotInterface::readUpperArmEncoder, this)},
         upper_arm_subscriber_amps{n.subscribe("/device4/get_qry_batamps/channel_3", 1,
                 &RobotInterface::readUpperArmAmps, this)},
         upper_arm_publisher{n.advertise<std_msgs::Int32>("/device4/set_cmd_cango/cmd_cango_3", 1)},
         
         
-        scoop_subscriber_encoder{n.subscribe("/device4/get_qry_abcntr/channel_2", 5,
+        scoop_subscriber_encoder{n.subscribe("/device56/get_joint_state", 5,
                 &RobotInterface::readScoopEncoder, this)},
         scoop_subscriber_amps{n.subscribe("/device4/get_qry_batamps/channel_2", 1,
                 &RobotInterface::readScoopAmps, this)},
@@ -460,11 +460,11 @@ namespace tfr_control
         turntable_amps = msg.data;
     }
 
-    void RobotInterface::readLowerArmEncoder(const std_msgs::Int32 &msg)
+    void RobotInterface::readLowerArmEncoder(const sensor_msgs::JointState &msg)
     {
         lower_arm_mutex.lock();
         
-        lower_arm_encoder = msg.data;
+        lower_arm_encoder = msg.position[0];
         //ROS_INFO_STREAM("lower_arm_encoder: " << lower_arm_encoder << std::endl);
         
         lower_arm_mutex.unlock();
@@ -479,11 +479,11 @@ namespace tfr_control
     }
     
     
-    void RobotInterface::readUpperArmEncoder(const std_msgs::Int32 &msg)
+    void RobotInterface::readUpperArmEncoder(const sensor_msgs::JointState &msg)
     {
         upper_arm_mutex.lock();
         
-        upper_arm_encoder = msg.data;
+        upper_arm_encoder = msg.position[0];
         //ROS_INFO_STREAM("upper_arm_encoder: " << upper_arm_encoder << std::endl);
         
         upper_arm_mutex.unlock();
@@ -497,11 +497,11 @@ namespace tfr_control
     }
     
     
-    void RobotInterface::readScoopEncoder(const std_msgs::Int32 &msg)
+    void RobotInterface::readScoopEncoder(const sensor_msgs::JointState &msg)
     {
         scoop_mutex.lock();
         
-        scoop_encoder = msg.data;
+        scoop_encoder = msg.position[0];
         //ROS_INFO_STREAM("scoop_encoder: " << scoop_encoder << std::endl);
         
         scoop_mutex.unlock();

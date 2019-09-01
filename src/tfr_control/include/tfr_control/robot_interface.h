@@ -114,34 +114,34 @@ namespace tfr_control {
 		volatile ros::Subscriber lower_arm_subscriber_encoder;
 		volatile ros::Subscriber lower_arm_subscriber_amps;
 		ros::Publisher  lower_arm_publisher;
-		volatile int32_t lower_arm_encoder = 0;
+		volatile double lower_arm_encoder = 0;
 		volatile double lower_arm_amps = 0.0;
 		std::mutex lower_arm_mutex;
 		
 		volatile ros::Subscriber upper_arm_subscriber_encoder;
 		volatile ros::Subscriber upper_arm_subscriber_amps;
 		ros::Publisher  upper_arm_publisher;
-		volatile int32_t upper_arm_encoder = 0;
+		volatile double upper_arm_encoder = 0;
 		volatile double upper_arm_amps = 0.0;
 		std::mutex upper_arm_mutex;
 		
 		volatile ros::Subscriber scoop_subscriber_encoder;
 		volatile ros::Subscriber scoop_subscriber_amps;
 		ros::Publisher  scoop_publisher;
-		volatile int32_t scoop_encoder = 0;
+		volatile double scoop_encoder = 0;
 		volatile double scoop_amps = 0.0;
 		std::mutex scoop_mutex;
 		
 		void readTurntableEncoder(const std_msgs::Int32 &msg);
 		void readTurntableAmps(const std_msgs::Float64 &msg);
 		
-		void readLowerArmEncoder(const std_msgs::Int32 &msg);
+		void readLowerArmEncoder(const sensor_msgs::JointState &msg);
 		void readLowerArmAmps(const std_msgs::Float64 &msg);
 		
-		void readUpperArmEncoder(const std_msgs::Int32 &msg);
+		void readUpperArmEncoder(const sensor_msgs::JointState &msg);
 		void readUpperArmAmps(const std_msgs::Float64 &msg);
 		
-		void readScoopEncoder(const std_msgs::Int32 &msg);
+		void readScoopEncoder(const sensor_msgs::JointState &msg);
 		void readScoopAmps(const std_msgs::Float64 &msg);
 		
 		ros::Publisher brushless_right_tread_vel_publisher;
