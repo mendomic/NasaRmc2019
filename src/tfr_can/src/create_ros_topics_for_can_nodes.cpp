@@ -137,11 +137,7 @@ void setupServoCylinderDevice(kaco::Device& device, kaco::Bridge& bridge, std::s
     auto iosub_4 = std::make_shared<kaco::EntrySubscriber>(device, "profile_velocity");
     bridge.add_subscriber(iosub_4);
     
-    
-    
 
-    
-    
     // read/write heartbeat time interval in milliseconds
     auto iopub_5 = std::make_shared<kaco::EntryPublisher>(device, "producer_heartbeat_time");
     bridge.add_publisher(iopub_5, slow_loop_rate);

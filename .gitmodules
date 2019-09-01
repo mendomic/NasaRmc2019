@@ -9,4 +9,4 @@
 	url = https://github.com/dghani/kacanopen
 [submodule "src/rqt_ez_publisher"]
 	path = src/rqt_ez_publisher
-	url = https://github.com/OTL/rqt_ez_publisher.git
+	url = https://github.com/JulioLP/rqt_ez_publisher.git
