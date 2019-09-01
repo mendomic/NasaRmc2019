@@ -95,10 +95,10 @@ namespace tfr_control
         registerJointEffortInterface("left_tread_joint", tfr_utilities::Joint::LEFT_TREAD);
         registerJointEffortInterface("right_tread_joint", tfr_utilities::Joint::RIGHT_TREAD);
         registerJointEffortInterface("bin_joint", tfr_utilities::Joint::BIN); 
-        registerJointEffortInterface("turntable_joint", tfr_utilities::Joint::TURNTABLE);
-        registerJointEffortInterface("lower_arm_joint", tfr_utilities::Joint::LOWER_ARM);
-        registerJointEffortInterface("upper_arm_joint", tfr_utilities::Joint::UPPER_ARM);
-        registerJointEffortInterface("scoop_joint", tfr_utilities::Joint::SCOOP);
+        registerJointPositionInterface("turntable_joint", tfr_utilities::Joint::TURNTABLE);
+        registerJointPositionInterface("lower_arm_joint", tfr_utilities::Joint::LOWER_ARM);
+        registerJointPositionInterface("upper_arm_joint", tfr_utilities::Joint::UPPER_ARM);
+        registerJointPositionInterface("scoop_joint", tfr_utilities::Joint::SCOOP);
         //register the interfaces with the controller layer
         registerInterface(&joint_state_interface);
         registerInterface(&joint_effort_interface);
