@@ -87,6 +87,7 @@ void setupDevice12Topics(kaco::Device& device, kaco::Bridge& bridge, std::string
 
 //todo
 void setupLpmsImuDevice(kaco::Device& device, kaco::Bridge& bridge, std::string& eds_files_path){
+}
 
 // initialize the topics for any Servo Cylinder actuator (must be 5.75" stroke length)
 void setupServoCylinderDevice(kaco::Device& device, kaco::Bridge& bridge, std::string& eds_files_path)
