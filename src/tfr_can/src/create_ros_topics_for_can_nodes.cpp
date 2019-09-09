@@ -9,6 +9,7 @@
 #include <thread>
 #include <chrono>
 #include <memory>
+#include <iomanip>
 
 //#include <ros/package.h> // for looking up the location of the current package, in order to find our EDS files.
 //#include <ros>
@@ -165,6 +166,30 @@ void setupServoCylinderDevice(kaco::Device& device, kaco::Bridge& bridge, std::s
 
 
 
+// Usage: e.g. intToHexString(10) == "A"
+std::string intToHexString(int n)
+{
+    std::stringstream stream;
+    stream << std::hex << n;
+    std::string result( stream.str() );
+
+    return result;
+}
+
+void resetCanopenNode(std::string busname, int node_id)
+{ 
+    // For reference on the "reset node" message, see: 
+    //  https://en.wikipedia.org/wiki/CANopen#Network_management_(NMT)_protocols
+    const std::string nmt_command_reset_node = "81";
+    const std::string nmt_command_reset_communication = "82";
+
+    std::string node_id_hex = intToHexString(node_id);
+
+    std::system(("cansend " + busname + " 000#" + nmt_command_reset_node + node_id_hex).c_str());
+    
+    return;
+}
+
 int main(int argc, char* argv[]) {
 
 	
@@ -174,8 +199,25 @@ int main(int argc, char* argv[]) {
 		return EXIT_FAILURE;
 	}
 
-	std::this_thread::sleep_for(std::chrono::seconds(1));
+    std::this_thread::sleep_for(std::chrono::seconds(1));
 	
+    // send the CANopen "reset node" message to each of the servo cylinder actuators. This is done because the actuators send out one heartbeart message when they are powered on or reset. We send the messages here so that Kacanopen will see the heartbeat from  each actuators and realize that they are there.
+    resetCanopenNode(busname, SERVO_CYLINDER_SCOOP);
+    std::this_thread::sleep_for(std::chrono::milliseconds(250));
+
+    resetCanopenNode(busname, SERVO_CYLINDER_UPPER_ARM);
+    std::this_thread::sleep_for(std::chrono::milliseconds(250));
+
+    resetCanopenNode(busname, SERVO_CYLINDER_SPARE);
+    std::this_thread::sleep_for(std::chrono::milliseconds(250));
+
+    resetCanopenNode(busname, SERVO_CYLINDER_LOWER_ARM);
+
+    //std::system("cansend " + busname + " 000#8138");
+    //std::system("cansend " + busname + " 000#812D");
+    //std::system("cansend " + busname + " 000#8122");
+    //std::system("cansend " + busname + " 000#8117");
+
 	while (master.num_devices()<num_devices_required) {
 		ERROR("Number of devices found: " << master.num_devices() << ". Waiting for " << num_devices_required << ".");
 		//PRINT("Trying to discover more nodes via NMT Node Guarding...");
