@@ -117,12 +117,10 @@ class Control
             robot_interface.read();
             //update controllers
             controller_interface.update(ros::Time::now(), cycle);
-            if (!enabled)
-                robot_interface.clearCommands();
+            //if (!enabled)
+            //    robot_interface.clearCommands();
             //update hardware from controllers
-            robot_interface.write();
-			
-			publishIMUOdometry();
+            //robot_interface.write();
 			
             cycle.sleep();
         }
