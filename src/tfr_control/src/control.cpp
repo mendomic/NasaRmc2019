@@ -120,7 +120,7 @@ class Control
             //if (!enabled)
             //    robot_interface.clearCommands();
             //update hardware from controllers
-            //robot_interface.write();
+            robot_interface.write();
 			
             cycle.sleep();
         }
