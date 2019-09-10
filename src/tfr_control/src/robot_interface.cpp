@@ -276,8 +276,6 @@ namespace tfr_control
 				double arm_upper_position = linear_interp(command_values[static_cast<int>(tfr_utilities::Joint::UPPER_ARM)], arm_upper_joint_min, arm_upper_encoder_min, arm_upper_joint_max, arm_upper_encoder_max);
 				if (arm_upper_position != prev_arm_upper_position)
 				{
-					
-
 					sensor_msgs::JointState arm_upper_position_msg;
 					arm_upper_position_msg.position.push_back(arm_upper_position);
 					upper_arm_publisher.publish(arm_upper_position_msg);
