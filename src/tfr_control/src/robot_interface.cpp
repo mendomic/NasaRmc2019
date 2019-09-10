@@ -36,7 +36,7 @@ namespace tfr_control
         turntable_publisher{n.advertise<std_msgs::Int32>("/device4/set_cmd_cango/cmd_cango_1", 1)},
         
         
-        lower_arm_subscriber_encoder{n.subscribe("/device23/get_joint_state", 5, // "channel_2" is correct.
+        lower_arm_subscriber_encoder{n.subscribe("/device23/get_joint_state", 5, 
                 &RobotInterface::readLowerArmEncoder, this)},
         lower_arm_subscriber_amps{n.subscribe("/device12/get_qry_batamps/channel_1", 1,
                 &RobotInterface::readLowerArmAmps, this)},
@@ -231,6 +231,9 @@ namespace tfr_control
      * */
     void RobotInterface::write() 
     {
+		static double prev_arm_lower_position = std::numeric_limits<double>::quiet_NaN();
+		static double prev_arm_upper_position = std::numeric_limits<double>::quiet_NaN();
+		static double prev_scoop_position = std::numeric_limits<double>::quiet_NaN();
 
         double signal;
         if (use_fake_values) //test code  for working with rviz simulator
@@ -254,28 +257,44 @@ namespace tfr_control
                 turntable_publisher.publish(turntable_position_msg);
 
 
-                //LOWER_ARM
-                //NOTE we reverse these because actuator is mounted backwards
-                double arm_lower_position = linear_interp(command_values[static_cast<int>(tfr_utilities::Joint::LOWER_ARM)], arm_lower_joint_min, arm_lower_encoder_min, arm_lower_joint_max, arm_lower_encoder_max);
-                sensor_msgs::JointState arm_lower_position_msg;
-                arm_lower_position_msg.position.push_back(arm_lower_position);
-                lower_arm_publisher.publish(arm_lower_position_msg);
+				// For the Servo Cylinder actuators, only publish a setpoint to them if the setpoint has actually changed. 
+				// Testing whether this smoothes out the movement of the actuators.
+				
+				//LOWER_ARM
+				//NOTE we reverse these because actuator is mounted backwards
+				double arm_lower_position = linear_interp(command_values[static_cast<int>(tfr_utilities::Joint::LOWER_ARM)], arm_lower_joint_min, arm_lower_encoder_min, arm_lower_joint_max, arm_lower_encoder_max);
+				if (arm_lower_position != prev_arm_lower_position)
+				{
+					sensor_msgs::JointState arm_lower_position_msg;
+					arm_lower_position_msg.position.push_back(arm_lower_position);
+					lower_arm_publisher.publish(arm_lower_position_msg);
+					
+					prev_arm_lower_position = arm_lower_position;
+				}
+
+				//UPPER_ARM
+				double arm_upper_position = linear_interp(command_values[static_cast<int>(tfr_utilities::Joint::UPPER_ARM)], arm_upper_joint_min, arm_upper_encoder_min, arm_upper_joint_max, arm_upper_encoder_max);
+				if (arm_upper_position != prev_arm_upper_position)
+				{
+					
+
+					sensor_msgs::JointState arm_upper_position_msg;
+					arm_upper_position_msg.position.push_back(arm_upper_position);
+					upper_arm_publisher.publish(arm_upper_position_msg);
+					
+					prev_arm_upper_position = arm_upper_position;
+				}
             
-
-                //UPPER_ARM
-                double arm_upper_position = linear_interp(command_values[static_cast<int>(tfr_utilities::Joint::UPPER_ARM)], arm_upper_joint_min, arm_upper_encoder_min, arm_upper_joint_max, arm_upper_encoder_max);
-
-                sensor_msgs::JointState arm_upper_position_msg;
-                arm_upper_position_msg.position.push_back(arm_upper_position);
-                upper_arm_publisher.publish(arm_upper_position_msg);
-            
-
-                //SCOOP
-                double scoop_position = linear_interp(command_values[static_cast<int>(tfr_utilities::Joint::SCOOP)], arm_end_joint_min, arm_end_encoder_min, arm_end_joint_max, arm_end_encoder_max);
-                        
-                sensor_msgs::JointState scoop_position_msg;
-                scoop_position_msg.position.push_back(scoop_position);
-                scoop_publisher.publish(scoop_position_msg);
+				//SCOOP
+				double scoop_position = linear_interp(command_values[static_cast<int>(tfr_utilities::Joint::SCOOP)], arm_end_joint_min, arm_end_encoder_min, arm_end_joint_max, arm_end_encoder_max);
+				if (scoop_position != prev_scoop_position)
+				{		
+					sensor_msgs::JointState scoop_position_msg;
+					scoop_position_msg.position.push_back(scoop_position);
+					scoop_publisher.publish(scoop_position_msg);
+					
+					prev_scoop_position = scoop_position;
+				}
             
             } else {
                 //ROS_INFO("Robot Interface: not writing arm values");
