@@ -1,5 +1,5 @@
 <launch>
     <node name="digging_action_server" type="digging_action_server" pkg="tfr_mining" output="screen" >
-        <rosparam file="$(find tfr_mining)/data/lets_go_dig.yaml" command="load" />
+        <rosparam file="$(find tfr_mining)/data/test_queue.yaml" command="load" />
     </node>
 </launch>
