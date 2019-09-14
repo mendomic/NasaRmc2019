@@ -162,18 +162,18 @@ namespace tfr_control
                 linear_interp<double>(
                     static_cast<double>(upper_arm_encoder),
                     static_cast<double>(arm_upper_encoder_min),
-                    arm_upper_joint_min,
+                    arm_upper_joint_max,
                     static_cast<double>(arm_upper_encoder_max),
-                    arm_upper_joint_max
+                    arm_upper_joint_min
                     );
 
             double scoop_position_double = 
                 linear_interp<double>(
                     static_cast<double>(scoop_encoder),
                     static_cast<double>(arm_end_encoder_min),
-                    arm_end_joint_min,
+                    arm_end_joint_max,
                     static_cast<double>(arm_end_encoder_max),
-                    arm_end_joint_max
+                    arm_end_joint_min
                     );
 
             position_values[static_cast<int>(tfr_utilities::Joint::LOWER_ARM)] = lower_arm_position_double;
@@ -273,7 +273,7 @@ namespace tfr_control
 				}
 
 				//UPPER_ARM
-				double arm_upper_position = linear_interp(command_values[static_cast<int>(tfr_utilities::Joint::UPPER_ARM)], arm_upper_joint_min, arm_upper_encoder_min, arm_upper_joint_max, arm_upper_encoder_max);
+				double arm_upper_position = linear_interp(command_values[static_cast<int>(tfr_utilities::Joint::UPPER_ARM)], arm_upper_joint_min, arm_upper_encoder_max, arm_upper_joint_max, arm_upper_encoder_min);
 				if (arm_upper_position != prev_arm_upper_position)
 				{
 					sensor_msgs::JointState arm_upper_position_msg;
@@ -284,7 +284,7 @@ namespace tfr_control
 				}
             
 				//SCOOP
-				double scoop_position = linear_interp(command_values[static_cast<int>(tfr_utilities::Joint::SCOOP)], arm_end_joint_min, arm_end_encoder_min, arm_end_joint_max, arm_end_encoder_max);
+				double scoop_position = linear_interp(command_values[static_cast<int>(tfr_utilities::Joint::SCOOP)], arm_end_joint_min, arm_end_encoder_max, arm_end_joint_max, arm_end_encoder_min);
 				if (scoop_position != prev_scoop_position)
 				{		
 					sensor_msgs::JointState scoop_position_msg;
