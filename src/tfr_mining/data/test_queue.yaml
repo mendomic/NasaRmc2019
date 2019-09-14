@@ -3,9 +3,9 @@ positions: [
   [[3.05, 0.45, 1.26, 1.0], ##1azero position
   [3.05, 0.45, 1.26, 0.08], #move scoop
   [3.05, 0.45, 1.26, 1.0]],  # zero position
-  [[3.05, 0.45, 1.26, 1.0], ##1azero position
-  [3.05, 0.45, 1.85, 1.0], #move upper arm
-  [3.05, 0.45, 1.26, 1.0]],  # zero position
+#  [[3.05, 0.45, 1.26, 1.0], ##1azero position
+#  [3.05, 0.45, 1.85, 1.0], #move upper arm
+#  [3.05, 0.45, 1.26, 1.0]],  # zero position
   [[3.05, 0.45, 1.26,1.0], ##1azero position
   [3.05, 1.0, 1.26, 1.0], #move lower arm
   [3.05, 0.45, 1.26, 1.0]],  # zero position
