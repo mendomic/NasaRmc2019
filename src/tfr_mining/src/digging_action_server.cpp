@@ -79,13 +79,6 @@ private:
             ros::Time now = ros::Time::now();
 
             ROS_INFO("starting set");
-            // If we don't have enough time, bail on the action and exit
-            /*if ((endTime - now).toSec() < set.getTimeEstimate())
-            {
-                ROS_INFO("Not enough time to complete the next digging set, exiting. cost: %f remaining: %f",
-                        set.getTimeEstimate(), (endTime - now).toSec() );
-                break;
-            }*/
             
             std::queue<std::vector<double> > current_set{set.states};
 
@@ -93,71 +86,26 @@ private:
             {
                 std::vector<double> state = current_set.front();
                 current_set.pop();
-                tfr_msgs::ArmMoveGoal goal;
-                goal.pose.resize(5);
-                goal.pose[0] = state[0];
-                goal.pose[1] = state[1];
-                goal.pose[2] = state[2];
-                goal.pose[3] = state[3];
+                
+                // Use arm_manipulator, and NOT MoveIt, to send commands to the arm. The actuators will just move to each of the points in the digging queue, there is no trajectory or other points being generated. There is also no collision checking, so be careful.
+                ROS_INFO("Moving arm to position: %.2f %.2f %.2f %.2f", state[0], state[1], state[2], state[3]);
+                arm_manipulator.moveArmWithoutPlanningOrLimits(state[0], state[1], state[2], state[3]);
+                ros::Duration(2.0).sleep();
 
-                ROS_INFO("goal %f %f %f %f", goal.pose[0], goal.pose[1], goal.pose[2], goal.pose[3]);
-
-                client.sendGoal(goal);
                 ros::Rate rate(10.0);
 
-                while (!client.getState().isDone() && ros::ok())
+                if (server.isPreemptRequested() || !ros::ok())
                 {
-                    if (server.isPreemptRequested() || !ros::ok())
-                    {
-                        ROS_INFO("Preempting digging action server");
-                        client.cancelAllGoals();
-                        tfr_msgs::DiggingResult result;
-                        server.setPreempted(result);
-                        ROS_WARN("Moving arm to final position, exiting.");
-                        arm_manipulator.moveArm(0.0, 0.1, 1.07, -1.0);
-                        ros::Duration(8.0).sleep();
-                        arm_manipulator.moveArm(0.0, 0.1, 1.07, 1.6);
-                        ros::Duration(3.0).sleep();
-                        arm_manipulator.moveArm(0, 0.50, 1.07, 1.6);
-                        return;
-                    }
-
-
-                    rate.sleep();
-                }
-                
-                if (client.getState() != actionlib::SimpleClientGoalState::SUCCEEDED)
-                {
-                    ROS_WARN("Error executing arm action server to state, exiting.");
+                    ROS_INFO("Preempting digging action server");
+                    client.cancelAllGoals();
                     tfr_msgs::DiggingResult result;
-                    server.setAborted(result);
+                    server.setPreempted(result);
+                    return;
                 }
 
-                if (std::abs(goal.pose[0]) < 3.14159265/2) { // If the turntable is going to around the bin (the problem area)
-                    ros::Duration(1.5).sleep(); // Setting this to 2 seconds works for sure
-                }
-                
-                /*if (std::abs(state[4]) > 1.05 )
-                {
-                    geometry_msgs::Twist pulse;
-                    pulse.linear.x = -0.2;
-                    drivebase_publisher.publish(pulse);
-                    ros::Duration(0.75).sleep(); 
-                    pulse.linear.x = 0;
-                    drivebase_publisher.publish(pulse);
-                }
-                else if (std::abs(state[4]) > 0.05)
-                {
-                    ros::Duration(0.5).sleep(); 
-                }*/
+                rate.sleep();
             }
         }
-        /*ROS_WARN("Moving arm to final position, exiting.");
-        arm_manipulator.moveArm(0.0, 0.1, 1.07, -1.0);
-        ros::Duration(3.0).sleep();
-        arm_manipulator.moveArm(0.0, 0.1, 1.07, 1.6);
-        ros::Duration(3.0).sleep();
-        arm_manipulator.moveArm(0, 0.50, 1.07, 1.6);*/
 
         tfr_msgs::DiggingResult result;
         server.setSucceeded(result);

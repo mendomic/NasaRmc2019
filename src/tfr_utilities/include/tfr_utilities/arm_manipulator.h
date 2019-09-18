@@ -37,6 +37,11 @@ class ArmManipulator
 		 * Same as moveArm but clamps trajectories to be within the URDF model's joint limits.
 		 */
 		void moveArmWithLimits(const double& turntable, const double& lower_arm ,const double& upper_arm,  const double& scoop );
+
+
+        void moveArmWithoutPlanningOrLimits(
+            const double& turntable, const double& lower_arm, const double& upper_arm, const double& scoop);
+        
     private:
         ros::Publisher trajectory_publisher;
         ros::Publisher scoop_trajectory_publisher;
@@ -49,6 +54,9 @@ class ArmManipulator
 
 		double lower_limits[tfr_utilities::Joint::JOINT_COUNT] = {0};
 		double upper_limits[tfr_utilities::Joint::JOINT_COUNT] = {0};
+
+        trajectory_msgs::JointTrajectory createSinglePointArmTrajectory(const double turntable, const double lower_arm, const double upper_arm);
+        trajectory_msgs::JointTrajectory createSinglePointArmEndTrajectory(const double scoop);
  };
 
 #endif
