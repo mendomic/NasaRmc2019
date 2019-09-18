@@ -2,8 +2,8 @@
 
 ArmManipulator::ArmManipulator(ros::NodeHandle &n, bool init_joints):
             arm_action_client{n, "move_arm"},
-            trajectory_publisher{n.advertise<trajectory_msgs::JointTrajectory>("/arm_controller/command", 5)},
-            scoop_trajectory_publisher{n.advertise<trajectory_msgs::JointTrajectory>("/arm_end_controller/command", 5)}
+            trajectory_publisher{n.advertise<std_msgs::Float64MultiArray>("/arm_controller/command", 5)},
+            scoop_trajectory_publisher{n.advertise<std_msgs::Float64MultiArray>("/arm_end_controller/command", 5)}
 {
   ROS_INFO("Initializing Arm Manipulator");
 	if (init_joints) initializeJointLimits();
@@ -86,12 +86,30 @@ void ArmManipulator::moveArmWithoutPlanningOrLimits(
     ROS_INFO_STREAM("moveArmWithoutPlanningOrLimits() called by: " << ros::this_node::getName() << ". Parameters: " << turntable << ", " << lower_arm << ", " << upper_arm << ", " << scoop << std::endl);
 
     // Reference: http://wiki.ros.org/pr2_controllers/Tutorials/Moving%20the%20arm%20using%20the%20Joint%20Trajectory%20Action#Creating_the_node
-
+    
+    // Doesn't work anymore since controllers.yaml was changed to make the arm just a Position controller, no longer a Trajectory controller.
+    /*
     trajectory_msgs::JointTrajectory arm_traj = createSinglePointArmTrajectory(turntable, lower_arm, upper_arm);
     trajectory_msgs::JointTrajectory arm_end_traj = createSinglePointArmEndTrajectory(scoop);    
 
     trajectory_publisher.publish(arm_traj);
     scoop_trajectory_publisher.publish(arm_end_traj);
+    */
+
+    
+
+    // alternative for the Position (not Trajectory) controllers.
+    std_msgs::Float64MultiArray arm_command;
+    std_msgs::Float64MultiArray arm_end_command;
+
+    arm_command.data.push_back(turntable);
+    arm_command.data.push_back(lower_arm);
+    arm_command.data.push_back(upper_arm);
+
+    arm_end_command.data.push_back(scoop);
+    
+    trajectory_publisher.publish(arm_command);
+    scoop_trajectory_publisher.publish(arm_end_command);
 
     return;
 }

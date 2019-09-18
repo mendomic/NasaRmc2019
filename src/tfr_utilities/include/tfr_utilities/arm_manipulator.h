@@ -2,6 +2,7 @@
 #define ARM_MANIPULATOR_H
 #include <ros/ros.h>
 #include <tfr_msgs/ArmMoveAction.h>
+#include <std_msgs/Float64MultiArray.h>
 #include <actionlib/server/simple_action_server.h>
 #include <trajectory_msgs/JointTrajectory.h>
 #include <joints.h>
