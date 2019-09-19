@@ -28,7 +28,7 @@
   <joint name="turntable_joint" type="revolute">
     <parent link="base_link" />
     <child link="turntable" />
-    <origin xyz="${base_length/2-turntable_radius} 0 ${drivebase_front_beam_height/2}" rpy="0 0 ${pi}" />
+    <origin xyz="${base_length/2-turntable_radius} 0 ${drivebase_front_beam_height/2}" rpy="0 0 0" />
     <axis xyz="0 0 1" />
     <limit effort="1.0" velocity="1.0" lower="${-1.1*pi}" upper="${1.1*pi}" />
   </joint>
