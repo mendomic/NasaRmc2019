@@ -90,7 +90,7 @@ private:
                 // Use arm_manipulator, and NOT MoveIt, to send commands to the arm. The actuators will just move to each of the points in the digging queue, there is no trajectory or other points being generated. There is also no collision checking, so be careful.
                 ROS_INFO("Moving arm to position: %.2f %.2f %.2f %.2f", state[0], state[1], state[2], state[3]);
                 arm_manipulator.moveArmWithoutPlanningOrLimits(state[0], state[1], state[2], state[3]);
-                ros::Duration(2.0).sleep();
+                ros::Duration(0.5).sleep();
 
                 ros::Rate rate(10.0);
 
