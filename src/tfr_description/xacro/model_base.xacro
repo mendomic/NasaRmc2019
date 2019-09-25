@@ -70,6 +70,15 @@
     </inertial>
 
   </link>
+  
+  <!-- Not final orientation or name, only for testing -->
+  <!-- RPLidar 2D LIDAR -->
+  <xacro:macro name="sensor_rplidar" params="parent">
+      <joint name="laser" type="fixed">
+          <origin xyz="${(tube_width / 2 - base_length / 2)/2} 0 ${tube_width + 0.1}" rpy="0 0 0" />
+          <parent link="base_link" />
+      </joint>
+  </xacro:macro>
 
   <!-- DRIVEBASE -->
   <!-- A general tread huge block: may be refined later for slightly better operational motion -->

@@ -4,4 +4,6 @@
     <include file="$(find tfr_sensor)/launch/fiducial_odom.launch"/>
     <include file="$(find tfr_sensor)/launch/drivebase_odom.launch"/>
     <include file="$(find tfr_sensor)/launch/fusion.launch"/>
+    <include file="$(find rplidar_ros)/launch/rplidar.launch"/>
+    <!-- <include file="$(find rplidar_ros)/launch/view_rplidar.launch"/> -->
 </launch>
