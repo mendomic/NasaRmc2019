@@ -7,3 +7,11 @@
 [submodule "src/kacanopen"]
 	path = src/kacanopen
 	url = https://github.com/dghani/kacanopen
+[submodule "timesync"]
+	path = src/timesync
+	url = https://github.com/larics/timesync.git
+	branch = master
+[submodule "src/lpms_imu"]
+	path = src/lpms_imu
+	url = https://github.com/larics/lpms_imu.git
+	branch = master
