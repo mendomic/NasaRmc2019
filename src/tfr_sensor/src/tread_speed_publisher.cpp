@@ -30,7 +30,7 @@ private:
     unsigned int prevTickCount; // last recorded position of wheel
     const unsigned int ticksPerRevolution; // number of ticks counted each revolution of the measured wheel
     const unsigned int maxTicks; // number of ticks counted before rolling over back to 0
-    const double wheelRadius // radius of wheel (for which ticks are being counted) in meters
+    const double wheelRadius; // radius of wheel (for which ticks are being counted) in meters
 };
 
 int main(int argc, char** argv) {
@@ -40,10 +40,10 @@ int main(int argc, char** argv) {
     bool requiredParamsFound = true;
     double wheelRadius, ticksPerRevolution, maxTicks;
     double rate; //rate: how quickly to publish hz.
-    requiredParamsFound = requiredParamsFound && ros::param::getParam<double>("~wheelRadius", wheelRadius);
-    requiredParamsFound = requiredParamsFound && ros::param::getParam<double>("~ticksPerRevolution", ticksPerRevolution);
-    requiredParamsFound = requiredParamsFound && ros::param::getParam<double>("~maxTicks", maxTicks);
-    if (!requiredParamsFound) {//throw an error or something...}
+    requiredParamsFound = requiredParamsFound && ros::param::get("~wheelRadius", wheelRadius);
+    requiredParamsFound = requiredParamsFound && ros::param::get("~ticksPerRevolution", ticksPerRevolution);
+    requiredParamsFound = requiredParamsFound && ros::param::get("~maxTicks", maxTicks);
+    //if (!requiredParamsFound) {//throw an error or something...}
     
     ros::Publisher leftTreadPublisher = n.advertise<std_msgs::Float64>("/left_tread_speed", 15);
     ros::Publisher rightTreadPublisher = n.advertise<std_msgs::Float64>("/right_tread_speed", 15);
@@ -62,14 +62,14 @@ int main(int argc, char** argv) {
         rightTreadPublisher.publish(new_msg);
 
     };
-    auto leftTreadCountSub = n.subscribe("/left_tread_count", 10, leftTreadCallback);
-    auto rightTreadCountSub = n.subscribe("/right_tread_count", 10, rightTreadCallback);
+    auto leftTreadCountSub = n.subscribe< std_msgs::UInt32 >("/left_tread_count", 10, leftTreadCallback);
+    auto rightTreadCountSub = n.subscribe< std_msgs::UInt32 >("/right_tread_count", 10, rightTreadCallback);
     
     ros::param::param<double>("~rate", rate, 10.0);
-    ros::Rate rate(rate);
+    ros::Rate loop_rate(rate);
     while (ros::ok()) {
         ros::spinOnce();
-        rate.sleep();
+        loop_rate.sleep();
 
     }
     return 0;

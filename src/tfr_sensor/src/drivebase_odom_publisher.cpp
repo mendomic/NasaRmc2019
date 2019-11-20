@@ -59,10 +59,11 @@ class DrivebaseOdometryPublisher
             tf_broadcaster{}
     {
         //get most current sensor infromation
-        auto leftTreadCallback = [&leftTreadSpeed](const std_msgs::Float64& msg) {leftTreadSpeed = msg.data; };
-        auto rightTreadCallback = [&rightTreadSpeed](const std_msgs::Float64& msg) {rightTreadSpeed = msg.data; };
-        leftTreadCountSub = n.subscribe("/left_tread_speed", 15, leftTreadCallback);
-        rightTreadCountSub = n.subscribe("/right_tread_count", 15, rightTreadCallback);
+        auto leftTreadCallback = [this](const std_msgs::Float64& msg) {this->leftTreadSpeed = msg.data; };
+        auto rightTreadCallback = [this](const std_msgs::Float64& msg) {this->rightTreadSpeed = msg.data; };
+        
+		leftTreadCountSub = n.subscribe<std_msgs::Float64 >("/left_tread_speed", 15, leftTreadCallback);
+        rightTreadCountSub = n.subscribe<std_msgs::Float64 >("/right_tread_count", 15, rightTreadCallback);
         
         //odometry_publisher: publish to the location of the base_footprint tracked by tread motion.
         odometry_publisher = n.advertise<nav_msgs::Odometry>("/drivebase_odom", 15); 
@@ -302,12 +303,12 @@ int main(int argc, char **argv)
     ros::param::param<double>("~wheel_span", wheel_span, 0.645);
     ros::param::param<double>("~rate", rate, 10.0);
     DrivebaseOdometryPublisher publisher{n, parent_frame, child_frame, wheel_span};
-    ros::Rate rate(rate);
+    ros::Rate loop_rate(rate);
     while(ros::ok())
     {
         publisher.processOdometry(); //arduino readings are published across the network
         ros::spinOnce();
-        rate.sleep();
+        loop_rate.sleep();
 
     }
     return 0;
