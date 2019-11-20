@@ -1,4 +1,5 @@
 #include <ros/ros.h>
+#include <boost/function.hpp>
 #include "std_msgs/UInt32.h"
 #include "std_msgs/Float64.h"
 
@@ -48,22 +49,22 @@ int main(int argc, char** argv) {
     ros::Publisher leftTreadPublisher = n.advertise<std_msgs::Float64>("/left_tread_speed", 15);
     ros::Publisher rightTreadPublisher = n.advertise<std_msgs::Float64>("/right_tread_speed", 15);
     TreadSpeed leftTread(ticksPerRevolution, maxTicks, wheelRadius), rightTread(ticksPerRevolution, maxTicks, wheelRadius);
-    auto leftTreadCallback = [&leftTread, &leftTreadPublisher](const std_msgs::UInt32& msg) {
+    boost::function<void(const std_msgs::UInt32&)> leftTreadCallback = [&leftTread, &leftTreadPublisher](const std_msgs::UInt32& msg) {
         std_msgs::Float64 new_msg;
         leftTread.updateFromNewCount(msg.data);
         new_msg.data = leftTread.speed;
         leftTreadPublisher.publish(new_msg);
 
     };
-    auto rightTreadCallback = [&rightTread, &rightTreadPublisher](const std_msgs::UInt32& msg) {
+    boost::function<void(const std_msgs::UInt32&)> rightTreadCallback = [&rightTread, &rightTreadPublisher](const std_msgs::UInt32& msg) {
         std_msgs::Float64 new_msg;
         rightTread.updateFromNewCount(msg.data);
         new_msg.data = rightTread.speed;
         rightTreadPublisher.publish(new_msg);
 
     };
-    auto leftTreadCountSub = n.subscribe< std_msgs::UInt32 >("/left_tread_count", 10, leftTreadCallback);
-    auto rightTreadCountSub = n.subscribe< std_msgs::UInt32 >("/right_tread_count", 10, rightTreadCallback);
+    auto leftTreadCountSub = n.subscribe<std_msgs::UInt32>("/left_tread_count", 10, leftTreadCallback);
+    auto rightTreadCountSub = n.subscribe<std_msgs::UInt32>("/right_tread_count", 10, rightTreadCallback);
     
     ros::param::param<double>("~rate", rate, 10.0);
     ros::Rate loop_rate(rate);

@@ -21,6 +21,7 @@
  *  odometry to a new position
  * */
 #include <ros/ros.h>
+#include <boost/function.hpp>
 #include <tfr_msgs/ArduinoAReading.h>
 #include <tfr_msgs/ArduinoBReading.h>
 #include <tfr_msgs/SetOdometry.h>
@@ -59,11 +60,11 @@ class DrivebaseOdometryPublisher
             tf_broadcaster{}
     {
         //get most current sensor infromation
-        auto leftTreadCallback = [this](const std_msgs::Float64& msg) {this->leftTreadSpeed = msg.data; };
-        auto rightTreadCallback = [this](const std_msgs::Float64& msg) {this->rightTreadSpeed = msg.data; };
+        boost::function<void(const std_msgs::Float64&)> leftTreadCallback = [this](const std_msgs::Float64& msg) {this->leftTreadSpeed = msg.data; };
+        boost::function<void(const std_msgs::Float64&)> rightTreadCallback = [this](const std_msgs::Float64& msg) {this->rightTreadSpeed = msg.data; };
         
-		leftTreadCountSub = n.subscribe<std_msgs::Float64 >("/left_tread_speed", 15, leftTreadCallback);
-        rightTreadCountSub = n.subscribe<std_msgs::Float64 >("/right_tread_count", 15, rightTreadCallback);
+		leftTreadCountSub = n.subscribe<std_msgs::Float64>("/left_tread_speed", 15, leftTreadCallback);
+        rightTreadCountSub = n.subscribe<std_msgs::Float64>("/right_tread_count", 15, rightTreadCallback);
         
         //odometry_publisher: publish to the location of the base_footprint tracked by tread motion.
         odometry_publisher = n.advertise<nav_msgs::Odometry>("/drivebase_odom", 15); 
