@@ -1,5 +1,5 @@
 <launch>
-    <node name="drivebase_odom_publisher" pkg="tfr_sensor" type="tread_speed_publisher" output="screen">
+    <node name="drivebase_odom_publisher_v2" pkg="tfr_sensor" type="tread_speed_publisher" output="screen">
         <remap from="/left_tread_count" to="/device8/get_qry_abcntr/channel_1"/>
         <remap from="/right_tread_count" to="/device8/get_qry_abcntr/channel_2"/>
         <rosparam>
