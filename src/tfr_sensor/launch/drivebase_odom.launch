@@ -3,9 +3,9 @@
         <remap from="/left_tread_count" to="/device8/get_qry_abcntr/channel_1"/>
         <remap from="/right_tread_count" to="/device8/get_qry_abcntr/channel_2"/>
         <rosparam>
-            maxTicks: ???
-            ticksPerRevolution: ???
-            wheelRadius: ??? 
+            maxTicks: 2147483647
+            ticksPerRevolution: 5120
+            wheelRadius: 0.15 
         </rosparam>
     </node>
     <node name="drivebase_odom_publisher" pkg="tfr_sensor" type="drivebase_odom_publisher" output="screen">
