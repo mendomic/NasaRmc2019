@@ -20,11 +20,8 @@ public:
 private:
 
     int calcTickDiff(const int newCount) {
-        // handle rollover from going past maxTicks
-        if (prevTickCount > newCount) {
-            auto ticksToMax = maxTicks - prevTickCount;
-            return ticksToMax + newCount;
-        }
+        //TODO: handle rollover from going past maxTicks
+
         // otherwise its a simple difference
         return newCount - prevTickCount;
     }
