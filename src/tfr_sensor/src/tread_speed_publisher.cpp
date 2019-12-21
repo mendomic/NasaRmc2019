@@ -8,12 +8,22 @@ class TreadSpeed {
 public:
     double speed;
 
-    TreadSpeed(const int ticksPerRevolution, const int maxTicks, const double wheelRadius, const int prevTickCount = 0) :
-        speed{ 0 }, prevTickCount{ prevTickCount }, ticksPerRevolution{ ticksPerRevolution }, maxTicks{ maxTicks }, wheelRadius{ wheelRadius } {}
+    TreadSpeed(const int ticksPerRevolution, const int maxTicks, const double wheelRadius, const int prevTickCount = 0, const ros::Time * prevTime= nullptr):
+        speed{ 0 }, prevTickCount{ prevTickCount }, ticksPerRevolution{ ticksPerRevolution }, maxTicks{ maxTicks }, wheelRadius{ wheelRadius } {
+            if (prevTime == nullptr){
+                this->prevTime = ros::Time::now();
+            } else {
+                this->prevTime = *prevTime;
+            }
+        }
 
     void updateFromNewCount(const int newCount) {
+        auto currentTime = ros::Time::now();
         auto ticksMoved = calcTickDiff(newCount);
-        speed = (wheelRadius * ticksMoved) / ticksPerRevolution;
+        auto distanceTraveled = (wheelRadius * ticksMoved) / ticksPerRevolution;
+        double elapsedSeconds = (currentTime - prevTime).toSec();
+        speed = distanceTraveled/elapsedSeconds;
+        prevTime = currentTime;
         prevTickCount = newCount;
     }
     
@@ -27,6 +37,7 @@ private:
     }
 
     int prevTickCount; // last recorded position of wheel
+    ros::Time prevTime;
     const int ticksPerRevolution; // number of ticks counted each revolution of the measured wheel
     const int maxTicks; // number of ticks counted before rolling over back to 0
     const double wheelRadius; // radius of wheel (for which ticks are being counted) in meters
