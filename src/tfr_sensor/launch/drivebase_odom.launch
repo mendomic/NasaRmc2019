@@ -5,7 +5,7 @@
         <rosparam>
             maxTicks: 2147483647
             ticksPerRevolution: 5120
-            wheelRadius: 0.00015 
+            wheelRadius: 150
         </rosparam>
     </node>
     <node name="drivebase_odom_publisher" pkg="tfr_sensor" type="drivebase_odom_publisher" output="screen">
