@@ -6,6 +6,9 @@
             maxTicks: 2147483647
             ticksPerRevolution: 5120
             wheelRadius: 0.15 
+            parent_frame: odom
+            child_frame: base_footprint
+            wheel_span: 1.8
         </rosparam>
     </node>
     <node name="drivebase_odom_publisher" pkg="tfr_sensor" type="drivebase_odom_publisher" output="screen">
