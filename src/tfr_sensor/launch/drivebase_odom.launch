@@ -1,14 +1,11 @@
 <launch>
-    <node name="drivebase_odom_publisher_v2" pkg="tfr_sensor" type="tread_speed_publisher" output="screen">
+    <node name="tread_speed_publisher" pkg="tfr_sensor" type="tread_speed_publisher" output="screen">
         <remap from="/left_tread_count" to="/device8/get_qry_abcntr/channel_1"/>
         <remap from="/right_tread_count" to="/device8/get_qry_abcntr/channel_2"/>
         <rosparam>
             maxTicks: 2147483647
             ticksPerRevolution: 5120
-            wheelRadius: 0.15 
-            parent_frame: odom
-            child_frame: base_footprint
-            wheel_span: 1.8
+            wheelRadius: 0.00015 
         </rosparam>
     </node>
     <node name="drivebase_odom_publisher" pkg="tfr_sensor" type="drivebase_odom_publisher" output="screen">
