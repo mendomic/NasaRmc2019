@@ -5,6 +5,8 @@
         <rosparam>
             maxTicks: 2147483647
             ticksPerRevolution: 5120
+            <!--wheel radius should be in meeters (.15) but that did not travel at the orrect scale in RViz, numbers make more sense with 
+               it set at 150, but this could be wrong and might need changed -->
             wheelRadius: 150
         </rosparam>
     </node>
