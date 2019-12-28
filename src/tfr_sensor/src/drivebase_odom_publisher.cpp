@@ -64,7 +64,7 @@ class DrivebaseOdometryPublisher
         boost::function<void(const std_msgs::Float64&)> rightTreadCallback = [this](const std_msgs::Float64& msg) {this->rightTreadSpeed = msg.data; };
         
 		leftTreadCountSub = n.subscribe<std_msgs::Float64>("/left_tread_speed", 15, leftTreadCallback);
-        rightTreadCountSub = n.subscribe<std_msgs::Float64>("/right_tread_count", 15, rightTreadCallback);
+        rightTreadCountSub = n.subscribe<std_msgs::Float64>("/right_tread_speed", 15, rightTreadCallback);
         
         //odometry_publisher: publish to the location of the base_footprint tracked by tread motion.
         odometry_publisher = n.advertise<nav_msgs::Odometry>("/drivebase_odom", 15); 
