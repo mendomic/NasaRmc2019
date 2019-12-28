@@ -22,8 +22,6 @@
  * */
 #include <ros/ros.h>
 #include <boost/function.hpp>
-#include <tfr_msgs/ArduinoAReading.h>
-#include <tfr_msgs/ArduinoBReading.h>
 #include <tfr_msgs/SetOdometry.h>
 #include <tfr_msgs/PoseSrv.h>
 #include <geometry_msgs/Quaternion.h>
@@ -63,6 +61,7 @@ class DrivebaseOdometryPublisher
         boost::function<void(const std_msgs::Float64&)> leftTreadCallback = [this](const std_msgs::Float64& msg) {this->leftTreadSpeed = msg.data; };
         boost::function<void(const std_msgs::Float64&)> rightTreadCallback = [this](const std_msgs::Float64& msg) {this->rightTreadSpeed = msg.data; };
         
+
 		leftTreadCountSub = n.subscribe<std_msgs::Float64>("/left_tread_speed", 15, leftTreadCallback);
         rightTreadCountSub = n.subscribe<std_msgs::Float64>("/right_tread_speed", 15, rightTreadCallback);
         
