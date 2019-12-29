@@ -1,36 +1,26 @@
 #include <ros/ros.h>
-#include <boost/function.hpp>
 #include "std_msgs/UInt32.h"
 #include "std_msgs/Int32.h"
 #include "std_msgs/Float64.h"
+#include <boost/function.hpp>
+#include "tread_speed_publisher.h"
 
-class TreadSpeed {
-public:
-    double speed;
+TreadSpeed::TreadSpeed(const int ticksPerRevolution, const int maxTicks, const double wheelRadius, const int prevTickCount) :
+    speed{ 0 }, prevTickCount{ prevTickCount }, ticksPerRevolution{ ticksPerRevolution }, maxTicks{ maxTicks }, wheelRadius{ wheelRadius } {}
 
-    TreadSpeed(const int ticksPerRevolution, const int maxTicks, const double wheelRadius, const int prevTickCount = 0) :
-        speed{ 0 }, prevTickCount{ prevTickCount }, ticksPerRevolution{ ticksPerRevolution }, maxTicks{ maxTicks }, wheelRadius{ wheelRadius } {}
+void TreadSpeed::updateFromNewCount(const int newCount) {
+    auto ticksMoved = calcTickDiff(newCount);
+    speed = (wheelRadius * ticksMoved) / ticksPerRevolution;
+    prevTickCount = newCount;
+}
 
-    void updateFromNewCount(const int newCount) {
-        auto ticksMoved = calcTickDiff(newCount);
-        speed = (wheelRadius * ticksMoved) / ticksPerRevolution;
-        prevTickCount = newCount;
-    }
-    
-private:
 
-    int calcTickDiff(const int newCount) {
-        //TODO: handle rollover from going past maxTicks
+int TreadSpeed::calcTickDiff(const int newCount) {
+    //TODO: handle rollover from going past maxTicks
 
-        // otherwise its a simple difference
-        return newCount - prevTickCount;
-    }
-
-    int prevTickCount; // last recorded position of wheel
-    const int ticksPerRevolution; // number of ticks counted each revolution of the measured wheel
-    const int maxTicks; // number of ticks counted before rolling over back to 0
-    const double wheelRadius; // radius of wheel (for which ticks are being counted) in meters
-};
+    // otherwise its a simple difference
+    return newCount - prevTickCount;
+}
 
 int main(int argc, char** argv) {
     ros::init(argc, argv, "tread_speed_publisher");
