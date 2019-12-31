@@ -31,7 +31,7 @@ find_package(GTest REQUIRED)
 
 catkin_package(
     INCLUDE_DIRS include include/
-    LIBRARIES tfr_sensor tread_speed_publisher
+    LIBRARIES tfr_sensor tread_distance_publisher
 #  CATKIN_DEPENDS roscpp sensor_msgs cv_bridge
 #  DEPENDS OpenCV
 )
@@ -63,15 +63,15 @@ add_executable(drivebase_odom_publisher src/drivebase_odom_publisher.cpp)
 add_dependencies(drivebase_odom_publisher ${catkin_EXPORTED_TARGETS})
 target_link_libraries(drivebase_odom_publisher tf_manipulator ${catkin_LIBRARIES})
 
-add_library(tread_speed_publisher src/tread_speed_publisher.cpp)
-add_dependencies(tread_speed_publisher ${catkin_EXPORTED_TARGETS})
-target_link_libraries(tread_speed_publisher  ${catkin_LIBRARIES})
+add_library(tread_distance_publisher src/tread_distance_publisher.cpp)
+add_dependencies(tread_distance_publisher ${catkin_EXPORTED_TARGETS})
+target_link_libraries(tread_distance_publisher  ${catkin_LIBRARIES})
 
 SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread")
 
-catkin_add_gtest(tread_speed_test test/test_tread_speed_publisher.cpp)
-if(TARGET tread_speed_test)
-  target_link_libraries(tread_speed_test tread_speed_publisher)
+catkin_add_gtest(tread_distance_test test/test_tread_distance_publisher.cpp)
+if(TARGET tread_distance_test)
+  target_link_libraries(tread_distance_test tread_distance_publisher)
 endif()
 
 if(TARGET ${PROJECT_NAME}-test)

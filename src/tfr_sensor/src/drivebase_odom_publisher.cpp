@@ -62,8 +62,8 @@ class DrivebaseOdometryPublisher
         boost::function<void(const std_msgs::Float64&)> rightTreadCallback = [this](const std_msgs::Float64& msg) {this->rightTreadSpeed = msg.data; };
         
 
-		leftTreadCountSub = n.subscribe<std_msgs::Float64>("/left_tread_speed", 15, leftTreadCallback);
-        rightTreadCountSub = n.subscribe<std_msgs::Float64>("/right_tread_speed", 15, rightTreadCallback);
+		leftTreadDistanceSub = n.subscribe<std_msgs::Float64>("/left_tread_distance", 15, leftTreadCallback);
+        rightTreadDistanceSub = n.subscribe<std_msgs::Float64>("/right_tread_distance", 15, rightTreadCallback);
         
         //odometry_publisher: publish to the location of the base_footprint tracked by tread motion.
         odometry_publisher = n.advertise<nav_msgs::Odometry>("/drivebase_odom", 15); 
@@ -161,7 +161,7 @@ class DrivebaseOdometryPublisher
 
     private:
 
-        ros::Subscriber leftTreadCountSub, rightTreadCountSub; //the encoder data sub
+        ros::Subscriber leftTreadDistanceSub, rightTreadDistanceSub; //the encoder data sub
         ros::Publisher odometry_publisher; //the pub for our processed data
         ros::ServiceServer set_odometry;
         ros::ServiceServer reset_odometry;

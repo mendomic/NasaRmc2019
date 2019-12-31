@@ -1,9 +1,9 @@
 
-class TreadSpeed {
+class TreadDistance {
 public:
-    double speed;
+    double distanceTraveled;
 
-    TreadSpeed(const int ticksPerRevolution, const int maxTicks, const double wheelRadius, const int prevTickCount = 0);
+    TreadDistance(const int ticksPerRevolution, const int maxTicks, const double wheelRadius, const int prevTickCount = 0);
 
     void updateFromNewCount(const int newCount);
     
