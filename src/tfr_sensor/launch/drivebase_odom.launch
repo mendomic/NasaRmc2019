@@ -3,18 +3,16 @@
         <remap from="/left_tread_count" to="/device8/get_qry_abcntr/channel_1"/>
         <remap from="/right_tread_count" to="/device8/get_qry_abcntr/channel_2"/>
         <rosparam>
-            maxTicks: 2147483647
-            ticksPerRevolution: 5120
-            <!--wheel radius should be in meters (.15) but that did not travel at the correct scale in RViz, numbers make more sense with 
-               it set at 150, but this could be wrong and might need changed -->
-            wheelRadius: 150
+            maxTicks: 2147483647 
+            ticksPerRevolution: 5120 //The encoder is 32 PPR, but the motor controller multiplies by 4. Gear ratio is 40:1 for output shaft.  128 * 40 = 5120.  
+            wheelRadius: .15 //TODO: Define this in one place
         </rosparam>
     </node>
     <node name="drivebase_odom_publisher" pkg="tfr_sensor" type="drivebase_odom_publisher" output="screen">
         <rosparam>
             parent_frame: odom
             child_frame: base_footprint
-            wheel_span: 1.8 
+            wheel_span: 0.5715 //TODO: Define this in one place
         </rosparam>
     </node>
 </launch>
