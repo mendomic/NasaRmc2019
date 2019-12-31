@@ -20,7 +20,7 @@ before_install:
   - sudo apt-key adv --keyserver hkp://ha.pool.sks-keyservers.net:80 --recv-key C1CF6E31E6BADE8868B172B4F42ED6FBAB17C654
   - sudo apt update -qq
   - sudo apt install ros-kinetic-desktop-full
-  - bash apt_install_dependencies.sh
+  - ./apt_install_dependencies.sh
   - cd /usr/src/gtest
   - sudo cmake .
   - sudo make
@@ -30,7 +30,8 @@ before_install:
   - sudo rosdep init
   - rosdep update
   - source /opt/ros/$ROS_DISTRO/setup.bash
-  - bash install_librealsense.sh
+  - sudo apt install expect
+  - expect install_librealsense.exp
 
 install:
   - bash ./build_all.sh
