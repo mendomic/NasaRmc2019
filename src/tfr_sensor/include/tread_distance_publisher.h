@@ -14,5 +14,5 @@ private:
     int prevTickCount; // last recorded position of wheel
     const int ticksPerRevolution; // number of ticks counted each revolution of the measured wheel
     const int maxTicks; // number of ticks counted before rolling over back to 0
-    const double wheelRadius; // radius of wheel (for which ticks are being counted) in meters
+    const double wheelCircumference; // circumference of wheel (for which ticks are being counted) in meters
 };

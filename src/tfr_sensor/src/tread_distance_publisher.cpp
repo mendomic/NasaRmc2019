@@ -4,13 +4,14 @@
 #include "std_msgs/Float64.h"
 #include <boost/function.hpp>
 #include "tread_distance_publisher.h"
+#include <cmath>
 
 TreadDistance::TreadDistance(const int ticksPerRevolution, const int maxTicks, const double wheelRadius, const int prevTickCount) :
-    distanceTraveled{ 0 }, prevTickCount{ prevTickCount }, ticksPerRevolution{ ticksPerRevolution }, maxTicks{ maxTicks }, wheelRadius{ wheelRadius } {}
+    distanceTraveled{ 0 }, prevTickCount{ prevTickCount }, ticksPerRevolution{ ticksPerRevolution }, maxTicks{ maxTicks }, wheelCircumference{ wheelRadius * 2 * M_PI} {}
 
 void TreadDistance::updateFromNewCount(const int newCount) {
     auto ticksMoved = calcTickDiff(newCount);
-    distanceTraveled = (wheelRadius * ticksMoved) / ticksPerRevolution;
+    distanceTraveled = (wheelCircumference * ticksMoved) / ticksPerRevolution;
     prevTickCount = newCount;
 }
 
