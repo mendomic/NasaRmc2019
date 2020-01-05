@@ -32,6 +32,7 @@ before_install:
   - source /opt/ros/$ROS_DISTRO/setup.bash
   - sudo apt install expect
   - expect install_librealsense.exp
+  - ./install_lpms_imu_driver.sh
 
 install:
   - bash ./build_all.sh
