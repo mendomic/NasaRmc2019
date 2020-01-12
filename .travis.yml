@@ -20,16 +20,15 @@ before_install:
   - sudo apt-key adv --keyserver hkp://ha.pool.sks-keyservers.net:80 --recv-key C1CF6E31E6BADE8868B172B4F42ED6FBAB17C654
   - sudo apt update -qq
   - sudo apt install expect
-  - expect install_librealsense.exp &
+  - expect install_librealsense.exp
   - ./apt_install_dependencies.sh
-  - ./install_opencv_and_contrib.sh &
-  - ./install_gtest.sh &
+  - ./install_opencv_and_contrib.sh
+  - ./install_gtest.sh
   - sudo apt install -y python-catkin-pkg python-rosdep python-wstool ros-$ROS_DISTRO-ros-base
   - sudo rosdep init
   - rosdep update
   - source /opt/ros/$ROS_DISTRO/setup.bash
   - ./install_lpms_imu_driver.sh
-  - wait
 
 install:
   - bash ./build_all.sh
