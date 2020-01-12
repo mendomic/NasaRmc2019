@@ -19,19 +19,15 @@ before_install:
   - sudo sh -c "echo \"deb http://packages.ros.org/ros/ubuntu $ROS_CI_DESKTOP main\" > /etc/apt/sources.list.d/ros-latest.list"
   - sudo apt-key adv --keyserver hkp://ha.pool.sks-keyservers.net:80 --recv-key C1CF6E31E6BADE8868B172B4F42ED6FBAB17C654
   - sudo apt update -qq
-  - ./apt_install_dependencies.sh &
+  - sudo apt install expect
+  - expect install_librealsense.exp &
+  - ./apt_install_dependencies.sh
   - ./install_opencv_and_contrib.sh &
-  - cd /usr/src/gtest
-  - sudo cmake .
-  - sudo make
-  - sudo mv libg* /usr/lib/
-  - cd $TRAVIS_BUILD_DIR
+  - ./install_gtest.sh &
   - sudo apt install -y python-catkin-pkg python-rosdep python-wstool ros-$ROS_DISTRO-ros-base
   - sudo rosdep init
   - rosdep update
   - source /opt/ros/$ROS_DISTRO/setup.bash
-  - sudo apt install expect
-  - expect install_librealsense.exp
   - ./install_lpms_imu_driver.sh
   - wait
 
