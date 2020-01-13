@@ -23,7 +23,10 @@ const std::string baudrate = "250K";
 
 const size_t num_devices_required = 1;
 
-const double loop_rate = 100; // [Hz]
+ // Hz of pulling data for CAN. For drivetrain, Circumfrence/refresh rate = the resolution we can react to. Encoder is 32 ppr, so best to be division of 32. 
+// If 64 hz: ~1.4cm, 32 hz: 2.8 cm etc. *lower values improve performance*
+
+const double loop_rate = 64;
 
 const int IMU_NODE_ID = 120;
 

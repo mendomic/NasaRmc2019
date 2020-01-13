@@ -1,6 +1,15 @@
 <?xml version="1.0"?>
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="excavator">
 
+  <!--world links -->
+  <link name="base_footprint" />
+  
+  <joint name="base_footprint_joint" type="fixed">
+    <origin xyz="0 0 0.017" rpy="0 0 0" />
+    <parent link="base_footprint" />
+    <child link="base_link" />
+  </joint>
+    
   <!-- CHASSIS -->
   <link name="base_link" >
     <visual>

@@ -24,25 +24,29 @@ catkin_make --cmake-args $CMAKE_OPTIONS
 
 if [ $? -eq 0 ]; then
     echo ""
-    echo "--------------------------------- Building Tests ---------------------------------"
+    echo "--------------------------- Building And Running Tests ---------------------------"
     echo ""
 
-    catkin_make tests --cmake-args $CMAKE_OPTIONS
+	catkin_make run_tests --cmake-args $CMAKE_OPTIONS
 
 	if [ $? -eq 0 ]; then
 		echo ""
 		echo "--------------------------------- Build Succeeded --------------------------------"
 		echo ""
-		exit 0
+		echo ""
+		echo "------------------------------------ Results -----------------------------------"
+		echo ""
+		catkin_test_results
+		exit $?
 	else
 		echo ""
-		echo "------------------------------- Building Tests Failed ----------------------------"
+		echo "----------------------------- Building Tests Failed ----------------------------"
 		echo ""
 		exit 1
 	fi
 else
 	echo ""
-	echo "---------------------------------- Build Failed ----------------------------------"
+	echo "--------------------------------- Build Failed ---------------------------------"
 	echo ""
 	exit 1
 fi

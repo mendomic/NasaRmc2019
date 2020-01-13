@@ -5,7 +5,7 @@
 cmake_minimum_required(VERSION 2.8.3)
 project(tfr_sensor)
 
-add_compile_options(-std=c++11)
+add_compile_options(-std=c++14)
 
 find_package(OpenCV 3 REQUIRED)
 
@@ -30,14 +30,14 @@ find_package(catkin REQUIRED COMPONENTS
 find_package(GTest REQUIRED)
 
 catkin_package(
-    #  INCLUDE_DIRS include
-#  LIBRARIES tfr_sensor
+    INCLUDE_DIRS include include/
+    LIBRARIES tfr_sensor tread_distance_publisher
 #  CATKIN_DEPENDS roscpp sensor_msgs cv_bridge
 #  DEPENDS OpenCV
 )
 
 include_directories(
-  include/${PROJECT_NAME}
+  include/
   ${catkin_INCLUDE_DIRS}
   ${GTEST_INCLUDE_DIRS}
 )
@@ -63,7 +63,16 @@ add_executable(drivebase_odom_publisher src/drivebase_odom_publisher.cpp)
 add_dependencies(drivebase_odom_publisher ${catkin_EXPORTED_TARGETS})
 target_link_libraries(drivebase_odom_publisher tf_manipulator ${catkin_LIBRARIES})
 
+add_library(tread_distance_publisher src/tread_distance_publisher.cpp)
+add_dependencies(tread_distance_publisher ${catkin_EXPORTED_TARGETS})
+target_link_libraries(tread_distance_publisher  ${catkin_LIBRARIES})
+
 SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread")
+
+catkin_add_gtest(tread_distance_test test/test_tread_distance_publisher.cpp)
+if(TARGET tread_distance_test)
+  target_link_libraries(tread_distance_test tread_distance_publisher)
+endif()
 
 if(TARGET ${PROJECT_NAME}-test)
   target_link_libraries(${PROJECT_NAME}-test ${PROJECT_NAME}_library)
