@@ -1,0 +1,15 @@
+set timeout -1
+spawn "./install_librealsense.sh"
+expect {
+    {*Reversed (or previously applied) patch detected!  Assume -R? \[n\]} {
+        send "n\n"
+        exp_continue
+    } {*Apply anyway? \[n\]} {
+        send "n\n"
+        exp_continue
+    } eof {
+        send_user "EOF recieved\n"
+    }
+}
+
+send_user "Expect script finished\n"

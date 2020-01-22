@@ -16,7 +16,7 @@ echo "Prereqs downloaded. Building."
 
 # configure cmake to generate the makefile that tells how to build opencv
 cd opencv; mkdir build; cd build
-cmake -DCMAKE_BUILD_TYPE=RELEASE -DBUILD_EXAMPLES=OFF -DBUILD_DOCS=OFF -DBUILD_PERF_TESTS=OFF -DBUILD_TESTS=OFF -DCMAKE_INSTALL_PREFIX=/usr/local -DENABLE_CXX11=ON -DOPENCV_EXTRA_MODULES_PATH=../../opencv_contrib/modules -D WITH_CUDA=ON ..
+cmake -DCMAKE_BUILD_TYPE=RELEASE -DBUILD_EXAMPLES=OFF -DBUILD_DOCS=OFF -DBUILD_PERF_TESTS=OFF -DBUILD_TESTS=OFF -DCMAKE_INSTALL_PREFIX=/usr/local -DENABLE_CXX11=ON -DOPENCV_EXTRA_MODULES_PATH=../../opencv_contrib/modules -D WITH_CUDA=ON -DBUILD_LIST=core,highgui,improc,videoio,aruco ..
 
 # build the glorious opencv bins
 make -j4
