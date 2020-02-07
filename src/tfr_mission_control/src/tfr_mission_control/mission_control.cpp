@@ -2,6 +2,23 @@
 
 #include <pluginlib/class_list_macros.h>
 
+// added extra for testing
+#include <tfr_utilities/teleop_code.h>
+#include <tfr_utilities/control_code.h>
+#include <tfr_msgs/TeleopAction.h>
+#include <tfr_msgs/DiggingAction.h>
+#include <tfr_msgs/EmptySrv.h>
+#include <tfr_msgs/BinStateSrv.h>
+#include <tfr_msgs/ArmStateSrv.h>
+#include <tfr_msgs/DurationSrv.h>
+#include <tfr_utilities/arm_manipulator.h>
+#include <trajectory_msgs/JointTrajectory.h>
+#include <std_msgs/Int32.h>
+#include <std_msgs/Float64.h>
+#include <tfr_msgs/ArmMoveAction.h>
+#include <actionlib/server/simple_action_server.h>
+#include <actionlib/client/simple_action_client.h>
+
 namespace tfr_mission_control {
 
     /* ========================================================================== */
@@ -318,6 +335,13 @@ namespace tfr_mission_control {
      * */
     bool MissionControl::eventFilter(QObject* obj, QEvent* event)
     {
+	//test	
+	ros::Subscriber joy_sub;
+	if (teleopEnabled && joy->buttons[4] = 1) {
+	    motorKill->start(MOTOR_INTERVAL);
+            performTeleop(tfr_utilities::TeleopCode::FORWARD);
+	}
+	    
         if (event->type()==QEvent::KeyPress && teleopEnabled) {
             QKeyEvent* key = static_cast<QKeyEvent*>(event);
             auto  k = static_cast<Qt::Key>(key->key());
