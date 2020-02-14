@@ -335,12 +335,6 @@ namespace tfr_mission_control {
      * */
     bool MissionControl::eventFilter(QObject* obj, QEvent* event)
     {
-	//test	
-	ros::Subscriber joy_sub;
-	if (teleopEnabled && joy->buttons[4] = 1) {
-	    motorKill->start(MOTOR_INTERVAL);
-            performTeleop(tfr_utilities::TeleopCode::FORWARD);
-	}
 	    
         if (event->type()==QEvent::KeyPress && teleopEnabled) {
             QKeyEvent* key = static_cast<QKeyEvent*>(event);
